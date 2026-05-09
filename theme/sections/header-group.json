@@ -1,0 +1,9 @@
+{
+  "type": "header",
+  "name": "Header",
+  "sections": {
+    "announcement-bar": { "type": "announcement-bar", "blocks": {} },
+    "header": { "type": "header", "settings": {} }
+  },
+  "order": ["announcement-bar", "header"]
+}

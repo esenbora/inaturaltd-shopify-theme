@@ -1,0 +1,34 @@
+<section class="announce" aria-label="Announcements">
+  <div class="wrap announce__inner">
+    {% for block in section.blocks %}
+      <span class="announce__item">
+        {% if block.settings.icon != blank %}{{ block.settings.icon }}{% endif %}
+        {{ block.settings.text }}
+      </span>
+    {% else %}
+      <span class="announce__item">✦ Free UK shipping on orders over £40</span>
+      <span class="announce__item">✦ 100% natural · vegan · cruelty-free</span>
+      <span class="announce__item">✦ Crafted in Türkiye, shipped from London</span>
+    {% endfor %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Announcement bar",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "message",
+      "name": "Message",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Text", "default": "Free UK shipping on orders over £40" },
+        { "type": "text", "id": "icon", "label": "Icon (emoji)", "default": "✦" }
+      ]
+    }
+  ],
+  "max_blocks": 5,
+  "presets": [{ "name": "Announcement bar" }],
+  "enabled_on": { "groups": ["header"] }
+}
+{% endschema %}

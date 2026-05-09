@@ -1,0 +1,71 @@
+<section class="ingredients section">
+  <div class="wrap">
+    <header class="section-head section-head--center text-center mx-auto">
+      <span class="eyebrow">{{ section.settings.eyebrow | default: 'Field to formula' }}</span>
+      <h2 class="h2">{{ section.settings.heading | default: 'Ingredients you can pronounce.' }}</h2>
+      <p class="lead muted">{{ section.settings.subheading | default: 'Each one cold-pressed, hydro-distilled or sun-dried within 80 km of where it was grown.' }}</p>
+    </header>
+
+    <div class="grid ingredient-grid">
+      {% for block in section.blocks %}
+        <div class="ingredient" {{ block.shopify_attributes }}>
+          <div class="ingredient__media">
+            {% if block.settings.image %}
+              <img src="{{ block.settings.image | image_url: width: 400 }}" alt="{{ block.settings.title }}">
+            {% else %}
+              <img src="{{ block.settings.fallback_url }}" alt="{{ block.settings.title }}">
+            {% endif %}
+          </div>
+          <h4>{{ block.settings.title }}</h4>
+          <p>{{ block.settings.text }}</p>
+        </div>
+      {% else %}
+        <div class="ingredient">
+          <div class="ingredient__media"><img src="https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=400&q=85" alt="Olive"></div>
+          <h4>Olive</h4><p>Pressed within 6 hours of harvest. High in oleic acid for barrier repair.</p>
+        </div>
+        <div class="ingredient">
+          <div class="ingredient__media"><img src="https://images.unsplash.com/photo-1599733589046-8a35aef38ca5?w=400&q=85" alt="Damask Rose"></div>
+          <h4>Damask Rose</h4><p>Steam-distilled in Isparta. A natural anti-inflammatory and toner.</p>
+        </div>
+        <div class="ingredient">
+          <div class="ingredient__media"><img src="https://images.unsplash.com/photo-1583854780297-0a3c19fbb83f?w=400&q=85" alt="Pistachio"></div>
+          <h4>Pistachio</h4><p>Cold-pressed Antep pistachios — emollient, restorative, deeply nourishing.</p>
+        </div>
+        <div class="ingredient">
+          <div class="ingredient__media"><img src="https://images.unsplash.com/photo-1471943311424-646960669fbc?w=400&q=85" alt="Propolis"></div>
+          <h4>Propolis</h4><p>From our beekeeper partners in the Black Sea forests. Antibacterial and reparative.</p>
+        </div>
+        <div class="ingredient">
+          <div class="ingredient__media"><img src="https://images.unsplash.com/photo-1624805685741-e5cae5b08d6b?w=400&q=85" alt="Lavender"></div>
+          <h4>Lavender</h4><p>Sun-dried, then steam-distilled. Calming for skin and routines alike.</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Ingredient spotlight",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
+    { "type": "text", "id": "heading", "label": "Heading" },
+    { "type": "textarea", "id": "subheading", "label": "Subheading" }
+  ],
+  "blocks": [
+    {
+      "type": "ingredient",
+      "name": "Ingredient",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "fallback_url", "label": "Fallback image URL" },
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "textarea", "id": "text", "label": "Text" }
+      ]
+    }
+  ],
+  "max_blocks": 10,
+  "presets": [{ "name": "Ingredients" }]
+}
+{% endschema %}

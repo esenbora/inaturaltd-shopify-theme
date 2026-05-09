@@ -1,0 +1,81 @@
+<section class="testimonials section">
+  <div class="wrap">
+    <header class="section-head section-head--center text-center mx-auto" style="color: var(--bg);">
+      <span class="eyebrow">{{ section.settings.eyebrow | default: 'Reviews' }}</span>
+      <h2 class="h2" style="color: var(--bg);">{{ section.settings.heading | default: '4.8 / 5 across 3,200 verified reviews.' }}</h2>
+    </header>
+
+    <div class="grid testimonials__grid">
+      {% for block in section.blocks %}
+        <article class="testimonial" {{ block.shopify_attributes }}>
+          <span class="rating__stars" style="color: var(--accent); letter-spacing: 2px;">★★★★★</span>
+          <p class="testimonial__quote">“{{ block.settings.quote }}”</p>
+          <div class="testimonial__author">
+            <span class="testimonial__avatar">{{ block.settings.name | slice: 0, 1 }}</span>
+            <div>
+              <div class="testimonial__name">{{ block.settings.name }}</div>
+              <div class="testimonial__verified">{% render 'icon', name: 'check' %} Verified buyer · {{ block.settings.product }}</div>
+            </div>
+          </div>
+        </article>
+      {% else %}
+        <article class="testimonial">
+          <span class="rating__stars" style="color: var(--accent); letter-spacing: 2px;">★★★★★</span>
+          <p class="testimonial__quote">“The Rose serum sorted out my dehydrated skin in two weeks. I've stopped buying everything else.”</p>
+          <div class="testimonial__author">
+            <span class="testimonial__avatar">A</span>
+            <div>
+              <div class="testimonial__name">Amelia P. — London</div>
+              <div class="testimonial__verified">✓ Verified buyer · Rose Glow Serum</div>
+            </div>
+          </div>
+        </article>
+        <article class="testimonial">
+          <span class="rating__stars" style="color: var(--accent); letter-spacing: 2px;">★★★★★</span>
+          <p class="testimonial__quote">“Finally — a soap that doesn't tighten my skin. The olive bar lasts forever and smells like the Aegean.”</p>
+          <div class="testimonial__author">
+            <span class="testimonial__avatar">F</span>
+            <div>
+              <div class="testimonial__name">Faruk K. — Manchester</div>
+              <div class="testimonial__verified">✓ Verified buyer · Olive Leaf Bar</div>
+            </div>
+          </div>
+        </article>
+        <article class="testimonial">
+          <span class="rating__stars" style="color: var(--accent); letter-spacing: 2px;">★★★★★</span>
+          <p class="testimonial__quote">“Smells amazing, packaging is gorgeous, and you can tell they actually care. Five stars from a tough crowd.”</p>
+          <div class="testimonial__author">
+            <span class="testimonial__avatar">N</span>
+            <div>
+              <div class="testimonial__name">Nadia H. — Edinburgh</div>
+              <div class="testimonial__verified">✓ Verified buyer · Pistachio Body Butter</div>
+            </div>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Testimonials",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
+    { "type": "text", "id": "heading", "label": "Heading" }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        { "type": "textarea", "id": "quote", "label": "Quote" },
+        { "type": "text", "id": "name", "label": "Name" },
+        { "type": "text", "id": "product", "label": "Product purchased" }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [{ "name": "Testimonials" }]
+}
+{% endschema %}

@@ -1,0 +1,54 @@
+<section class="section">
+  <div class="wrap">
+    <header class="section-head section-head--center text-center mx-auto">
+      <span class="eyebrow">{{ section.settings.eyebrow | default: 'Pairs well with' }}</span>
+      <h2 class="h2">{{ section.settings.heading | default: 'Build the routine.' }}</h2>
+    </header>
+    <div class="grid product-grid">
+      {% render 'mock-product-card',
+        image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=600&q=85',
+        title: 'Damask Rose Toner',
+        sub: 'Hydrosol toner · 200 ml',
+        price: '22',
+        rating: '4.8',
+        reviews: '167',
+        url: '#' %}
+      {% render 'mock-product-card',
+        image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=600&q=85',
+        title: 'Pistachio Body Butter',
+        sub: 'Rich body cream · 200 ml',
+        price: '28',
+        rating: '4.9',
+        reviews: '198',
+        url: '#' %}
+      {% render 'mock-product-card',
+        image: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=600&q=85',
+        title: 'Propolis Repair Balm',
+        sub: 'Multi-balm · 50 ml',
+        price: '24',
+        rating: '4.9',
+        reviews: '342',
+        badge: 'New',
+        url: '#' %}
+      {% render 'mock-product-card',
+        image: 'https://images.unsplash.com/photo-1625772452859-1c03d5bf1137?w=600&q=85',
+        title: 'Black Cumin Night Oil',
+        sub: 'Facial oil · 30 ml',
+        price: '36',
+        rating: '5.0',
+        reviews: '92',
+        url: '#' %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Related products",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
+    { "type": "text", "id": "heading", "label": "Heading" }
+  ],
+  "presets": [{ "name": "Related products" }]
+}
+{% endschema %}

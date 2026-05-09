@@ -1,0 +1,8 @@
+{
+  "sections": {
+    "main": { "type": "main-collection", "settings": {} },
+    "trust": { "type": "trust-row", "blocks": {} },
+    "newsletter": { "type": "newsletter", "settings": {} }
+  },
+  "order": ["main", "trust", "newsletter"]
+}

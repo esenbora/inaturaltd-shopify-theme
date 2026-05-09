@@ -1,0 +1,36 @@
+<section>
+  <div class="wrap">
+    <div class="trust-row">
+      {% for block in section.blocks %}
+        <div class="trust-cell" {{ block.shopify_attributes }}>
+          <strong>{{ block.settings.metric }}</strong>
+          <span>{{ block.settings.label }}</span>
+        </div>
+      {% else %}
+        <div class="trust-cell"><strong>12,400+</strong><span>UK customers served</span></div>
+        <div class="trust-cell"><strong>4.8 / 5</strong><span>Avg. review across 3,200 reviews</span></div>
+        <div class="trust-cell"><strong>100%</strong><span>Halal certified by GİMDES</span></div>
+        <div class="trust-cell"><strong>0</strong><span>Animal testing — ever</span></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Trust row",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "metric",
+      "name": "Metric",
+      "settings": [
+        { "type": "text", "id": "metric", "label": "Metric" },
+        { "type": "text", "id": "label", "label": "Label" }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [{ "name": "Trust row" }]
+}
+{% endschema %}

@@ -1,0 +1,22 @@
+<section class="marquee" aria-label="Brand values">
+  <div class="marquee__track">
+    {% assign items = section.settings.items | default: 'Cold-pressed in Türkiye · Halal certified by GİMDES · Vegan formulas · No SLS, no parabens · Recyclable glass · Cruelty-free · Cold-pressed in Türkiye · Halal certified by GİMDES · Vegan formulas · No SLS, no parabens · Recyclable glass · Cruelty-free' %}
+    {% assign tokens = items | split: '·' %}
+    {% for item in tokens %}
+      <span class="marquee__item">
+        {% render 'icon', name: 'sparkle' %}
+        {{ item | strip }}
+      </span>
+    {% endfor %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Marquee",
+  "settings": [
+    { "type": "textarea", "id": "items", "label": "Items (· separated)" }
+  ],
+  "presets": [{ "name": "Marquee" }]
+}
+{% endschema %}

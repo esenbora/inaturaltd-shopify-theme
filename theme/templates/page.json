@@ -1,0 +1,10 @@
+{
+  "sections": {
+    "page": {
+      "type": "rich-text",
+      "settings": {}
+    },
+    "newsletter": { "type": "newsletter", "settings": {} }
+  },
+  "order": ["page", "newsletter"]
+}

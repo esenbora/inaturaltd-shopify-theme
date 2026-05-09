@@ -1,0 +1,114 @@
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="site-footer__grid">
+      <div>
+        <span class="brand-mark">i<span>Nature</span></span>
+        <p style="font-size: var(--fs-sm); color: rgba(248,244,237,.7); max-width: 38ch;">
+          {{ section.settings.about_text | default: 'Pure, plant-based skincare crafted in Türkiye and shipped from London. The official UK distributor of INCIA Naturals.' }}
+        </p>
+        <div class="site-footer__social mt-4">
+          {% if settings.social_instagram != blank %}
+            <a href="{{ settings.social_instagram }}" aria-label="Instagram">{% render 'icon', name: 'instagram' %}</a>
+          {% endif %}
+          {% if settings.social_tiktok != blank %}
+            <a href="{{ settings.social_tiktok }}" aria-label="TikTok">{% render 'icon', name: 'tiktok' %}</a>
+          {% endif %}
+          {% if settings.social_facebook != blank %}
+            <a href="{{ settings.social_facebook }}" aria-label="Facebook">{% render 'icon', name: 'facebook' %}</a>
+          {% endif %}
+        </div>
+      </div>
+
+      {% for block in section.blocks %}
+        {% if block.type == 'menu' %}
+          <div {{ block.shopify_attributes }}>
+            <h5>{{ block.settings.title }}</h5>
+            <ul class="site-footer__links">
+              {% for link in block.settings.menu.links %}
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {% else %}
+                {% if block.settings.title contains 'Shop' %}
+                  <li><a href="/collections/skincare">Skincare</a></li>
+                  <li><a href="/collections/hair">Hair care</a></li>
+                  <li><a href="/collections/body">Body care</a></li>
+                  <li><a href="/collections/sets">Gift sets</a></li>
+                  <li><a href="/collections/all">Shop all</a></li>
+                {% elsif block.settings.title contains 'Help' %}
+                  <li><a href="/pages/shipping">Shipping & returns</a></li>
+                  <li><a href="/pages/faq">FAQ</a></li>
+                  <li><a href="/pages/contact">Contact us</a></li>
+                  <li><a href="/account">My account</a></li>
+                {% else %}
+                  <li><a href="/pages/about">Our story</a></li>
+                  <li><a href="/pages/ingredients">Ingredients</a></li>
+                  <li><a href="/pages/sustainability">Sustainability</a></li>
+                  <li><a href="/pages/journal">The Journal</a></li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+      {% else %}
+        <div>
+          <h5>Shop</h5>
+          <ul class="site-footer__links">
+            <li><a href="/collections/skincare">Skincare</a></li>
+            <li><a href="/collections/hair">Hair care</a></li>
+            <li><a href="/collections/body">Body care</a></li>
+            <li><a href="/collections/sets">Gift sets</a></li>
+            <li><a href="/collections/all">Shop all</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5>Help</h5>
+          <ul class="site-footer__links">
+            <li><a href="/pages/shipping">Shipping & returns</a></li>
+            <li><a href="/pages/faq">FAQ</a></li>
+            <li><a href="/pages/contact">Contact us</a></li>
+            <li><a href="/account">My account</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5>Brand</h5>
+          <ul class="site-footer__links">
+            <li><a href="/pages/about">Our story</a></li>
+            <li><a href="/pages/ingredients">Ingredients</a></li>
+            <li><a href="/pages/sustainability">Sustainability</a></li>
+            <li><a href="/pages/journal">The Journal</a></li>
+          </ul>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="site-footer__bottom">
+      <span>© {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</span>
+      <span>VAT 412 5894 23 · Registered in England & Wales</span>
+      <span>
+        <a href="/policies/privacy-policy">Privacy</a> ·
+        <a href="/policies/terms-of-service">Terms</a> ·
+        <a href="/policies/refund-policy">Refunds</a>
+      </span>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    { "type": "textarea", "id": "about_text", "label": "About text" }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "Menu",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Shop" },
+        { "type": "link_list", "id": "menu", "label": "Menu" }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "enabled_on": { "groups": ["footer"] }
+}
+{% endschema %}

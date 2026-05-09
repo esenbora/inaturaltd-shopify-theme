@@ -1,0 +1,27 @@
+{%- comment -%}
+  Static mock product card. Used when collection.products is empty (theme preview).
+  params: image, title, sub, price, was, rating, reviews, badge, url
+{%- endcomment -%}
+<article class="product-card">
+  <a href="{{ url | default: '/products/sample' }}" class="product-card__media" aria-label="{{ title }}">
+    <div class="product-card__badges">
+      {% if badge != blank %}<span class="pill pill-soft">{{ badge }}</span>{% endif %}
+      {% if was != blank %}<span class="pill pill-accent">−{{ was | minus: price | times: 100 | divided_by: was }}%</span>{% endif %}
+    </div>
+    <img src="{{ image }}" alt="{{ title }}" loading="lazy">
+    <div class="product-card__quick">
+      <button class="btn btn-primary btn-block" data-add-to-cart data-label="Add to bag" type="button">Quick add</button>
+    </div>
+  </a>
+  <div>
+    <span class="product-card__sub">{{ sub }}</span>
+    <h3 class="product-card__title"><a href="{{ url | default: '/products/sample' }}">{{ title }}</a></h3>
+    <span class="rating">
+      <span class="rating__stars">★★★★★</span>
+      {{ rating | default: '4.8' }} ({{ reviews | default: '142' }})
+    </span>
+    <div class="product-card__price">
+      {% if was != blank %}<span class="price-was">£{{ was }}</span><span class="price-now">£{{ price }}</span>{% else %}<span>£{{ price }}</span>{% endif %}
+    </div>
+  </div>
+</article>

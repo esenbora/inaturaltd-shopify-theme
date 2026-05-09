@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <meta name="theme-color" content="{{ settings.color_bg }}">
+    <link rel="canonical" href="{{ canonical_url }}">
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- endif -%}
+
+    <title>
+      {%- if template == 'index' -%}
+        {{ shop.name }} — {{ settings.brand_tagline }}
+      {%- elsif page_title -%}
+        {{ page_title }} | {{ shop.name }}
+      {%- else -%}
+        {{ shop.name }}
+      {%- endif -%}
+    </title>
+
+    {%- if page_description -%}
+      <meta name="description" content="{{ page_description | escape }}">
+    {%- endif -%}
+
+    <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    {{ content_for_header }}
+
+    {%- liquid
+      assign font_heading = settings.font_heading
+      assign font_body = settings.font_body
+    -%}
+    {{ font_heading | font_face: font_display: 'swap' }}
+    {{ font_body | font_face: font_display: 'swap' }}
+
+    <style>
+      :root {
+        --bg: {{ settings.color_bg }};
+        --surface: {{ settings.color_surface }};
+        --ink: {{ settings.color_ink }};
+        --muted: {{ settings.color_muted }};
+        --primary: {{ settings.color_primary }};
+        --primary-dark: {{ settings.color_primary_dark }};
+        --accent: {{ settings.color_accent }};
+        --border: {{ settings.color_border }};
+        --page-w: {{ settings.page_width }}px;
+        --section-y: {{ settings.section_spacing }}px;
+        --font-heading: {{ font_heading.family }}, {{ font_heading.fallback_families }};
+        --font-body: {{ font_body.family }}, {{ font_body.fallback_families }};
+      }
+    </style>
+
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+    <script src="{{ 'theme.js' | asset_url }}" defer></script>
+  </head>
+
+  <body class="template-{{ template | replace: '.', '-' }}">
+    <a class="skip-link" href="#MainContent">{{ 'accessibility.skip_to_text' | t }}</a>
+
+    {% sections 'header-group' %}
+
+    <main id="MainContent" role="main">
+      {{ content_for_layout }}
+    </main>
+
+    {% sections 'footer-group' %}
+
+    {% render 'cart-drawer' %}
+  </body>
+</html>

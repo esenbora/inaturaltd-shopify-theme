@@ -1,0 +1,49 @@
+<section class="hero">
+  <div class="wrap hero__inner">
+    <div class="hero__content stack" style="--gap: var(--space-5);">
+      <span class="eyebrow">{{ section.settings.eyebrow }}</span>
+      <h1 class="h-display hero__title">{{ section.settings.heading | default: 'Skincare with <em>roots</em>, made for modern routines.' }}</h1>
+      <p class="lead">{{ section.settings.subheading | default: 'Crafted in Türkiye from olive, rose and pistachio. Distilled to the UK by INature — the official INCIA Naturals distributor.' }}</p>
+      <div class="cluster" style="--gap: var(--space-3);">
+        <a href="{{ section.settings.cta_primary_url | default: '/collections/all' }}" class="btn btn-primary btn-lg">
+          {{ section.settings.cta_primary_label | default: 'Shop the edit' }}
+          {% render 'icon', name: 'arrow-right' %}
+        </a>
+        <a href="{{ section.settings.cta_secondary_url | default: '/pages/about' }}" class="btn btn-ghost btn-lg">{{ section.settings.cta_secondary_label | default: 'Read our story' }}</a>
+      </div>
+      <ul class="cluster muted" style="--gap: var(--space-5); font-size: var(--fs-sm); margin-top: var(--space-4);">
+        <li class="cluster" style="--gap: 6px;">{% render 'icon', name: 'check' %} Vegan & cruelty-free</li>
+        <li class="cluster" style="--gap: 6px;">{% render 'icon', name: 'check' %} Halal certified</li>
+        <li class="cluster" style="--gap: 6px;">{% render 'icon', name: 'check' %} Free UK delivery £40+</li>
+      </ul>
+    </div>
+
+    <div class="hero__media">
+      {% if section.settings.image %}
+        <img src="{{ section.settings.image | image_url: width: 900 }}" alt="">
+      {% else %}
+        <img src="https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=900&q=85" alt="Natural skincare bottle on a marble surface with eucalyptus leaves">
+      {% endif %}
+      <div class="hero__sticker">
+        Trusted by<br>12,400+<br>UK customers
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Naturals — UK collection" },
+    { "type": "richtext", "id": "heading", "label": "Heading", "default": "<p>Skincare with <em>roots</em>, made for modern routines.</p>" },
+    { "type": "textarea", "id": "subheading", "label": "Subheading" },
+    { "type": "text", "id": "cta_primary_label", "label": "Primary CTA label", "default": "Shop the edit" },
+    { "type": "url", "id": "cta_primary_url", "label": "Primary CTA URL" },
+    { "type": "text", "id": "cta_secondary_label", "label": "Secondary CTA label", "default": "Read our story" },
+    { "type": "url", "id": "cta_secondary_url", "label": "Secondary CTA URL" },
+    { "type": "image_picker", "id": "image", "label": "Hero image" }
+  ],
+  "presets": [{ "name": "Hero" }]
+}
+{% endschema %}

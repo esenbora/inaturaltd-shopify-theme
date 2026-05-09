@@ -1,0 +1,101 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "INature UK",
+    "theme_version": "1.0.0",
+    "theme_author": "INature",
+    "theme_documentation_url": "https://inatureltd.com",
+    "theme_support_url": "https://inatureltd.com/contact"
+  },
+  {
+    "name": "Brand",
+    "settings": [
+      {
+        "type": "text",
+        "id": "brand_name",
+        "label": "Brand name",
+        "default": "INature"
+      },
+      {
+        "type": "text",
+        "id": "brand_tagline",
+        "label": "Tagline",
+        "default": "Pure Turkish Skincare. Naturally British."
+      },
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo"
+      },
+      {
+        "type": "image_picker",
+        "id": "logo_light",
+        "label": "Logo (light variant)"
+      }
+    ]
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      { "type": "color", "id": "color_bg", "label": "Background", "default": "#F8F4ED" },
+      { "type": "color", "id": "color_surface", "label": "Surface", "default": "#FFFFFF" },
+      { "type": "color", "id": "color_ink", "label": "Ink", "default": "#2A2D2A" },
+      { "type": "color", "id": "color_muted", "label": "Muted text", "default": "#5C625B" },
+      { "type": "color", "id": "color_primary", "label": "Primary (sage)", "default": "#7B9F7E" },
+      { "type": "color", "id": "color_primary_dark", "label": "Primary dark", "default": "#5A7C5D" },
+      { "type": "color", "id": "color_accent", "label": "Accent (terracotta)", "default": "#C97B5C" },
+      { "type": "color", "id": "color_border", "label": "Border", "default": "#E6DED1" }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "font_picker",
+        "id": "font_heading",
+        "label": "Heading font",
+        "default": "fraunces_n4"
+      },
+      {
+        "type": "font_picker",
+        "id": "font_body",
+        "label": "Body font",
+        "default": "inter_n4"
+      }
+    ]
+  },
+  {
+    "name": "Layout",
+    "settings": [
+      {
+        "type": "range",
+        "id": "page_width",
+        "min": 1200,
+        "max": 1600,
+        "step": 20,
+        "unit": "px",
+        "label": "Page width",
+        "default": 1320
+      },
+      {
+        "type": "range",
+        "id": "section_spacing",
+        "min": 32,
+        "max": 160,
+        "step": 4,
+        "unit": "px",
+        "label": "Section spacing",
+        "default": 96
+      }
+    ]
+  },
+  {
+    "name": "Social",
+    "settings": [
+      { "type": "url", "id": "social_instagram", "label": "Instagram" },
+      { "type": "url", "id": "social_tiktok", "label": "TikTok" },
+      { "type": "url", "id": "social_facebook", "label": "Facebook" },
+      { "type": "url", "id": "social_youtube", "label": "YouTube" }
+    ]
+  }
+]

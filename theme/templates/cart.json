@@ -1,0 +1,7 @@
+{
+  "sections": {
+    "main": { "type": "main-cart", "settings": {} },
+    "trust": { "type": "trust-row", "blocks": {} }
+  },
+  "order": ["main", "trust"]
+}

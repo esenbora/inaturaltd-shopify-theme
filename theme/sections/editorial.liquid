@@ -1,0 +1,41 @@
+<section class="section">
+  <div class="wrap">
+    <div class="editorial {% if section.settings.media_position == 'right' %}editorial--reverse{% endif %}">
+      <div class="editorial__media">
+        {% if section.settings.image %}
+          <img src="{{ section.settings.image | image_url: width: 900 }}" alt="{{ section.settings.image.alt }}">
+        {% else %}
+          <img src="https://images.unsplash.com/photo-1556228841-7df40d6f3a93?w=900&q=85" alt="Olive grove in the Aegean region of Türkiye">
+        {% endif %}
+      </div>
+      <div class="stack" style="--gap: var(--space-4); max-width: 50ch;">
+        <span class="eyebrow">{{ section.settings.eyebrow | default: 'Our story' }}</span>
+        <h2 class="h2">{{ section.settings.heading | default: 'A 2,000-year-old olive grove. A modern beauty cabinet.' }}</h2>
+        <div class="muted flow" style="--flow: 1em; line-height: 1.7;">
+          {{ section.settings.body | default: '<p>Seyda and Ferhat grew up between Aegean olive groves and London university libraries. INature began as an obvious gap — bringing the rituals they trusted at home to a UK shelf that had quietly accepted parabens, drying alcohols and 35-ingredient creams.</p><p>Every product we stock is formulated in Türkiye by INCIA Naturals, made in their family-run, halal-certified facility. We import directly, store in our Tottenham warehouse, and ship to your door — usually within 48 hours.</p>' }}
+        </div>
+        <div class="cluster" style="--gap: var(--space-3);">
+          <a href="{{ section.settings.cta_url | default: '/pages/about' }}" class="btn btn-outline">{{ section.settings.cta_label | default: 'Read the full story' }} {% render 'icon', name: 'arrow-right' %}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Editorial / image with text",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "select", "id": "media_position", "label": "Media position",
+      "options": [{ "value": "left", "label": "Left" }, { "value": "right", "label": "Right" }],
+      "default": "left" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
+    { "type": "text", "id": "heading", "label": "Heading" },
+    { "type": "richtext", "id": "body", "label": "Body" },
+    { "type": "text", "id": "cta_label", "label": "CTA label" },
+    { "type": "url", "id": "cta_url", "label": "CTA URL" }
+  ],
+  "presets": [{ "name": "Editorial" }]
+}
+{% endschema %}

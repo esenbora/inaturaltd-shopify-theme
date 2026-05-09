@@ -1,0 +1,40 @@
+{
+  "accessibility": {
+    "skip_to_text": "Skip to content"
+  },
+  "general": {
+    "search": {
+      "placeholder": "Search for products, ingredients or stories",
+      "submit": "Search"
+    },
+    "social": {
+      "share": "Share",
+      "links": {
+        "instagram": "Instagram",
+        "tiktok": "TikTok",
+        "facebook": "Facebook"
+      }
+    }
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Add to bag",
+      "sold_out": "Sold out",
+      "unavailable": "Unavailable",
+      "quantity": "Quantity",
+      "size": "Size",
+      "view_full_details": "View full details",
+      "free_shipping": "Free UK shipping over £40"
+    }
+  },
+  "cart": {
+    "general": {
+      "title": "Your bag",
+      "empty": "Your bag is empty",
+      "continue_shopping": "Continue shopping",
+      "subtotal": "Subtotal",
+      "checkout": "Checkout",
+      "remove": "Remove"
+    }
+  }
+}

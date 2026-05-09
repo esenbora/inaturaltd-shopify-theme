@@ -1,0 +1,39 @@
+<aside class="cart-drawer" data-cart-drawer aria-hidden="true" aria-label="Shopping bag">
+  <div class="cart-drawer__backdrop" data-cart-close></div>
+  <div class="cart-drawer__panel" role="dialog" aria-modal="true">
+    <div class="cart-drawer__head">
+      <span class="h4">Your bag</span>
+      <button class="icon-btn" data-cart-close aria-label="Close">{% render 'icon', name: 'close' %}</button>
+    </div>
+
+    <div class="cart-drawer__items">
+      {% comment %} Mock cart lines for preview {% endcomment %}
+      <div class="cart-line">
+        <div class="cart-line__img"><img src="https://images.unsplash.com/photo-1612817288484-6f916006741a?w=200&q=80" alt=""></div>
+        <div>
+          <div class="cart-line__title">Rose & Hyaluronic Glow Serum</div>
+          <div class="cart-line__variant">30 ml · Qty 1</div>
+          <div style="margin-top: 6px;"><a href="#" style="font-size: var(--fs-xs); color: var(--muted); text-decoration: underline;">Remove</a></div>
+        </div>
+        <div class="cart-line__price">£32.00</div>
+      </div>
+
+      <div class="cart-line">
+        <div class="cart-line__img"><img src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=200&q=80" alt=""></div>
+        <div>
+          <div class="cart-line__title">Olive Leaf Cleansing Bar</div>
+          <div class="cart-line__variant">Lavender · Qty 2</div>
+          <div style="margin-top: 6px;"><a href="#" style="font-size: var(--fs-xs); color: var(--muted); text-decoration: underline;">Remove</a></div>
+        </div>
+        <div class="cart-line__price">£24.00</div>
+      </div>
+    </div>
+
+    <div class="cart-drawer__foot">
+      <div class="cart-totals"><span>Subtotal</span><span>£56.00</span></div>
+      <p style="font-size: var(--fs-xs); color: var(--muted); margin: 0;">Free UK shipping unlocked ✓ Tax calculated at checkout.</p>
+      <a href="/checkout" class="btn btn-primary btn-block btn-lg">Checkout — £56.00</a>
+      <a href="/cart" class="btn btn-ghost btn-block">View bag</a>
+    </div>
+  </div>
+</aside>

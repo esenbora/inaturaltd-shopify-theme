@@ -1,0 +1,43 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "eyebrow": "Naturals — UK collection",
+        "heading": "<p>Skincare with <em>roots</em>, made for modern routines.</p>",
+        "subheading": "Crafted in Türkiye from olive, rose and pistachio. Distilled to the UK by INature — the official INCIA Naturals distributor.",
+        "cta_primary_label": "Shop the edit",
+        "cta_primary_url": "/collections/all",
+        "cta_secondary_label": "Read our story",
+        "cta_secondary_url": "/pages/about"
+      }
+    },
+    "marquee": { "type": "marquee", "settings": {} },
+    "values": { "type": "value-props", "blocks": {} },
+    "featured": {
+      "type": "featured-collection",
+      "settings": {
+        "eyebrow": "The Edit",
+        "heading": "Bestsellers, hand-picked weekly.",
+        "cta_label": "Shop all",
+        "cta_url": "/collections/all"
+      }
+    },
+    "editorial": {
+      "type": "editorial",
+      "settings": {
+        "eyebrow": "Our story",
+        "heading": "A 2,000-year-old olive grove. A modern beauty cabinet.",
+        "media_position": "left",
+        "cta_label": "Read the full story",
+        "cta_url": "/pages/about"
+      }
+    },
+    "ingredients": { "type": "ingredients", "blocks": {} },
+    "testimonials": { "type": "testimonials", "blocks": {} },
+    "trust": { "type": "trust-row", "blocks": {} },
+    "newsletter": { "type": "newsletter", "settings": {} },
+    "journal": { "type": "journal-strip", "blocks": {} }
+  },
+  "order": ["hero", "marquee", "values", "featured", "editorial", "ingredients", "testimonials", "trust", "newsletter", "journal"]
+}

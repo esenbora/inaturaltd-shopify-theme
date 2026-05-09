@@ -1,0 +1,104 @@
+<section class="collection-hero">
+  <div class="wrap">
+    <span class="eyebrow">{{ collection.title | default: 'Skincare' }}</span>
+    <h1 class="h1 mt-3">{{ collection.title | default: 'Skincare — the full edit.' }}</h1>
+    {% if collection.description != blank %}
+      <p class="lead muted mt-3 mx-auto" style="max-width: 60ch;">{{ collection.description }}</p>
+    {% else %}
+      <p class="lead muted mt-3 mx-auto" style="max-width: 60ch;">Plant-water serums, halal-certified balms, and short-ingredient creams. Hand-picked by our team in Tottenham.</p>
+    {% endif %}
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="collection-toolbar">
+      <div class="filter-pills">
+        <button class="pill" type="button">All</button>
+        <button class="pill pill-soft" type="button">Skincare</button>
+        <button class="pill" type="button">Hair</button>
+        <button class="pill" type="button">Body</button>
+        <button class="pill" type="button">Sets</button>
+      </div>
+      <div class="cluster" style="--gap: var(--space-2);">
+        <span class="muted" style="font-size: var(--fs-sm);">{{ collection.products_count | default: 24 }} products</span>
+        <select aria-label="Sort">
+          <option>Sort: Featured</option>
+          <option>Bestsellers</option>
+          <option>Newest</option>
+          <option>Price: low to high</option>
+          <option>Price: high to low</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid product-grid">
+      {%- if collection.products.size > 0 -%}
+        {% for product in collection.products %}
+          {% render 'product-card', product: product %}
+        {% endfor %}
+      {%- else -%}
+        {% render 'mock-product-card',
+          image: 'https://images.unsplash.com/photo-1612817288484-6f916006741a?w=600&q=85',
+          title: 'Rose & Hyaluronic Glow Serum', sub: 'Hydrating serum · 30 ml',
+          price: '32', rating: '4.9', reviews: '286', badge: 'Bestseller', url: '/products/sample' %}
+        {% render 'mock-product-card',
+          image: 'https://images.unsplash.com/photo-1617897903246-719242758050?w=600&q=85',
+          title: 'Olive Leaf Cleansing Bar', sub: 'Solid cleanser · 100 g',
+          price: '12', was: '15', rating: '4.8', reviews: '412', badge: 'Plastic-free' %}
+        {% render 'mock-product-card',
+          image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=600&q=85',
+          title: 'Pistachio Body Butter', sub: 'Rich body cream · 200 ml',
+          price: '28', rating: '4.9', reviews: '198' %}
+        {% render 'mock-product-card',
+          image: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=600&q=85',
+          title: 'Propolis Repair Balm', sub: 'Multi-balm · 50 ml',
+          price: '24', rating: '4.9', reviews: '342', badge: 'New' %}
+        {% render 'mock-product-card',
+          image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=600&q=85',
+          title: 'Damask Rose Toner', sub: 'Hydrosol toner · 200 ml',
+          price: '22', rating: '4.8', reviews: '167' %}
+        {% render 'mock-product-card',
+          image: 'https://images.unsplash.com/photo-1601612628452-9e99ced43524?w=600&q=85',
+          title: 'Olive & Lavender Shampoo', sub: 'Gentle shampoo · 250 ml',
+          price: '18', rating: '4.7', reviews: '254' %}
+        {% render 'mock-product-card',
+          image: 'https://images.unsplash.com/photo-1625772452859-1c03d5bf1137?w=600&q=85',
+          title: 'Black Cumin Night Oil', sub: 'Facial oil · 30 ml',
+          price: '36', rating: '5.0', reviews: '92', badge: 'New' %}
+        {% render 'mock-product-card',
+          image: 'https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=600&q=85',
+          title: 'Calendula Hand Cream', sub: 'Hand cream · 75 ml',
+          price: '14', rating: '4.8', reviews: '521' %}
+        {% render 'mock-product-card',
+          image: 'https://images.unsplash.com/photo-1576426863848-c21f53c60b19?w=600&q=85',
+          title: 'Aleppo Soap — Classic 200g', sub: 'Olive & laurel · 200 g',
+          price: '9', rating: '4.7', reviews: '198' %}
+        {% render 'mock-product-card',
+          image: 'https://images.unsplash.com/photo-1619451683204-c8d4c4ec5e8a?w=600&q=85',
+          title: 'Saffron Brightening Mask', sub: 'Clay mask · 100 ml',
+          price: '26', rating: '4.6', reviews: '74' %}
+        {% render 'mock-product-card',
+          image: 'https://images.unsplash.com/photo-1601612628452-9e99ced43524?w=600&q=85',
+          title: 'Wild Thyme Conditioner', sub: 'Strengthening · 250 ml',
+          price: '18', rating: '4.6', reviews: '132' %}
+        {% render 'mock-product-card',
+          image: 'https://images.unsplash.com/photo-1612825173281-9a193378527e?w=600&q=85',
+          title: 'Green Tea & Charcoal Scrub', sub: 'Exfoliant · 75 ml',
+          price: '20', rating: '4.5', reviews: '88' %}
+      {%- endif -%}
+    </div>
+
+    <div class="text-center mt-5" style="margin-top: var(--space-7);">
+      <button class="btn btn-outline btn-lg" type="button">Load more</button>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collection grid",
+  "settings": [],
+  "presets": [{ "name": "Collection grid" }]
+}
+{% endschema %}

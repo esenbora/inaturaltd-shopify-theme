@@ -1,0 +1,57 @@
+<section class="section">
+  <div class="wrap">
+    <header class="section-head section-head--center text-center mx-auto">
+      <span class="eyebrow">{{ section.settings.eyebrow | default: 'Why INature' }}</span>
+      <h2 class="h2">{{ section.settings.heading | default: 'Naturals you can actually trust.' }}</h2>
+      <p class="lead muted">{{ section.settings.subheading | default: 'Every formula is short, honest and certified — sourced from the same Aegean farms our founders grew up around.' }}</p>
+    </header>
+
+    <div class="grid values">
+      {% for block in section.blocks %}
+        <div class="value-card" {{ block.shopify_attributes }}>
+          <div class="value-card__icon">{% render 'icon', name: block.settings.icon %}</div>
+          <h4>{{ block.settings.title }}</h4>
+          <p>{{ block.settings.text }}</p>
+        </div>
+      {% else %}
+        <div class="value-card"><div class="value-card__icon">{% render 'icon', name: 'leaf' %}</div><h4>Plant-first formulas</h4><p>Olive, rose, pistachio and propolis — pressed and distilled, never synthesised.</p></div>
+        <div class="value-card"><div class="value-card__icon">{% render 'icon', name: 'shield' %}</div><h4>Clinically respectful</h4><p>Dermatologically tested. No SLS, no parabens, no phenoxyethanol, no synthetic fragrance.</p></div>
+        <div class="value-card"><div class="value-card__icon">{% render 'icon', name: 'recycle' %}</div><h4>Recyclable by design</h4><p>Glass bottles, aluminium caps, FSC paper. We take back empties for refill credit.</p></div>
+        <div class="value-card"><div class="value-card__icon">{% render 'icon', name: 'truck' %}</div><h4>Shipped from London</h4><p>Stocked in Tottenham, dispatched same day before 2pm. Free UK shipping over £40.</p></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Value props",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
+    { "type": "text", "id": "heading", "label": "Heading" },
+    { "type": "textarea", "id": "subheading", "label": "Subheading" }
+  ],
+  "blocks": [
+    {
+      "type": "value",
+      "name": "Value",
+      "settings": [
+        { "type": "select", "id": "icon", "label": "Icon", "default": "leaf",
+          "options": [
+            { "value": "leaf", "label": "Leaf" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "recycle", "label": "Recycle" },
+            { "value": "truck", "label": "Truck" },
+            { "value": "sparkle", "label": "Sparkle" },
+            { "value": "heart", "label": "Heart" }
+          ]
+        },
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "textarea", "id": "text", "label": "Text" }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [{ "name": "Value props" }]
+}
+{% endschema %}

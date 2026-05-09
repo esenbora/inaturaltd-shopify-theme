@@ -1,0 +1,43 @@
+<section class="section">
+  <div class="wrap">
+    <h1 class="h1 mb-5">Your bag</h1>
+    {% if cart.item_count > 0 %}
+      <div class="grid" style="grid-template-columns: 1.5fr 1fr; --gap: var(--space-7);">
+        <div class="stack" style="--gap: var(--space-4);">
+          {% for item in cart.items %}
+            <div class="cart-line" style="padding: var(--space-4) 0; border-bottom: 1px solid var(--border);">
+              <div class="cart-line__img"><img src="{{ item.image | image_url: width: 200 }}" alt=""></div>
+              <div>
+                <div class="cart-line__title">{{ item.product.title }}</div>
+                <div class="cart-line__variant">{{ item.variant.title }}</div>
+              </div>
+              <div class="cart-line__price">{{ item.final_line_price | money }}</div>
+            </div>
+          {% endfor %}
+        </div>
+        <aside style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-6); align-self: start; position: sticky; top: 100px;">
+          <h3 class="h3 mb-4">Summary</h3>
+          <div class="flow" style="--flow: var(--space-3);">
+            <div class="cluster" style="justify-content: space-between;"><span class="muted">Subtotal</span><strong>{{ cart.total_price | money }}</strong></div>
+            <div class="cluster" style="justify-content: space-between;"><span class="muted">Shipping</span><strong>Free</strong></div>
+            <div class="cluster" style="justify-content: space-between; padding-top: var(--space-3); border-top: 1px solid var(--border);"><strong>Total</strong><strong style="font-size: var(--fs-xl);">{{ cart.total_price | money }}</strong></div>
+            <a href="/checkout" class="btn btn-primary btn-lg btn-block">Checkout</a>
+          </div>
+        </aside>
+      </div>
+    {% else %}
+      <div class="text-center" style="padding: var(--space-9) 0;">
+        <p class="lead muted mb-4">Your bag is empty.</p>
+        <a href="/collections/all" class="btn btn-primary btn-lg">Continue shopping</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Cart main",
+  "settings": [],
+  "presets": [{ "name": "Cart main" }]
+}
+{% endschema %}

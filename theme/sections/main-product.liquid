@@ -1,0 +1,154 @@
+{%- liquid
+  assign p = product
+  assign mock = false
+  if product == blank or product.title == blank
+    assign mock = true
+  endif
+
+  if mock
+    assign p_title = section.settings.mock_title | default: 'Rose & Hyaluronic Glow Serum'
+    assign p_vendor = 'INature'
+    assign p_subtitle = '2% Damask Rose · 1% Hyaluronic Acid · 30 ml'
+    assign p_price = '£32.00'
+    assign p_compare = '£40.00'
+    assign p_rating = '4.9'
+    assign p_reviews = '286'
+    assign p_short = "A weightless plant-water serum that drinks into the skin and leaves it dewy, calm and ready for whatever the day throws at it. Distilled from Aegean roses, paired with a low-molecular-weight hyaluronic for instant plump."
+    assign img1 = 'https://images.unsplash.com/photo-1612817288484-6f916006741a?w=900&q=85'
+    assign img2 = 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=900&q=85'
+    assign img3 = 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=900&q=85'
+    assign img4 = 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=900&q=85'
+  else
+    assign p_title = p.title
+    assign p_vendor = p.vendor
+    assign p_subtitle = p.metafields.custom.tagline.value
+    assign p_price = p.price | money
+    assign p_compare = p.compare_at_price | money
+  endif
+-%}
+
+<section class="wrap">
+  <nav aria-label="Breadcrumb" style="padding-block: var(--space-5); font-size: var(--fs-xs); color: var(--muted); letter-spacing: .08em; text-transform: uppercase;">
+    <a href="/">Home</a> · <a href="/collections/skincare">Skincare</a> · <span>{{ p_title }}</span>
+  </nav>
+
+  <div class="pdp">
+    <!-- Gallery -->
+    <div class="pdp__gallery" data-gallery>
+      <div class="pdp__main" data-gallery-main>
+        <img src="{{ img1 }}" alt="{{ p_title }}">
+      </div>
+      <div class="pdp__thumbs">
+        <div class="pdp__thumb is-active" data-gallery-thumb data-full="{{ img1 }}"><img src="{{ img1 }}" alt=""></div>
+        <div class="pdp__thumb" data-gallery-thumb data-full="{{ img2 }}"><img src="{{ img2 }}" alt=""></div>
+        <div class="pdp__thumb" data-gallery-thumb data-full="{{ img3 }}"><img src="{{ img3 }}" alt=""></div>
+        <div class="pdp__thumb" data-gallery-thumb data-full="{{ img4 }}"><img src="{{ img4 }}" alt=""></div>
+      </div>
+    </div>
+
+    <!-- Info -->
+    <div class="pdp__info">
+      <span class="pdp__vendor">{{ p_vendor | default: 'INature' }}</span>
+      <h1 class="pdp__title">{{ p_title }}</h1>
+      <p class="pdp__subtitle muted" style="font-size: var(--fs-base); margin: -10px 0 0;">{{ p_subtitle }}</p>
+
+      <div class="pdp__rating">
+        <span class="rating__stars" style="color: var(--accent); letter-spacing: 2px;">★★★★★</span>
+        <strong style="font-size: var(--fs-sm);">{{ p_rating }}</strong>
+        <span class="muted" style="font-size: var(--fs-sm);">· {{ p_reviews }} verified reviews</span>
+      </div>
+
+      <div class="pdp__price">
+        {% if p_compare != blank and p_compare != p_price %}
+          <span style="color: var(--muted); text-decoration: line-through; font-size: var(--fs-xl);">{{ p_compare }}</span>
+        {% endif %}
+        <span>{{ p_price }}</span>
+        {% if p_compare != blank and p_compare != p_price %}
+          <span class="pill pill-accent">Save 20%</span>
+        {% endif %}
+      </div>
+
+      <p class="pdp__short">{{ p_short }}</p>
+
+      <!-- Variant: Size -->
+      <div class="pdp__variants">
+        <span class="pdp__variant-label">Size</span>
+        <div class="swatch-row" data-swatch-group>
+          <button class="swatch" type="button">15 ml — £22</button>
+          <button class="swatch is-active" type="button">30 ml — £32</button>
+          <button class="swatch" type="button">50 ml — £48</button>
+        </div>
+      </div>
+
+      <!-- Subscribe & Save -->
+      <div class="pdp__variants">
+        <span class="pdp__variant-label">Purchase option</span>
+        <div class="swatch-row" data-swatch-group>
+          <button class="swatch is-active" type="button">One-time</button>
+          <button class="swatch" type="button">Subscribe & save 15%</button>
+        </div>
+      </div>
+
+      <!-- Add to cart row -->
+      <div class="qty-row">
+        <div class="qty" data-qty>
+          <button type="button" data-qty-dec aria-label="Decrease">−</button>
+          <input type="number" value="1" min="1" aria-label="Quantity">
+          <button type="button" data-qty-inc aria-label="Increase">+</button>
+        </div>
+        <button class="btn btn-primary btn-lg btn-block" data-add-to-cart data-label="Add to bag — {{ p_price }}">
+          Add to bag — {{ p_price }}
+        </button>
+      </div>
+
+      <a href="#" style="text-align: center; font-size: var(--fs-sm); color: var(--muted); text-decoration: underline;">Buy with shop pay →</a>
+
+      <!-- Perks -->
+      <div class="pdp__perks">
+        <div class="perk">{% render 'icon', name: 'truck' %} <span><strong>Free UK shipping</strong> on orders over £40 — usually arrives in 1-2 days.</span></div>
+        <div class="perk">{% render 'icon', name: 'shield' %} <span><strong>30-day no-question returns.</strong> If your skin doesn't agree, neither do we.</span></div>
+        <div class="perk">{% render 'icon', name: 'recycle' %} <span><strong>Take-back scheme:</strong> return the empty for £4 off your next order.</span></div>
+        <div class="perk">{% render 'icon', name: 'leaf' %} <span><strong>Halal certified, vegan & cruelty-free.</strong> Made in Türkiye, distilled to the UK.</span></div>
+      </div>
+
+      <!-- Accordion -->
+      <div class="accordion mt-3">
+        <details open>
+          <summary>How to use</summary>
+          <div>Apply 3-4 drops to clean, damp skin morning and evening. Press in (don't rub) and follow with your favourite moisturiser. Safe for all skin types — including sensitive and post-procedure.</div>
+        </details>
+        <details>
+          <summary>Full ingredients (INCI)</summary>
+          <div>Rosa Damascena Flower Water*, Aqua, Glycerin, Sodium Hyaluronate, Niacinamide, Panthenol, Aloe Barbadensis Leaf Juice*, Allantoin, Citric Acid, Sodium Benzoate, Potassium Sorbate. *Certified organic. 96.4% natural origin. Vegan. Halal certified.</div>
+        </details>
+        <details>
+          <summary>What it does</summary>
+          <div>Rebuilds the skin barrier with a calming flora-based humectant. Hyaluronic plumps fine lines, niacinamide evens tone, panthenol soothes redness. Tested on 47 women over 28 days — 92% reported visibly hydrated skin within 7 days.</div>
+        </details>
+        <details>
+          <summary>Shipping & returns</summary>
+          <div>Dispatched same-day from our London warehouse before 2pm. Free UK shipping over £40 (£3.95 below). 30-day returns on unopened items, 14-day return on opened items if you're not satisfied. EU shipping from £8.</div>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Mobile sticky add-to-cart -->
+<div class="pdp-sticky">
+  <div style="font-size: var(--fs-sm);">
+    <strong>{{ p_title | truncate: 30 }}</strong><br>
+    <span class="muted">{{ p_price }}</span>
+  </div>
+  <button class="btn btn-primary" data-add-to-cart data-label="Add to bag" type="button">Add to bag</button>
+</div>
+
+{% schema %}
+{
+  "name": "Product main",
+  "settings": [
+    { "type": "text", "id": "mock_title", "label": "Mock title (preview only)" }
+  ],
+  "presets": [{ "name": "Product main" }]
+}
+{% endschema %}

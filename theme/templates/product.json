@@ -1,0 +1,11 @@
+{
+  "sections": {
+    "main": { "type": "main-product", "settings": {} },
+    "trust": { "type": "trust-row", "blocks": {} },
+    "ingredients": { "type": "ingredients", "blocks": {} },
+    "related": { "type": "related-products", "settings": { "heading": "Pairs well with this." } },
+    "testimonials": { "type": "testimonials", "blocks": {} },
+    "newsletter": { "type": "newsletter", "settings": {} }
+  },
+  "order": ["main", "trust", "ingredients", "related", "testimonials", "newsletter"]
+}

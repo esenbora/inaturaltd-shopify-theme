@@ -1,0 +1,16 @@
+{%- liquid
+  assign price = product.price | default: 0
+  assign compare = product.compare_at_price | default: 0
+  assign on_sale = false
+  if compare > price
+    assign on_sale = true
+  endif
+-%}
+<span class="product-card__price">
+  {% if on_sale %}
+    <span class="price-was">{{ compare | money }}</span>
+    <span class="price-now">{{ price | money }}</span>
+  {% else %}
+    <span>{{ price | money }}</span>
+  {% endif %}
+</span>

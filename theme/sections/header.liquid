@@ -1,0 +1,42 @@
+<header class="site-header" data-header>
+  <div class="wrap site-header__inner">
+    <nav class="site-header__nav" aria-label="Primary">
+      {% for link in section.settings.menu.links %}
+        <a href="{{ link.url }}">{{ link.title }}</a>
+      {% else %}
+        <a href="/collections/all">Shop</a>
+        <a href="/collections/skincare">Skincare</a>
+        <a href="/collections/hair">Hair</a>
+        <a href="/collections/body">Body</a>
+        <a href="/pages/about">Story</a>
+      {% endfor %}
+    </nav>
+
+    <a href="/" class="brand-mark" aria-label="{{ shop.name }} home">
+      i<span>Nature</span>
+    </a>
+
+    <div class="site-header__actions">
+      <button class="icon-btn" aria-label="Search" type="button">
+        {% render 'icon', name: 'search' %}
+      </button>
+      <a class="icon-btn" href="/account" aria-label="Account">
+        {% render 'icon', name: 'user' %}
+      </a>
+      <button class="icon-btn" data-cart-open aria-label="Open cart" type="button">
+        {% render 'icon', name: 'bag' %}
+        <span class="count">{{ cart.item_count | default: 2 }}</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    { "type": "link_list", "id": "menu", "label": "Main menu", "default": "main-menu" }
+  ],
+  "enabled_on": { "groups": ["header"] }
+}
+{% endschema %}

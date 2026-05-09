@@ -1,0 +1,74 @@
+<section class="section">
+  <div class="wrap">
+    <header class="section-head section-head--split">
+      <div class="stack" style="--gap: var(--space-3);">
+        <span class="eyebrow">{{ section.settings.eyebrow | default: 'The Journal' }}</span>
+        <h2 class="h2">{{ section.settings.heading | default: 'Slow notes on rituals, ingredients & places.' }}</h2>
+      </div>
+      <a href="/blogs/journal" class="btn btn-outline">All articles {% render 'icon', name: 'arrow-right' %}</a>
+    </header>
+
+    <div class="grid" style="grid-template-columns: repeat(3, 1fr); --gap: var(--space-6);">
+      {% for block in section.blocks %}
+        <article class="stack" style="--gap: var(--space-3);" {{ block.shopify_attributes }}>
+          <a href="{{ block.settings.url | default: '#' }}" class="product-card__media" style="aspect-ratio: 4/3;">
+            <img src="{{ block.settings.image_url }}" alt="{{ block.settings.title }}" loading="lazy">
+          </a>
+          <span class="product-card__sub">{{ block.settings.tag }} · {{ block.settings.read }} min read</span>
+          <h3 class="h4"><a href="{{ block.settings.url | default: '#' }}">{{ block.settings.title }}</a></h3>
+          <p class="muted" style="font-size: var(--fs-sm);">{{ block.settings.excerpt }}</p>
+        </article>
+      {% else %}
+        <article class="stack" style="--gap: var(--space-3);">
+          <a href="#" class="product-card__media" style="aspect-ratio: 4/3;">
+            <img src="https://images.unsplash.com/photo-1556228852-80b6e5eeff06?w=600&q=85" alt="" loading="lazy">
+          </a>
+          <span class="product-card__sub">Ritual · 4 min read</span>
+          <h3 class="h4"><a href="#">The 90-second evening reset that replaced my 7-step routine.</a></h3>
+          <p class="muted" style="font-size: var(--fs-sm);">Why our founder Seyda swears by short, repeatable rituals — and the three products she still uses.</p>
+        </article>
+        <article class="stack" style="--gap: var(--space-3);">
+          <a href="#" class="product-card__media" style="aspect-ratio: 4/3;">
+            <img src="https://images.unsplash.com/photo-1556228720-8c5d6b06bd17?w=600&q=85" alt="" loading="lazy">
+          </a>
+          <span class="product-card__sub">Ingredients · 6 min read</span>
+          <h3 class="h4"><a href="#">A field guide to Türkiye's olive belt — and why it shows up in your serum.</a></h3>
+          <p class="muted" style="font-size: var(--fs-sm);">From Edremit to Ayvalık, the tiny groves that supply most of our oils have been pressing for 800 years.</p>
+        </article>
+        <article class="stack" style="--gap: var(--space-3);">
+          <a href="#" class="product-card__media" style="aspect-ratio: 4/3;">
+            <img src="https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=600&q=85" alt="" loading="lazy">
+          </a>
+          <span class="product-card__sub">Sustainability · 3 min read</span>
+          <h3 class="h4"><a href="#">Empty bottle, full credit: how our take-back scheme works.</a></h3>
+          <p class="muted" style="font-size: var(--fs-sm);">Drop your INature glass at any participating Tottenham post point and get £4 off your next order.</p>
+        </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Journal strip",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
+    { "type": "text", "id": "heading", "label": "Heading" }
+  ],
+  "blocks": [
+    {
+      "type": "article",
+      "name": "Article",
+      "settings": [
+        { "type": "text", "id": "image_url", "label": "Image URL" },
+        { "type": "text", "id": "tag", "label": "Tag" },
+        { "type": "number", "id": "read", "label": "Read time (minutes)" },
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "textarea", "id": "excerpt", "label": "Excerpt" },
+        { "type": "url", "id": "url", "label": "URL" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Journal strip" }]
+}
+{% endschema %}
