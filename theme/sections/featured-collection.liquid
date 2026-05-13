@@ -5,7 +5,7 @@
         <span class="eyebrow">{{ section.settings.eyebrow | default: 'The Edit' }}</span>
         <h2 class="h2">{{ section.settings.heading | default: 'Bestsellers, hand-picked weekly.' }}</h2>
       </div>
-      <a href="{{ section.settings.cta_url | default: '/collections/all' }}" class="btn btn-outline">{{ section.settings.cta_label | default: 'Shop all' }} {% render 'icon', name: 'arrow-right' %}</a>
+      <a href="{{ section.settings.cta_url | default: routes.all_products_collection_url }}" class="btn btn-outline">{{ section.settings.cta_label | default: 'Shop all' }} {% render 'icon', name: 'arrow-right' %}</a>
     </header>
 
     <div class="grid product-grid">

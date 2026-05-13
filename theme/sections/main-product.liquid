@@ -29,20 +29,20 @@
 
 <section class="wrap">
   <nav aria-label="Breadcrumb" style="padding-block: var(--space-5); font-size: var(--fs-xs); color: var(--muted); letter-spacing: .08em; text-transform: uppercase;">
-    <a href="/">Home</a> · <a href="/collections/skincare">Skincare</a> · <span>{{ p_title }}</span>
+    <a href="{{ routes.root_url }}">Home</a> · <a href="/collections/skincare">Skincare</a> · <span>{{ p_title }}</span>
   </nav>
 
   <div class="pdp">
     <!-- Gallery -->
     <div class="pdp__gallery" data-gallery>
       <div class="pdp__main" data-gallery-main>
-        <img src="{{ img1 }}" alt="{{ p_title }}">
+        <img src="{{ img1 }}" alt="{{ p_title }}" width="600" height="750">
       </div>
       <div class="pdp__thumbs">
-        <div class="pdp__thumb is-active" data-gallery-thumb data-full="{{ img1 }}"><img src="{{ img1 }}" alt=""></div>
-        <div class="pdp__thumb" data-gallery-thumb data-full="{{ img2 }}"><img src="{{ img2 }}" alt=""></div>
-        <div class="pdp__thumb" data-gallery-thumb data-full="{{ img3 }}"><img src="{{ img3 }}" alt=""></div>
-        <div class="pdp__thumb" data-gallery-thumb data-full="{{ img4 }}"><img src="{{ img4 }}" alt=""></div>
+        <div class="pdp__thumb is-active" data-gallery-thumb data-full="{{ img1 }}"><img src="{{ img1 }}" alt="" width="200" height="250"></div>
+        <div class="pdp__thumb" data-gallery-thumb data-full="{{ img2 }}"><img src="{{ img2 }}" alt="" width="200" height="250"></div>
+        <div class="pdp__thumb" data-gallery-thumb data-full="{{ img3 }}"><img src="{{ img3 }}" alt="" width="200" height="250"></div>
+        <div class="pdp__thumb" data-gallery-thumb data-full="{{ img4 }}"><img src="{{ img4 }}" alt="" width="200" height="250"></div>
       </div>
     </div>
 

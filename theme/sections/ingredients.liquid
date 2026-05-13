@@ -11,9 +11,9 @@
         <div class="ingredient" {{ block.shopify_attributes }}>
           <div class="ingredient__media">
             {% if block.settings.image %}
-              <img src="{{ block.settings.image | image_url: width: 400 }}" alt="{{ block.settings.title }}">
+              <img src="{{ block.settings.image | image_url: width: 400 }}" alt="{{ block.settings.title }}" width="400" height="400">
             {% else %}
-              <img src="{{ block.settings.fallback_url }}" alt="{{ block.settings.title }}">
+              <img src="{{ block.settings.fallback_url }}" alt="{{ block.settings.title }}" width="400" height="400">
             {% endif %}
           </div>
           <h4>{{ block.settings.title }}</h4>
@@ -21,23 +21,23 @@
         </div>
       {% else %}
         <div class="ingredient">
-          <div class="ingredient__media"><img src="https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=400&q=85" alt="Olive"></div>
+          <div class="ingredient__media"><img src="https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=400&q=85" alt="Olive" width="400" height="400"></div>
           <h4>Olive</h4><p>Pressed within 6 hours of harvest. High in oleic acid for barrier repair.</p>
         </div>
         <div class="ingredient">
-          <div class="ingredient__media"><img src="https://images.unsplash.com/photo-1599733589046-8a35aef38ca5?w=400&q=85" alt="Damask Rose"></div>
+          <div class="ingredient__media"><img src="https://images.unsplash.com/photo-1599733589046-8a35aef38ca5?w=400&q=85" alt="Damask Rose" width="400" height="400"></div>
           <h4>Damask Rose</h4><p>Steam-distilled in Isparta. A natural anti-inflammatory and toner.</p>
         </div>
         <div class="ingredient">
-          <div class="ingredient__media"><img src="https://images.unsplash.com/photo-1583854780297-0a3c19fbb83f?w=400&q=85" alt="Pistachio"></div>
+          <div class="ingredient__media"><img src="https://images.unsplash.com/photo-1583854780297-0a3c19fbb83f?w=400&q=85" alt="Pistachio" width="400" height="400"></div>
           <h4>Pistachio</h4><p>Cold-pressed Antep pistachios — emollient, restorative, deeply nourishing.</p>
         </div>
         <div class="ingredient">
-          <div class="ingredient__media"><img src="https://images.unsplash.com/photo-1471943311424-646960669fbc?w=400&q=85" alt="Propolis"></div>
+          <div class="ingredient__media"><img src="https://images.unsplash.com/photo-1471943311424-646960669fbc?w=400&q=85" alt="Propolis" width="400" height="400"></div>
           <h4>Propolis</h4><p>From our beekeeper partners in the Black Sea forests. Antibacterial and reparative.</p>
         </div>
         <div class="ingredient">
-          <div class="ingredient__media"><img src="https://images.unsplash.com/photo-1624805685741-e5cae5b08d6b?w=400&q=85" alt="Lavender"></div>
+          <div class="ingredient__media"><img src="https://images.unsplash.com/photo-1624805685741-e5cae5b08d6b?w=400&q=85" alt="Lavender" width="400" height="400"></div>
           <h4>Lavender</h4><p>Sun-dried, then steam-distilled. Calming for skin and routines alike.</p>
         </div>
       {% endfor %}

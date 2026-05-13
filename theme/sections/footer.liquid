@@ -32,12 +32,12 @@
                   <li><a href="/collections/hair">Hair care</a></li>
                   <li><a href="/collections/body">Body care</a></li>
                   <li><a href="/collections/sets">Gift sets</a></li>
-                  <li><a href="/collections/all">Shop all</a></li>
+                  <li><a href="{{ routes.all_products_collection_url }}">Shop all</a></li>
                 {% elsif block.settings.title contains 'Help' %}
                   <li><a href="/pages/shipping">Shipping & returns</a></li>
                   <li><a href="/pages/faq">FAQ</a></li>
                   <li><a href="/pages/contact">Contact us</a></li>
-                  <li><a href="/account">My account</a></li>
+                  <li><a href="{{ routes.account_url }}">My account</a></li>
                 {% else %}
                   <li><a href="/pages/about">Our story</a></li>
                   <li><a href="/pages/ingredients">Ingredients</a></li>
@@ -56,7 +56,7 @@
             <li><a href="/collections/hair">Hair care</a></li>
             <li><a href="/collections/body">Body care</a></li>
             <li><a href="/collections/sets">Gift sets</a></li>
-            <li><a href="/collections/all">Shop all</a></li>
+            <li><a href="{{ routes.all_products_collection_url }}">Shop all</a></li>
           </ul>
         </div>
         <div>
@@ -65,7 +65,7 @@
             <li><a href="/pages/shipping">Shipping & returns</a></li>
             <li><a href="/pages/faq">FAQ</a></li>
             <li><a href="/pages/contact">Contact us</a></li>
-            <li><a href="/account">My account</a></li>
+            <li><a href="{{ routes.account_url }}">My account</a></li>
           </ul>
         </div>
         <div>

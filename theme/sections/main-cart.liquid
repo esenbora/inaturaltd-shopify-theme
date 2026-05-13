@@ -6,7 +6,7 @@
         <div class="stack" style="--gap: var(--space-4);">
           {% for item in cart.items %}
             <div class="cart-line" style="padding: var(--space-4) 0; border-bottom: 1px solid var(--border);">
-              <div class="cart-line__img"><img src="{{ item.image | image_url: width: 200 }}" alt=""></div>
+              <div class="cart-line__img"><img src="{{ item.image | image_url: width: 200 }}" alt="" width="200" height="250"></div>
               <div>
                 <div class="cart-line__title">{{ item.product.title }}</div>
                 <div class="cart-line__variant">{{ item.variant.title }}</div>
@@ -28,7 +28,7 @@
     {% else %}
       <div class="text-center" style="padding: var(--space-9) 0;">
         <p class="lead muted mb-4">Your bag is empty.</p>
-        <a href="/collections/all" class="btn btn-primary btn-lg">Continue shopping</a>
+        <a href="{{ routes.all_products_collection_url }}" class="btn btn-primary btn-lg">Continue shopping</a>
       </div>
     {% endif %}
   </div>

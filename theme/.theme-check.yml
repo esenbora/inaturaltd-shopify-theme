@@ -1,0 +1,9 @@
+root: .
+
+# Mock preview uses Unsplash images intentionally; production will use Shopify CDN.
+RemoteAsset:
+  enabled: false
+
+# Ignore mock-data snippet for hardcoded routes (preview-only context).
+ignore:
+  - "preview/**"

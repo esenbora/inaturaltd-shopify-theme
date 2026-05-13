@@ -3,9 +3,9 @@
     <div class="editorial {% if section.settings.media_position == 'right' %}editorial--reverse{% endif %}">
       <div class="editorial__media">
         {% if section.settings.image %}
-          <img src="{{ section.settings.image | image_url: width: 900 }}" alt="{{ section.settings.image.alt }}">
+          <img src="{{ section.settings.image | image_url: width: 900 }}" alt="{{ section.settings.image.alt }}" width="900" height="1125">
         {% else %}
-          <img src="https://images.unsplash.com/photo-1556228841-7df40d6f3a93?w=900&q=85" alt="Olive grove in the Aegean region of Türkiye">
+          <img src="https://images.unsplash.com/photo-1556228841-7df40d6f3a93?w=900&q=85" alt="Olive grove in the Aegean region of Türkiye" width="900" height="1125">
         {% endif %}
       </div>
       <div class="stack" style="--gap: var(--space-4); max-width: 50ch;">
@@ -24,7 +24,7 @@
 
 {% schema %}
 {
-  "name": "Editorial / image with text",
+  "name": "Image with text",
   "settings": [
     { "type": "image_picker", "id": "image", "label": "Image" },
     { "type": "select", "id": "media_position", "label": "Media position",

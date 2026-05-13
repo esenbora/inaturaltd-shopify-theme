@@ -12,7 +12,7 @@
       {% for block in section.blocks %}
         <article class="stack" style="--gap: var(--space-3);" {{ block.shopify_attributes }}>
           <a href="{{ block.settings.url | default: '#' }}" class="product-card__media" style="aspect-ratio: 4/3;">
-            <img src="{{ block.settings.image_url }}" alt="{{ block.settings.title }}" loading="lazy">
+            <img src="{{ block.settings.image_url }}" alt="{{ block.settings.title }}" loading="lazy" width="600" height="450">
           </a>
           <span class="product-card__sub">{{ block.settings.tag }} · {{ block.settings.read }} min read</span>
           <h3 class="h4"><a href="{{ block.settings.url | default: '#' }}">{{ block.settings.title }}</a></h3>
@@ -21,7 +21,7 @@
       {% else %}
         <article class="stack" style="--gap: var(--space-3);">
           <a href="#" class="product-card__media" style="aspect-ratio: 4/3;">
-            <img src="https://images.unsplash.com/photo-1556228852-80b6e5eeff06?w=600&q=85" alt="" loading="lazy">
+            <img src="https://images.unsplash.com/photo-1556228852-80b6e5eeff06?w=600&q=85" alt="" loading="lazy" width="600" height="450">
           </a>
           <span class="product-card__sub">Ritual · 4 min read</span>
           <h3 class="h4"><a href="#">The 90-second evening reset that replaced my 7-step routine.</a></h3>
@@ -29,7 +29,7 @@
         </article>
         <article class="stack" style="--gap: var(--space-3);">
           <a href="#" class="product-card__media" style="aspect-ratio: 4/3;">
-            <img src="https://images.unsplash.com/photo-1556228720-8c5d6b06bd17?w=600&q=85" alt="" loading="lazy">
+            <img src="https://images.unsplash.com/photo-1556228720-8c5d6b06bd17?w=600&q=85" alt="" loading="lazy" width="600" height="450">
           </a>
           <span class="product-card__sub">Ingredients · 6 min read</span>
           <h3 class="h4"><a href="#">A field guide to Türkiye's olive belt — and why it shows up in your serum.</a></h3>
@@ -37,7 +37,7 @@
         </article>
         <article class="stack" style="--gap: var(--space-3);">
           <a href="#" class="product-card__media" style="aspect-ratio: 4/3;">
-            <img src="https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=600&q=85" alt="" loading="lazy">
+            <img src="https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=600&q=85" alt="" loading="lazy" width="600" height="450">
           </a>
           <span class="product-card__sub">Sustainability · 3 min read</span>
           <h3 class="h4"><a href="#">Empty bottle, full credit: how our take-back scheme works.</a></h3>

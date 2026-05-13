@@ -4,7 +4,7 @@
       {% for link in section.settings.menu.links %}
         <a href="{{ link.url }}">{{ link.title }}</a>
       {% else %}
-        <a href="/collections/all">Shop</a>
+        <a href="{{ routes.all_products_collection_url }}">Shop</a>
         <a href="/collections/skincare">Skincare</a>
         <a href="/collections/hair">Hair</a>
         <a href="/collections/body">Body</a>
@@ -12,7 +12,7 @@
       {% endfor %}
     </nav>
 
-    <a href="/" class="brand-mark" aria-label="{{ shop.name }} home">
+    <a href="{{ routes.root_url }}" class="brand-mark" aria-label="{{ shop.name }} home">
       i<span>Nature</span>
     </a>
 
@@ -20,7 +20,7 @@
       <button class="icon-btn" aria-label="Search" type="button">
         {% render 'icon', name: 'search' %}
       </button>
-      <a class="icon-btn" href="/account" aria-label="Account">
+      <a class="icon-btn" href="{{ routes.account_url }}" aria-label="Account">
         {% render 'icon', name: 'user' %}
       </a>
       <button class="icon-btn" data-cart-open aria-label="Open cart" type="button">
