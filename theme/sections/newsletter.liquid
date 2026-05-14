@@ -1,14 +1,14 @@
 <section class="section">
   <div class="wrap">
     <div class="newsletter">
-      <span class="eyebrow" style="color: rgba(255,255,255,.85);">{{ section.settings.eyebrow | default: 'The Field Notes' }}</span>
-      <h2 class="h2">{{ section.settings.heading | default: '10% off your first order — and one good story a fortnight.' }}</h2>
-      <p>{{ section.settings.subheading | default: 'Slow emails about the brands and rituals we love. No spam. Unsubscribe in one click.' }}</p>
+      <span class="eyebrow" style="color: rgba(255,255,255,.85);">{{ section.settings.eyebrow | default: 'First-time shopper?' }}</span>
+      <h2 class="h2">{{ section.settings.heading | default: 'Get 20% off your first purchase.' }}</h2>
+      <p>{{ section.settings.subheading | default: 'Plus restock alerts, INCIA arrivals from Türkiye, and the occasional founder note. Unsubscribe in one click.' }}</p>
       <form action="#" method="post">
         <input type="email" name="email" placeholder="{{ section.settings.placeholder | default: 'your@email.com' }}" required>
-        <button type="submit">{{ section.settings.button_label | default: 'Send my code' }}</button>
+        <button type="submit">{{ section.settings.button_label | default: 'Send my 20% code' }}</button>
       </form>
-      <small style="color: rgba(255,255,255,.7); font-size: var(--fs-xs);">By subscribing you agree to our <a href="/policies/privacy-policy" style="text-decoration: underline;">Privacy Policy</a>.</small>
+      <small style="color: rgba(255,255,255,.7); font-size: var(--fs-xs);">New parents — use code <strong style="color: white;">NEWLIFE10</strong> at checkout for £10 off your first INature order.</small>
     </div>
   </div>
 </section>
@@ -17,11 +17,11 @@
 {
   "name": "Newsletter",
   "settings": [
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
-    { "type": "text", "id": "heading", "label": "Heading" },
-    { "type": "textarea", "id": "subheading", "label": "Subheading" },
-    { "type": "text", "id": "placeholder", "label": "Input placeholder" },
-    { "type": "text", "id": "button_label", "label": "Button label" }
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "First-time shopper?" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Get 20% off your first purchase." },
+    { "type": "textarea", "id": "subheading", "label": "Subheading", "default": "Plus restock alerts, INCIA arrivals from Türkiye, and the occasional founder note. Unsubscribe in one click." },
+    { "type": "text", "id": "placeholder", "label": "Input placeholder", "default": "your@email.com" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Send my 20% code" }
   ],
   "presets": [{ "name": "Newsletter" }]
 }

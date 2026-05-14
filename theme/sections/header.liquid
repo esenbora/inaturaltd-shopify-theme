@@ -4,16 +4,17 @@
       {% for link in section.settings.menu.links %}
         <a href="{{ link.url }}">{{ link.title }}</a>
       {% else %}
-        <a href="{{ routes.all_products_collection_url }}">Shop</a>
-        <a href="/collections/skincare">Skincare</a>
-        <a href="/collections/hair">Hair</a>
-        <a href="/collections/body">Body</a>
+        <a href="{{ routes.all_products_collection_url }}">Shop all</a>
+        <a href="/collections/baby-pregnancy">Baby &amp; Pregnancy</a>
+        <a href="/collections/personal-care">Personal Care</a>
+        <a href="/collections/sun-care">Sun Care</a>
+        <a href="/collections/household">Household</a>
         <a href="/pages/about">Story</a>
       {% endfor %}
     </nav>
 
     <a href="{{ routes.root_url }}" class="brand-mark" aria-label="{{ shop.name }} home">
-      i<span>Nature</span>
+      I<span>Nature</span>
     </a>
 
     <div class="site-header__actions">

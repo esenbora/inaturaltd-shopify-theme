@@ -6,18 +6,18 @@
   endif
 
   if mock
-    assign p_title = section.settings.mock_title | default: 'Rose & Hyaluronic Glow Serum'
-    assign p_vendor = 'INature'
-    assign p_subtitle = '2% Damask Rose · 1% Hyaluronic Acid · 30 ml'
-    assign p_price = '£32.00'
-    assign p_compare = '£40.00'
+    assign p_title = section.settings.mock_title | default: 'INCIA SOS Stick'
+    assign p_vendor = 'INCIA · By INature UK'
+    assign p_subtitle = 'Intensive Natural Healing Balm · 9 botanical oils · 9.5 g solid stick'
+    assign p_price = '£9.50'
+    assign p_compare = ''
     assign p_rating = '4.9'
-    assign p_reviews = '286'
-    assign p_short = "A weightless plant-water serum that drinks into the skin and leaves it dewy, calm and ready for whatever the day throws at it. Distilled from Aegean roses, paired with a low-molecular-weight hyaluronic for instant plump."
-    assign img1 = 'https://images.unsplash.com/photo-1612817288484-6f916006741a?w=900&q=85'
-    assign img2 = 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=900&q=85'
-    assign img3 = 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=900&q=85'
-    assign img4 = 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=900&q=85'
+    assign p_reviews = '204'
+    assign p_short = "The ultimate multitasking natural rescue for skin that needs urgent care. A concentrated 100% natural healing balm packed with 9 powerful botanical oils — including rare sea buckthorn, shea butter, calendula and St. John's Wort — to deeply repair, soothe and protect even the most cracked, dry or irritated skin."
+    assign img1 = 'https://images.unsplash.com/photo-1625772452859-1c03d5bf1137?w=900&q=85'
+    assign img2 = 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=900&q=85'
+    assign img3 = 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=900&q=85'
+    assign img4 = 'https://images.unsplash.com/photo-1556228841-7df40d6f3a93?w=900&q=85'
   else
     assign p_title = p.title
     assign p_vendor = p.vendor
@@ -29,7 +29,7 @@
 
 <section class="wrap">
   <nav aria-label="Breadcrumb" style="padding-block: var(--space-5); font-size: var(--fs-xs); color: var(--muted); letter-spacing: .08em; text-transform: uppercase;">
-    <a href="{{ routes.root_url }}">Home</a> · <a href="/collections/skincare">Skincare</a> · <span>{{ p_title }}</span>
+    <a href="{{ routes.root_url }}">Home</a> · <a href="/collections/personal-care">Personal Care</a> · <span>{{ p_title }}</span>
   </nav>
 
   <div class="pdp">
@@ -70,22 +70,21 @@
 
       <p class="pdp__short">{{ p_short }}</p>
 
-      <!-- Variant: Size -->
+      <!-- Variant: Format -->
       <div class="pdp__variants">
-        <span class="pdp__variant-label">Size</span>
+        <span class="pdp__variant-label">Format</span>
         <div class="swatch-row" data-swatch-group>
-          <button class="swatch" type="button">15 ml — £22</button>
-          <button class="swatch is-active" type="button">30 ml — £32</button>
-          <button class="swatch" type="button">50 ml — £48</button>
+          <button class="swatch is-active" type="button">9.5 g solid stick</button>
+          <button class="swatch is-disabled" type="button" aria-disabled="true">Refill (soon)</button>
         </div>
       </div>
 
-      <!-- Subscribe & Save -->
+      <!-- Bundle -->
       <div class="pdp__variants">
         <span class="pdp__variant-label">Purchase option</span>
         <div class="swatch-row" data-swatch-group>
           <button class="swatch is-active" type="button">One-time</button>
-          <button class="swatch" type="button">Subscribe & save 15%</button>
+          <button class="swatch" type="button">Bundle of 3 — save 15%</button>
         </div>
       </div>
 
@@ -105,29 +104,38 @@
 
       <!-- Perks -->
       <div class="pdp__perks">
-        <div class="perk">{% render 'icon', name: 'truck' %} <span><strong>Free UK shipping</strong> on orders over £40 — usually arrives in 1-2 days.</span></div>
-        <div class="perk">{% render 'icon', name: 'shield' %} <span><strong>30-day no-question returns.</strong> If your skin doesn't agree, neither do we.</span></div>
-        <div class="perk">{% render 'icon', name: 'recycle' %} <span><strong>Take-back scheme:</strong> return the empty for £4 off your next order.</span></div>
-        <div class="perk">{% render 'icon', name: 'leaf' %} <span><strong>Halal certified, vegan & cruelty-free.</strong> Made in Türkiye, distilled to the UK.</span></div>
+        <div class="perk">{% render 'icon', name: 'truck' %} <span><strong>Free UK shipping over £20</strong> — £3 below. Dispatched via Evri, usually 1-3 working days.</span></div>
+        <div class="perk">{% render 'icon', name: 'shield' %} <span><strong>14-day return policy.</strong> Unused, original packaging — we&apos;ll exchange or refund.</span></div>
+        <div class="perk">{% render 'icon', name: 'heart' %} <span><strong>Spend £12+ → free gift.</strong> Add a Lip Balm or Diaper Rash Gel — on us.</span></div>
+        <div class="perk">{% render 'icon', name: 'leaf' %} <span><strong>ETKO Cosmos · BioArge · Vegan · Cruelty-Free.</strong> 100% natural origin. Made in Türkiye.</span></div>
       </div>
 
       <!-- Accordion -->
       <div class="accordion mt-3">
         <details open>
+          <summary>Key benefits — 9 botanical actives</summary>
+          <div>
+            • <strong>Sea buckthorn oil</strong> — rich in Omega-7, promotes rapid cell regeneration<br>
+            • <strong>St. John&apos;s Wort oil</strong> — traditionally used to soothe inflamed, irritated skin<br>
+            • <strong>Calendula oil</strong> — calming and healing for sensitive and reactive skin<br>
+            • <strong>Shea butter</strong> — deeply nourishing, long-lasting moisture barrier<br>
+            • <strong>Evening primrose &amp; borage</strong> — essential fatty acids for skin repair<br>
+            • <strong>Vitamin E</strong> — natural antioxidant to protect and renew<br>
+            • <strong>Beeswax</strong> — forms a protective barrier to lock in moisture<br>
+            • Free from parabens, mineral oils, artificial fragrances and preservatives
+          </div>
+        </details>
+        <details>
           <summary>How to use</summary>
-          <div>Apply 3-4 drops to clean, damp skin morning and evening. Press in (don't rub) and follow with your favourite moisturiser. Safe for all skin types — including sensitive and post-procedure.</div>
+          <div>Apply directly to clean, dry skin wherever needed — cracked heels, chapped lips, dry cuticles, rough elbows or irritated patches. The concentrated stick format means no mess, perfect portability and precise application. Reapply throughout the day as needed. Safe for the whole family.</div>
         </details>
         <details>
-          <summary>Full ingredients (INCI)</summary>
-          <div>Rosa Damascena Flower Water*, Aqua, Glycerin, Sodium Hyaluronate, Niacinamide, Panthenol, Aloe Barbadensis Leaf Juice*, Allantoin, Citric Acid, Sodium Benzoate, Potassium Sorbate. *Certified organic. 96.4% natural origin. Vegan. Halal certified.</div>
+          <summary>Why choose INCIA SOS Stick</summary>
+          <div>This concentrated stick format is ideal for handbag, gym bag or travel. A true SOS for skin that needs instant care — rapid, natural relief without the synthetic ingredients found in most repair balms.</div>
         </details>
         <details>
-          <summary>What it does</summary>
-          <div>Rebuilds the skin barrier with a calming flora-based humectant. Hyaluronic plumps fine lines, niacinamide evens tone, panthenol soothes redness. Tested on 47 women over 28 days — 92% reported visibly hydrated skin within 7 days.</div>
-        </details>
-        <details>
-          <summary>Shipping & returns</summary>
-          <div>Dispatched same-day from our London warehouse before 2pm. Free UK shipping over £40 (£3.95 below). 30-day returns on unopened items, 14-day return on opened items if you're not satisfied. EU shipping from £8.</div>
+          <summary>Shipping &amp; returns</summary>
+          <div>Dispatched from the UK via Evri. Free UK shipping on orders over £20 (£3 below). 14-day return policy on unused items in original packaging. International shipping available at checkout. SKU: MINC-000102.</div>
         </details>
       </div>
     </div>

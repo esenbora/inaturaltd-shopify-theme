@@ -3,7 +3,7 @@
     <header class="section-head section-head--split">
       <div class="stack" style="--gap: var(--space-3);">
         <span class="eyebrow">{{ section.settings.eyebrow | default: 'The Edit' }}</span>
-        <h2 class="h2">{{ section.settings.heading | default: 'Bestsellers, hand-picked weekly.' }}</h2>
+        <h2 class="h2">{{ section.settings.heading | default: 'Bestsellers across the INCIA range.' }}</h2>
       </div>
       <a href="{{ section.settings.cta_url | default: routes.all_products_collection_url }}" class="btn btn-outline">{{ section.settings.cta_label | default: 'Shop all' }} {% render 'icon', name: 'arrow-right' %}</a>
     </header>
@@ -16,74 +16,80 @@
         {% endfor %}
       {%- else -%}
         {% render 'mock-product-card',
-          image: 'https://images.unsplash.com/photo-1612817288484-6f916006741a?w=600&q=85',
-          title: 'Rose & Hyaluronic Glow Serum',
-          sub: 'Hydrating serum · 30 ml',
-          price: '32',
-          rating: '4.9',
-          reviews: '286',
-          badge: 'Bestseller',
-          url: '/products/rose-glow-serum' %}
-        {% render 'mock-product-card',
-          image: 'https://images.unsplash.com/photo-1617897903246-719242758050?w=600&q=85',
-          title: 'Olive Leaf Cleansing Bar',
-          sub: 'Solid cleanser · 100 g',
-          price: '12',
-          was: '15',
-          rating: '4.8',
-          reviews: '412',
-          badge: 'Plastic-free',
-          url: '/products/olive-leaf-bar' %}
-        {% render 'mock-product-card',
-          image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=600&q=85',
-          title: 'Pistachio Body Butter',
-          sub: 'Rich body cream · 200 ml',
-          price: '28',
-          rating: '4.9',
-          reviews: '198',
-          url: '/products/pistachio-body-butter' %}
-        {% render 'mock-product-card',
           image: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=600&q=85',
-          title: 'Propolis Repair Balm',
-          sub: 'Multi-balm · 50 ml',
-          price: '24',
+          title: 'INCIA Natural Deodorant for Sensitive Skin',
+          sub: 'Aluminium-free roll-on · 50 ml',
+          price: '5.95',
+          was: '6.50',
           rating: '4.9',
-          reviews: '342',
-          badge: 'New',
-          url: '/products/propolis-balm' %}
-        {% render 'mock-product-card',
-          image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=600&q=85',
-          title: 'Damask Rose Toner',
-          sub: 'Hydrosol toner · 200 ml',
-          price: '22',
-          rating: '4.8',
-          reviews: '167',
-          url: '/products/rose-toner' %}
-        {% render 'mock-product-card',
-          image: 'https://images.unsplash.com/photo-1601612628452-9e99ced43524?w=600&q=85',
-          title: 'Olive & Lavender Shampoo',
-          sub: 'Gentle shampoo · 250 ml',
-          price: '18',
-          rating: '4.7',
-          reviews: '254',
-          url: '/products/olive-shampoo' %}
+          reviews: '318',
+          badge: 'Bestseller',
+          url: '/products/incia-natural-deodorant-for-sensitive-skin' %}
         {% render 'mock-product-card',
           image: 'https://images.unsplash.com/photo-1625772452859-1c03d5bf1137?w=600&q=85',
-          title: 'Black Cumin Night Oil',
-          sub: 'Facial oil · 30 ml',
-          price: '36',
-          rating: '5.0',
-          reviews: '92',
-          badge: 'New',
-          url: '/products/black-cumin-night-oil' %}
+          title: 'INCIA SOS Stick',
+          sub: 'Concentrated healing balm · 9.5 g',
+          price: '9.50',
+          rating: '4.9',
+          reviews: '204',
+          badge: '9 oils',
+          url: '/products/incia-sos-stick' %}
+        {% render 'mock-product-card',
+          image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=600&q=85',
+          title: 'INCIA Natural Hair Serum',
+          sub: 'For thinning &amp; dull hair · 30 ml',
+          price: '10.45',
+          rating: '4.8',
+          reviews: '147',
+          badge: '10 oils',
+          url: '/products/incia-natural-hair-serum' %}
+        {% render 'mock-product-card',
+          image: 'https://images.unsplash.com/photo-1617897903246-719242758050?w=600&q=85',
+          title: 'INCIA Foaming Facial Cleanser',
+          sub: 'Plant surfactant cleanser · 200 ml',
+          price: '8',
+          was: '10',
+          rating: '4.7',
+          reviews: '256',
+          url: '/products/incia-foaming-facial-cleanser' %}
+        {% render 'mock-product-card',
+          image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=600&q=85',
+          title: 'INCIA Natural Sunscreen for Face SPF50',
+          sub: 'Mineral sunscreen · 50 ml',
+          price: '12',
+          was: '15',
+          rating: '4.9',
+          reviews: '188',
+          badge: 'SPF50',
+          url: '/products/incia-natural-sunscreen-for-face-spf50' %}
         {% render 'mock-product-card',
           image: 'https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=600&q=85',
-          title: 'Calendula Hand Cream',
-          sub: 'Hand cream · 75 ml',
-          price: '14',
+          title: 'INCIA Lip Balm Coconut',
+          sub: 'Natural lip balm · 5 ml',
+          price: '5.95',
+          rating: '4.9',
+          reviews: '412',
+          badge: 'Free gift £12+',
+          url: '/products/incia-lip-balm-coconut' %}
+        {% render 'mock-product-card',
+          image: 'https://images.unsplash.com/photo-1612817288484-6f916006741a?w=600&q=85',
+          title: 'INCIA Stretch Mark Gel Cream',
+          sub: 'Pregnancy-safe · 75 ml',
+          price: '13.50',
+          was: '15',
           rating: '4.8',
-          reviews: '521',
-          url: '/products/calendula-hand-cream' %}
+          reviews: '167',
+          badge: 'Pregnancy',
+          url: '/products/incia-stretch-mark-gel-cream' %}
+        {% render 'mock-product-card',
+          image: 'https://images.unsplash.com/photo-1601612628452-9e99ced43524?w=600&q=85',
+          title: 'INCIA Natural Toothpaste',
+          sub: 'Xylitol &amp; cinnamon · 50 ml',
+          price: '7',
+          rating: '4.7',
+          reviews: '231',
+          badge: 'Fluoride-free',
+          url: '/products/incia-natural-toothpaste' %}
       {%- endif -%}
     </div>
   </div>

@@ -6,9 +6,9 @@
         {{ block.settings.text }}
       </span>
     {% else %}
-      <span class="announce__item">✦ Free UK shipping on orders over £40</span>
-      <span class="announce__item">✦ 100% natural · vegan · cruelty-free</span>
-      <span class="announce__item">✦ Crafted in Türkiye, shipped from London</span>
+      <span class="announce__item">✦ Free UK shipping over £20</span>
+      <span class="announce__item">✦ Spend £12+ → free Lip Balm or Diaper Rash Gel</span>
+      <span class="announce__item">✦ 20% off your first order — code NEWLIFE10</span>
     {% endfor %}
   </div>
 </section>
@@ -22,7 +22,7 @@
       "type": "message",
       "name": "Message",
       "settings": [
-        { "type": "text", "id": "text", "label": "Text", "default": "Free UK shipping on orders over £40" },
+        { "type": "text", "id": "text", "label": "Text", "default": "Free UK shipping over £20" },
         { "type": "text", "id": "icon", "label": "Icon (emoji)", "default": "✦" }
       ]
     }

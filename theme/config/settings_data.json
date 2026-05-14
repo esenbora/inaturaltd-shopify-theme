@@ -1,7 +1,7 @@
 {
   "current": {
     "brand_name": "INature",
-    "brand_tagline": "Pure Turkish Skincare. Naturally British.",
+    "brand_tagline": "100% natural skincare. Trusted in Europe, now in the UK.",
     "color_bg": "#F8F4ED",
     "color_surface": "#FFFFFF",
     "color_ink": "#2A2D2A",
@@ -14,9 +14,9 @@
     "font_body": "inter_n4",
     "page_width": 1320,
     "section_spacing": 96,
-    "social_instagram": "https://instagram.com/inature.uk",
-    "social_tiktok": "https://tiktok.com/@inature.uk",
-    "social_facebook": "https://facebook.com/inature.uk",
+    "social_instagram": "https://instagram.com/inatureuk",
+    "social_tiktok": "",
+    "social_facebook": "",
     "social_youtube": ""
   },
   "presets": {

@@ -1,11 +1,11 @@
 <section class="collection-hero">
   <div class="wrap">
-    <span class="eyebrow">{{ collection.title | default: 'Skincare' }}</span>
-    <h1 class="h1 mt-3">{{ collection.title | default: 'Skincare — the full edit.' }}</h1>
+    <span class="eyebrow">{{ collection.title | default: 'All products' }}</span>
+    <h1 class="h1 mt-3">{{ collection.title | default: 'The full INCIA range, distributed in the UK.' }}</h1>
     {% if collection.description != blank %}
       <p class="lead muted mt-3 mx-auto" style="max-width: 60ch;">{{ collection.description }}</p>
     {% else %}
-      <p class="lead muted mt-3 mx-auto" style="max-width: 60ch;">Plant-water serums, halal-certified balms, and short-ingredient creams. Hand-picked by our team in Tottenham.</p>
+      <p class="lead muted mt-3 mx-auto" style="max-width: 60ch;">31 natural products from INCIA — already trusted across Europe for over 5 years. Now dispatched from the UK by INature.</p>
     {% endif %}
   </div>
 </section>
@@ -14,14 +14,16 @@
   <div class="wrap">
     <div class="collection-toolbar">
       <div class="filter-pills">
-        <button class="pill" type="button">All</button>
-        <button class="pill pill-soft" type="button">Skincare</button>
-        <button class="pill" type="button">Hair</button>
-        <button class="pill" type="button">Body</button>
-        <button class="pill" type="button">Sets</button>
+        <button class="pill pill-soft" type="button">All (31)</button>
+        <button class="pill" type="button">Bestsellers</button>
+        <button class="pill" type="button">Baby &amp; Pregnancy</button>
+        <button class="pill" type="button">Personal Care</button>
+        <button class="pill" type="button">Sun Care</button>
+        <button class="pill" type="button">Household</button>
+        <button class="pill" type="button">Sale</button>
       </div>
       <div class="cluster" style="--gap: var(--space-2);">
-        <span class="muted" style="font-size: var(--fs-sm);">{{ collection.products_count | default: 24 }} products</span>
+        <span class="muted" style="font-size: var(--fs-sm);">{{ collection.products_count | default: 31 }} products</span>
         <select aria-label="Sort">
           <option>Sort: Featured</option>
           <option>Bestsellers</option>
@@ -39,53 +41,53 @@
         {% endfor %}
       {%- else -%}
         {% render 'mock-product-card',
-          image: 'https://images.unsplash.com/photo-1612817288484-6f916006741a?w=600&q=85',
-          title: 'Rose & Hyaluronic Glow Serum', sub: 'Hydrating serum · 30 ml',
-          price: '32', rating: '4.9', reviews: '286', badge: 'Bestseller', url: '/products/sample' %}
-        {% render 'mock-product-card',
-          image: 'https://images.unsplash.com/photo-1617897903246-719242758050?w=600&q=85',
-          title: 'Olive Leaf Cleansing Bar', sub: 'Solid cleanser · 100 g',
-          price: '12', was: '15', rating: '4.8', reviews: '412', badge: 'Plastic-free' %}
-        {% render 'mock-product-card',
-          image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=600&q=85',
-          title: 'Pistachio Body Butter', sub: 'Rich body cream · 200 ml',
-          price: '28', rating: '4.9', reviews: '198' %}
-        {% render 'mock-product-card',
           image: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=600&q=85',
-          title: 'Propolis Repair Balm', sub: 'Multi-balm · 50 ml',
-          price: '24', rating: '4.9', reviews: '342', badge: 'New' %}
-        {% render 'mock-product-card',
-          image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=600&q=85',
-          title: 'Damask Rose Toner', sub: 'Hydrosol toner · 200 ml',
-          price: '22', rating: '4.8', reviews: '167' %}
-        {% render 'mock-product-card',
-          image: 'https://images.unsplash.com/photo-1601612628452-9e99ced43524?w=600&q=85',
-          title: 'Olive & Lavender Shampoo', sub: 'Gentle shampoo · 250 ml',
-          price: '18', rating: '4.7', reviews: '254' %}
+          title: 'INCIA Natural Deodorant for Sensitive Skin', sub: 'Aluminium-free roll-on · 50 ml',
+          price: '5.95', was: '6.50', rating: '4.9', reviews: '318', badge: 'Bestseller', url: '/products/incia-natural-deodorant-for-sensitive-skin' %}
         {% render 'mock-product-card',
           image: 'https://images.unsplash.com/photo-1625772452859-1c03d5bf1137?w=600&q=85',
-          title: 'Black Cumin Night Oil', sub: 'Facial oil · 30 ml',
-          price: '36', rating: '5.0', reviews: '92', badge: 'New' %}
+          title: 'INCIA SOS Stick', sub: 'Healing balm · 9.5 g',
+          price: '9.50', rating: '4.9', reviews: '204', badge: '9 oils', url: '/products/incia-sos-stick' %}
+        {% render 'mock-product-card',
+          image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=600&q=85',
+          title: 'INCIA Natural Hair Serum', sub: 'Hair serum · 30 ml',
+          price: '10.45', rating: '4.8', reviews: '147', badge: '10 oils', url: '/products/incia-natural-hair-serum' %}
+        {% render 'mock-product-card',
+          image: 'https://images.unsplash.com/photo-1617897903246-719242758050?w=600&q=85',
+          title: 'INCIA Foaming Facial Cleanser', sub: 'Facial cleanser · 200 ml',
+          price: '8', was: '10', rating: '4.7', reviews: '256', url: '/products/incia-foaming-facial-cleanser' %}
+        {% render 'mock-product-card',
+          image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=600&q=85',
+          title: 'INCIA Natural Sunscreen for Face SPF50', sub: 'Mineral sunscreen · 50 ml',
+          price: '12', was: '15', rating: '4.9', reviews: '188', badge: 'SPF50', url: '/products/incia-natural-sunscreen-for-face-spf50' %}
+        {% render 'mock-product-card',
+          image: 'https://images.unsplash.com/photo-1612817288484-6f916006741a?w=600&q=85',
+          title: 'INCIA Natural Sunscreen Lotion for All Family', sub: 'Mineral lotion · 100 ml',
+          price: '14', was: '16', rating: '4.8', reviews: '164', badge: 'SPF50', url: '/products/incia-natural-sunscreen' %}
         {% render 'mock-product-card',
           image: 'https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=600&q=85',
-          title: 'Calendula Hand Cream', sub: 'Hand cream · 75 ml',
-          price: '14', rating: '4.8', reviews: '521' %}
+          title: 'INCIA Lip Balm Coconut', sub: 'Lip balm · 5 ml',
+          price: '5.95', rating: '4.9', reviews: '412', badge: 'Free gift £12+', url: '/products/incia-lip-balm-coconut' %}
         {% render 'mock-product-card',
-          image: 'https://images.unsplash.com/photo-1576426863848-c21f53c60b19?w=600&q=85',
-          title: 'Aleppo Soap — Classic 200g', sub: 'Olive & laurel · 200 g',
-          price: '9', rating: '4.7', reviews: '198' %}
+          image: 'https://images.unsplash.com/photo-1556228841-7df40d6f3a93?w=600&q=85',
+          title: 'INCIA Stretch Mark Gel Cream', sub: 'Pregnancy-safe · 75 ml',
+          price: '13.50', was: '15', rating: '4.8', reviews: '167', badge: 'Pregnancy', url: '/products/incia-stretch-mark-gel-cream-75ml' %}
         {% render 'mock-product-card',
-          image: 'https://images.unsplash.com/photo-1619451683204-c8d4c4ec5e8a?w=600&q=85',
-          title: 'Saffron Brightening Mask', sub: 'Clay mask · 100 ml',
-          price: '26', rating: '4.6', reviews: '74' %}
+          image: 'https://images.unsplash.com/photo-1599733589046-8a35aef38ca5?w=600&q=85',
+          title: 'INCIA Natural Toothpaste', sub: 'Xylitol + cinnamon · 50 ml',
+          price: '7', rating: '4.7', reviews: '231', badge: 'Fluoride-free', url: '/products/incia-natural-toothpaste' %}
         {% render 'mock-product-card',
-          image: 'https://images.unsplash.com/photo-1601612628452-9e99ced43524?w=600&q=85',
-          title: 'Wild Thyme Conditioner', sub: 'Strengthening · 250 ml',
-          price: '18', rating: '4.6', reviews: '132' %}
+          image: 'https://images.unsplash.com/photo-1583854780297-0a3c19fbb83f?w=600&q=85',
+          title: 'INCIA Natural Baby Laundry Liquid Soap', sub: 'Baby laundry · 1 L',
+          price: '8.50', rating: '4.9', reviews: '412', url: '/products/incia-natural-baby-laundry' %}
         {% render 'mock-product-card',
-          image: 'https://images.unsplash.com/photo-1612825173281-9a193378527e?w=600&q=85',
-          title: 'Green Tea & Charcoal Scrub', sub: 'Exfoliant · 75 ml',
-          price: '20', rating: '4.5', reviews: '88' %}
+          image: 'https://images.unsplash.com/photo-1604502706984-50b8b1037ad7?w=600&q=85',
+          title: 'INCIA Natural Sunscreen for Baby and Child SPF50', sub: 'Kids SPF50 · 100 ml',
+          price: '13', was: '15', rating: '4.9', reviews: '302', badge: 'SPF50', url: '/products/incia-natural-sunscreen-for-baby-and-child-spf50' %}
+        {% render 'mock-product-card',
+          image: 'https://images.unsplash.com/photo-1615484477778-ca3b77940c25?w=600&q=85',
+          title: 'INCIA Intensive Repair Care Cream for Dry Skin', sub: 'Repair cream · 50 ml',
+          price: '9', was: '11', rating: '4.8', reviews: '256', url: '/products/incia-intensive-repair-care-cream-for-dry-skin' %}
       {%- endif -%}
     </div>
 

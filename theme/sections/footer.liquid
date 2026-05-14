@@ -2,9 +2,9 @@
   <div class="wrap">
     <div class="site-footer__grid">
       <div>
-        <span class="brand-mark">i<span>Nature</span></span>
+        <span class="brand-mark">I<span>Nature</span></span>
         <p style="font-size: var(--fs-sm); color: rgba(248,244,237,.7); max-width: 38ch;">
-          {{ section.settings.about_text | default: 'Pure, plant-based skincare crafted in Türkiye and shipped from London. The official UK distributor of INCIA Naturals.' }}
+          {{ section.settings.about_text | default: '100% natural skincare from Türkiye, dispatched in the UK. The official UK distributor of INCIA Naturals — trusted by 50,000+ families across Europe.' }}
         </p>
         <div class="site-footer__social mt-4">
           {% if settings.social_instagram != blank %}
@@ -28,21 +28,24 @@
                 <li><a href="{{ link.url }}">{{ link.title }}</a></li>
               {% else %}
                 {% if block.settings.title contains 'Shop' %}
-                  <li><a href="/collections/skincare">Skincare</a></li>
-                  <li><a href="/collections/hair">Hair care</a></li>
-                  <li><a href="/collections/body">Body care</a></li>
-                  <li><a href="/collections/sets">Gift sets</a></li>
-                  <li><a href="{{ routes.all_products_collection_url }}">Shop all</a></li>
+                  <li><a href="/collections/bestsellers">Bestsellers</a></li>
+                  <li><a href="/collections/baby-pregnancy">Baby &amp; Pregnancy</a></li>
+                  <li><a href="/collections/personal-care">Personal Care</a></li>
+                  <li><a href="/collections/sun-care">Sun Care</a></li>
+                  <li><a href="/collections/household">Household Care</a></li>
+                  <li><a href="/collections/sale">Sale</a></li>
                 {% elsif block.settings.title contains 'Help' %}
-                  <li><a href="/pages/shipping">Shipping & returns</a></li>
+                  <li><a href="/pages/shipping-and-returns">Shipping &amp; returns</a></li>
                   <li><a href="/pages/faq">FAQ</a></li>
                   <li><a href="/pages/contact">Contact us</a></li>
                   <li><a href="{{ routes.account_url }}">My account</a></li>
+                  <li><a href="/pages/track-order">Track order</a></li>
                 {% else %}
                   <li><a href="/pages/about">Our story</a></li>
-                  <li><a href="/pages/ingredients">Ingredients</a></li>
-                  <li><a href="/pages/sustainability">Sustainability</a></li>
-                  <li><a href="/pages/journal">The Journal</a></li>
+                  <li><a href="/pages/quality-marks">Quality marks</a></li>
+                  <li><a href="/pages/incia-in-europe">INCIA in Europe</a></li>
+                  <li><a href="/pages/wholesale">Wholesale</a></li>
+                  <li><a href="/pages/press">Press</a></li>
                 {% endif %}
               {% endfor %}
             </ul>
@@ -52,37 +55,40 @@
         <div>
           <h5>Shop</h5>
           <ul class="site-footer__links">
-            <li><a href="/collections/skincare">Skincare</a></li>
-            <li><a href="/collections/hair">Hair care</a></li>
-            <li><a href="/collections/body">Body care</a></li>
-            <li><a href="/collections/sets">Gift sets</a></li>
-            <li><a href="{{ routes.all_products_collection_url }}">Shop all</a></li>
+            <li><a href="/collections/bestsellers">Bestsellers</a></li>
+            <li><a href="/collections/baby-pregnancy">Baby &amp; Pregnancy</a></li>
+            <li><a href="/collections/personal-care">Personal Care</a></li>
+            <li><a href="/collections/sun-care">Sun Care</a></li>
+            <li><a href="/collections/household">Household Care</a></li>
+            <li><a href="/collections/sale">Sale</a></li>
           </ul>
         </div>
         <div>
           <h5>Help</h5>
           <ul class="site-footer__links">
-            <li><a href="/pages/shipping">Shipping & returns</a></li>
+            <li><a href="/pages/shipping-and-returns">Shipping &amp; returns</a></li>
             <li><a href="/pages/faq">FAQ</a></li>
             <li><a href="/pages/contact">Contact us</a></li>
             <li><a href="{{ routes.account_url }}">My account</a></li>
+            <li><a href="/pages/track-order">Track order</a></li>
           </ul>
         </div>
         <div>
           <h5>Brand</h5>
           <ul class="site-footer__links">
             <li><a href="/pages/about">Our story</a></li>
-            <li><a href="/pages/ingredients">Ingredients</a></li>
-            <li><a href="/pages/sustainability">Sustainability</a></li>
-            <li><a href="/pages/journal">The Journal</a></li>
+            <li><a href="/pages/quality-marks">Quality marks</a></li>
+            <li><a href="/pages/incia-in-europe">INCIA in Europe</a></li>
+            <li><a href="/pages/wholesale">Wholesale</a></li>
+            <li><a href="/pages/press">Press</a></li>
           </ul>
         </div>
       {% endfor %}
     </div>
 
     <div class="site-footer__bottom">
-      <span>© {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</span>
-      <span>VAT 412 5894 23 · Registered in England & Wales</span>
+      <span>© {{ 'now' | date: '%Y' }} {{ shop.name }} · Official UK distributor of INCIA Naturals</span>
+      <span>Free UK shipping over £20 · 14-day returns · info@inatureltd.com</span>
       <span>
         <a href="/policies/privacy-policy">Privacy</a> ·
         <a href="/policies/terms-of-service">Terms</a> ·

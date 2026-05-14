@@ -20,7 +20,7 @@
         "type": "text",
         "id": "brand_tagline",
         "label": "Tagline",
-        "default": "Pure Turkish Skincare. Naturally British."
+        "default": "100% natural skincare. Trusted in Europe, now in the UK."
       },
       {
         "type": "image_picker",

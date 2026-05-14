@@ -3,7 +3,7 @@
     <header class="section-head section-head--center text-center mx-auto">
       <span class="eyebrow">{{ section.settings.eyebrow | default: 'Why INature' }}</span>
       <h2 class="h2">{{ section.settings.heading | default: 'Naturals you can actually trust.' }}</h2>
-      <p class="lead muted">{{ section.settings.subheading | default: 'Every formula is short, honest and certified — sourced from the same Aegean farms our founders grew up around.' }}</p>
+      <p class="lead muted">{{ section.settings.subheading | default: 'Every INCIA formula is 100% natural, dermatologically tested, and certified — already loved across Europe for over five years.' }}</p>
     </header>
 
     <div class="grid values">
@@ -14,10 +14,10 @@
           <p>{{ block.settings.text }}</p>
         </div>
       {% else %}
-        <div class="value-card"><div class="value-card__icon">{% render 'icon', name: 'leaf' %}</div><h4>Plant-first formulas</h4><p>Olive, rose, pistachio and propolis — pressed and distilled, never synthesised.</p></div>
-        <div class="value-card"><div class="value-card__icon">{% render 'icon', name: 'shield' %}</div><h4>Clinically respectful</h4><p>Dermatologically tested. No SLS, no parabens, no phenoxyethanol, no synthetic fragrance.</p></div>
-        <div class="value-card"><div class="value-card__icon">{% render 'icon', name: 'recycle' %}</div><h4>Recyclable by design</h4><p>Glass bottles, aluminium caps, FSC paper. We take back empties for refill credit.</p></div>
-        <div class="value-card"><div class="value-card__icon">{% render 'icon', name: 'truck' %}</div><h4>Shipped from London</h4><p>Stocked in Tottenham, dispatched same day before 2pm. Free UK shipping over £40.</p></div>
+        <div class="value-card"><div class="value-card__icon">{% render 'icon', name: 'leaf' %}</div><h4>100% natural formulas</h4><p>Plant-derived actives, mineral filters and botanical oils — never synthetic alternatives. All ingredients of natural origin.</p></div>
+        <div class="value-card"><div class="value-card__icon">{% render 'icon', name: 'shield' %}</div><h4>Safe for babies &amp; sensitive skin</h4><p>Free from SLS, parabens, fluoride, mineral oils and synthetic fragrances. Dermatologically tested, eczema-friendly.</p></div>
+        <div class="value-card"><div class="value-card__icon">{% render 'icon', name: 'sparkle' %}</div><h4>Certified, not just claimed</h4><p>ETKO Cosmos, BioArge, Vegan and Cruelty-Free certifications. Same formulas trusted by ETOS in the Netherlands.</p></div>
+        <div class="value-card"><div class="value-card__icon">{% render 'icon', name: 'truck' %}</div><h4>Shipped via Evri from UK</h4><p>Dispatched promptly from the UK. Free shipping over £20, £3 below. 14-day returns, no questions.</p></div>
       {% endfor %}
     </div>
   </div>
