@@ -39,13 +39,13 @@
       <a href="collection.html">Personal Care</a>
       <a href="collection.html">Sun Care</a>
       <a href="collection.html">Household</a>
-      <a href="#">Story</a>
+      <a href="about.html">Story</a>
     </nav>
     <a href="index.html" class="brand-mark" aria-label="INature home">INature</a>
     <div class="site-header__actions">
       <button class="icon-btn" aria-label="Search" type="button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></button>
       <a class="icon-btn" href="#" aria-label="Account"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg></a>
-      <button class="icon-btn" data-cart-open aria-label="Open cart" type="button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg><span class="count">2</span></button>
+      <button class="icon-btn" data-cart-open aria-label="Open cart" type="button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg><span class="count" style="display:none;">0</span></button>
     </div>
   </div>
 </header>
@@ -63,7 +63,7 @@
         <a href="collection.html" class="btn btn-primary btn-lg">Shop bestsellers
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         </a>
-        <a href="#" class="btn btn-ghost btn-lg">Why INature</a>
+        <a href="about.html" class="btn btn-ghost btn-lg">Why INature</a>
       </div>
       <ul class="cluster muted" style="--gap: var(--space-5); font-size: var(--fs-sm); margin-top: var(--space-4);">
         <li class="cluster" style="--gap: 6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> ETKO Cosmos certified</li>
@@ -248,7 +248,7 @@
           <p><strong style="color: var(--ink);">INature is the official UK distributor of INCIA.</strong></p>
         </div>
         <div class="cluster" style="--gap: var(--space-3);">
-          <a href="#" class="btn btn-outline">Read the full story <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a href="about.html" class="btn btn-outline">Read the full story <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
         </div>
       </div>
     </div>
@@ -424,8 +424,8 @@
         </div>
       </div>
       <div><h5>Shop</h5><ul class="site-footer__links"><li><a href="collection.html">Bestsellers</a></li><li><a href="collection.html">Baby &amp; Pregnancy</a></li><li><a href="collection.html">Personal Care</a></li><li><a href="collection.html">Sun Care</a></li><li><a href="collection.html">Household Care</a></li><li><a href="collection.html">Sale</a></li></ul></div>
-      <div><h5>Help</h5><ul class="site-footer__links"><li><a href="#">Shipping &amp; returns</a></li><li><a href="#">FAQ</a></li><li><a href="#">Contact us</a></li><li><a href="#">My account</a></li><li><a href="#">Track order</a></li></ul></div>
-      <div><h5>Brand</h5><ul class="site-footer__links"><li><a href="#">Our story</a></li><li><a href="#">Quality marks</a></li><li><a href="#">INCIA in Europe</a></li><li><a href="#">Wholesale</a></li><li><a href="#">Press</a></li></ul></div>
+      <div><h5>Help</h5><ul class="site-footer__links"><li><a href="shipping.html">Shipping &amp; returns</a></li><li><a href="faq.html">FAQ</a></li><li><a href="contact.html">Contact us</a></li><li><a href="#" data-cart-open style="cursor:pointer;">My account</a></li><li><a href="contact.html">Track order</a></li></ul></div>
+      <div><h5>Brand</h5><ul class="site-footer__links"><li><a href="about.html">Our story</a></li><li><a href="#">Quality marks</a></li><li><a href="#">INCIA in Europe</a></li><li><a href="#">Wholesale</a></li><li><a href="#">Press</a></li></ul></div>
     </div>
     <div class="site-footer__bottom">
       <span>© 2026 INature UK. All rights reserved. Official UK distributor of INCIA Naturals.</span>
@@ -440,13 +440,8 @@
   <div class="cart-drawer__backdrop" data-cart-close></div>
   <div class="cart-drawer__panel">
     <div class="cart-drawer__head"><span class="h4">Your bag</span><button class="icon-btn" data-cart-close aria-label="Close"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
-    <div class="cart-drawer__items">
-      <div class="cart-line"><div class="cart-line__img"><img src="https://static.wixstatic.com/media/bf3c53_3f63a6bb7a204965ad128ad9ade77c05~mv2.webp/v1/fill/w_200,h_200,al_c,q_85/bf3c53_3f63a6bb7a204965ad128ad9ade77c05~mv2.webp" alt="" width="200" height="250"></div><div><div class="cart-line__title">INCIA Natural Deodorant for Sensitive Skin</div><div class="cart-line__variant">50 ml · Qty 1</div><div style="margin-top: 6px;"><a href="#" style="font-size: var(--fs-xs); color: var(--muted); text-decoration: underline;">Remove</a></div></div><div class="cart-line__price">£5.95</div></div>
-      <div class="cart-line"><div class="cart-line__img"><img src="https://static.wixstatic.com/media/bf3c53_93c25fe67c184c8fadae0a006b289efa~mv2.webp/v1/fill/w_200,h_200,al_c,q_85/bf3c53_93c25fe67c184c8fadae0a006b289efa~mv2.webp" alt="" width="200" height="250"></div><div><div class="cart-line__title">INCIA SOS Stick</div><div class="cart-line__variant">9.5 g · Qty 2</div><div style="margin-top: 6px;"><a href="#" style="font-size: var(--fs-xs); color: var(--muted); text-decoration: underline;">Remove</a></div></div><div class="cart-line__price">£19.00</div></div>
-      <div class="cart-line"><div class="cart-line__img"><img src="https://static.wixstatic.com/media/bf3c53_b6212b6355fb434f9fa499b58ec5293c~mv2.webp/v1/fill/w_200,h_200,al_c,q_85/bf3c53_b6212b6355fb434f9fa499b58ec5293c~mv2.webp" alt="" width="200" height="250"></div><div><div class="cart-line__title">INCIA Lip Balm Coconut <span style="color: var(--primary-dark); font-size: var(--fs-xs);">— FREE GIFT</span></div><div class="cart-line__variant">Spend £12+ · Qty 1</div></div><div class="cart-line__price" style="color: var(--primary-dark);">£0.00</div></div>
-    </div>
-    <div class="cart-drawer__foot">
-      <div class="cart-totals"><span>Subtotal</span><span>£24.95</span></div>
+    <div class="cart-drawer__items"></div>
+      <div class="cart-drawer__foot"></div>
       <p style="font-size: var(--fs-xs); color: var(--primary-dark); margin: 0;">✓ Free UK shipping unlocked · ✓ Free lip balm added</p>
       <a href="#" class="btn btn-primary btn-block btn-lg">Checkout — £24.95</a>
       <a href="#" class="btn btn-ghost btn-block">View bag</a>
