@@ -502,17 +502,16 @@
     const els = document.querySelectorAll('[data-brand-verb]');
     if (els.length === 0) return;
     els.forEach((el) => {
+      el.style.willChange = 'opacity';
       let i = 0;
       setInterval(() => {
         el.style.opacity = '0';
-        el.style.transform = 'translateX(-30%) translateY(4px)';
         setTimeout(() => {
           i = (i + 1) % verbs.length;
           el.textContent = verbs[i];
           el.style.opacity = '1';
-          el.style.transform = 'translateX(-30%) translateY(0)';
-        }, 380);
-      }, 2400);
+        }, 250);
+      }, 2600);
     });
   }
   if (document.readyState === 'loading') {

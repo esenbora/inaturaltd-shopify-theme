@@ -150,7 +150,7 @@ body {
 .site-header {
   position: sticky; top: 0; z-index: 50;
   background: rgba(248, 244, 237, .92);
-  backdrop-filter: saturate(140%) blur(14px);
+  /* backdrop-filter removed for perf */
   border-bottom: 1px solid var(--border);
 }
 .site-header__inner {
@@ -718,6 +718,6 @@ body {
   color: #5A9F2C;
   white-space: nowrap;
   letter-spacing: -.005em;
-  transition: opacity 380ms ease, transform 380ms ease;
+  transition: opacity 250ms ease;
   pointer-events: none;
 }
