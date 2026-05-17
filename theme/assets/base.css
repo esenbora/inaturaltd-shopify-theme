@@ -699,18 +699,25 @@ body {
 }
 
 
-/* Brand mark — I + leaf + Nature animated logo */
-.brand-mark { display: inline-flex; align-items: center; gap: 2px; }
-.brand-leaf { flex-shrink: 0; margin: 0 2px; display: inline-block; }
-@keyframes leaf-float {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50%      { transform: translateY(-3px) scale(1.08); }
 }
-.brand-leaf {
-  animation: leaf-float 2.8s ease-in-out infinite;
-  transform-origin: center;
-}
-.brand-mark:hover .brand-leaf { animation-duration: 1s; }
-@media (prefers-reduced-motion: reduce) {
-  .brand-leaf { animation: none; }
+
+
+/* Brand mark — I + leaf with rotating verb above */
+.brand-mark { display: inline-flex; align-items: center; gap: 4px; line-height: 1; }
+.brand-mark .brand-i { color: var(--ink); }
+.brand-mark .brand-nature { color: var(--ink); font-style: normal; }
+.brand-leaf-wrap { position: relative; display: inline-flex; align-items: center; }
+.brand-leaf { flex-shrink: 0; display: inline-block; }
+.brand-verb {
+  position: absolute; bottom: calc(100% - 4px); left: 50%;
+  transform: translateX(-30%);
+  font-family: var(--font-body), Inter, sans-serif;
+  font-size: .42em;
+  font-weight: 500;
+  font-style: italic;
+  color: #5A9F2C;
+  white-space: nowrap;
+  letter-spacing: -.005em;
+  transition: opacity 380ms ease, transform 380ms ease;
+  pointer-events: none;
 }

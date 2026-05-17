@@ -314,7 +314,24 @@
         loadMore.disabled = true;
       });
     }
-  })();
+  
+  // ─────── BRAND VERB CYCLER (above leaf) ───────
+  const brandVerbs = ['am', 'love', 'protect', 'trust', 'choose', 'care for', 'embrace', 'return to'];
+  $$('[data-brand-verb]').forEach((el) => {
+    let i = 0;
+    setInterval(() => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateX(-30%) translateY(4px)';
+      setTimeout(() => {
+        i = (i + 1) % brandVerbs.length;
+        el.textContent = brandVerbs[i];
+        el.style.opacity = '1';
+        el.style.transform = 'translateX(-30%) translateY(0)';
+      }, 380);
+    }, 2400);
+  });
+
+})();
 
   // ─────── SEARCH ───────
   const searchBtn = $('.site-header__actions button[aria-label="Search"]') || $$('.site-header__actions button')[0];
