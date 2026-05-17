@@ -694,3 +694,21 @@ body {
 .mb-3 { margin-bottom: var(--space-3); }
 .mb-4 { margin-bottom: var(--space-4); }
 .mb-5 { margin-bottom: var(--space-5); }
+
+/* Brand mark leaf animation */
+.brand-mark { display: inline-flex; align-items: center; gap: 8px; }
+
+@keyframes leaf-sway {
+  0%, 100% { transform: rotate(-4deg) scale(1); }
+  50% { transform: rotate(5deg) scale(1.06); }
+}
+.brand-leaf {
+  animation: leaf-sway 3.8s ease-in-out infinite;
+  transform-origin: 60% 75%;
+}
+.brand-mark:hover .brand-leaf {
+  animation-duration: 1.2s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .brand-leaf { animation: none; }
+}

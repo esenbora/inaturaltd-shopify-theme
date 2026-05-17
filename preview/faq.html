@@ -10,6 +10,21 @@
 <style>:root{--bg:#F8F4ED;--surface:#FFFFFF;--ink:#2A2D2A;--muted:#5C625B;--primary:#7B9F7E;--primary-dark:#5A7C5D;--accent:#C97B5C;--border:#E6DED1;--page-w:1320px;--section-y:96px;--font-heading:'Fraunces',Georgia,serif;--font-body:'Inter',system-ui,sans-serif;}
 .brand-mark{display:inline-flex !important;align-items:center;gap:8px;}
 .brand-leaf{color:var(--primary-dark);flex-shrink:0;}
+@keyframes leaf-sway {
+  0%, 100% { transform: rotate(-4deg) scale(1); }
+  50% { transform: rotate(5deg) scale(1.06); }
+}
+.brand-leaf {
+  animation: leaf-sway 3.8s ease-in-out infinite;
+  transform-origin: 60% 75%;
+}
+.brand-mark:hover .brand-leaf {
+  animation-duration: 1.2s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .brand-leaf { animation: none; }
+}
+
 </style>
 <link rel="stylesheet" href="base.css">
 <script src="theme.js" defer></script>

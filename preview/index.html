@@ -18,6 +18,21 @@
 
 .brand-mark{display:inline-flex !important;align-items:center;gap:8px;}
 .brand-leaf{color:var(--primary-dark);flex-shrink:0;}
+@keyframes leaf-sway {
+  0%, 100% { transform: rotate(-4deg) scale(1); }
+  50% { transform: rotate(5deg) scale(1.06); }
+}
+.brand-leaf {
+  animation: leaf-sway 3.8s ease-in-out infinite;
+  transform-origin: 60% 75%;
+}
+.brand-mark:hover .brand-leaf {
+  animation-duration: 1.2s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .brand-leaf { animation: none; }
+}
+
 </style>
 <link rel="stylesheet" href="base.css">
 <script src="theme.js" defer></script>
