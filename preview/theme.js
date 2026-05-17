@@ -354,8 +354,6 @@
         { name: 'INCIA Natural Easy Combing Spray', price: 8.00, url: 'product.html?id=incia-natural-easy-combing-spray' },
         { name: 'INCIA Feminine Intimate Wash Foam', price: 11.00, url: 'product.html?id=incia-feminine-intimate-wash-foam' },
         { name: 'INCIA Nipple Cream', price: 8.00, url: 'product.html?id=incia-nipple-cream' },
-        { name: 'INCIA Natural Baby Laundry Liquid Soap', price: 8.50, url: 'product.html?id=incia-natural-baby-laundry-liquid-soap' },
-        { name: 'INCIA Natural Dishwashing Soap', price: 6.50, url: 'product.html?id=incia-natural-dishwashing-soap' },
         { name: 'INCIA Eyelash Serum', price: 12.00, url: 'product.html?id=incia-eyelash-serum' },
         { name: 'INCIA Natural Baby Oil', price: 10.00, url: 'product.html?id=incia-natural-baby-oil' },
         { name: 'INCIA Nourishing & Hydrating Gel for Dry Skin', price: 9.00, url: 'product.html?id=incia-nourishing-hydrating-gel-for-dry-skin' },

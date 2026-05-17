@@ -14,16 +14,15 @@
   <div class="wrap">
     <div class="collection-toolbar">
       <div class="filter-pills">
-        <button class="pill pill-soft" type="button">All (31)</button>
+        <button class="pill pill-soft" type="button">All (22)</button>
         <button class="pill" type="button">Bestsellers</button>
         <button class="pill" type="button">Baby &amp; Pregnancy</button>
         <button class="pill" type="button">Personal Care</button>
         <button class="pill" type="button">Sun Care</button>
-        <button class="pill" type="button">Household</button>
         <button class="pill" type="button">Sale</button>
       </div>
       <div class="cluster" style="--gap: var(--space-2);">
-        <span class="muted" style="font-size: var(--fs-sm);">{{ collection.products_count | default: 31 }} products</span>
+        <span class="muted" style="font-size: var(--fs-sm);">{{ collection.products_count | default: 22 }} products</span>
         <select aria-label="Sort">
           <option>Sort: Featured</option>
           <option>Bestsellers</option>
@@ -76,10 +75,6 @@
           image: 'https://static.wixstatic.com/media/bf3c53_8778d360bc3b480ab28c0673bf09dcd2~mv2.jpg/v1/fill/w_600,h_600,al_c,q_85/bf3c53_8778d360bc3b480ab28c0673bf09dcd2~mv2.jpg',
           title: 'INCIA Natural Toothpaste', sub: 'Fluoride-free toothpaste · Xylitol fights cavities · Cinnamon & coconut · SLS-free · 50 ml',
           price: '7', rating: '4.7', reviews: '231', badge: 'Fluoride-free', url: '/products/incia-natural-toothpaste' %}
-        {% render 'mock-product-card',
-          image: 'https://static.wixstatic.com/media/bf3c53_ef20feab0e994c2383969d532d26484d~mv2.jpg/v1/fill/w_600,h_600,al_c,q_85/bf3c53_ef20feab0e994c2383969d532d26484d~mv2.jpg',
-          title: 'INCIA Natural Baby Laundry Liquid Soap', sub: 'Plant-based baby laundry · Safe for newborn skin · Fragrance-free · 1 L',
-          price: '8.50', rating: '4.9', reviews: '412', url: '/products/incia-natural-baby-laundry' %}
         {% render 'mock-product-card',
           image: 'https://static.wixstatic.com/media/bf3c53_3a9ae656e27c4b938271ea2b7e62600f~mv2.jpg/v1/fill/w_600,h_600,al_c,q_85/bf3c53_3a9ae656e27c4b938271ea2b7e62600f~mv2.jpg',
           title: 'INCIA Natural Sunscreen for Baby and Child SPF50', sub: 'SPF50 mineral sunscreen for sensitive baby skin · No chemical filters · 100 ml',
