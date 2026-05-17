@@ -177,7 +177,8 @@ body {
   font-size: 1.6rem; letter-spacing: -.02em;
   font-weight: 500;
 }
-.brand-mark span { color: var(--primary-dark); font-style: italic; }
+.brand-mark .brand-nature { color: var(--primary-dark); font-style: italic; }
+.brand-mark .brand-i { color: var(--ink); }
 
 .site-header__actions { display: flex; gap: var(--space-3); justify-content: flex-end; align-items: center; }
 .icon-btn {
@@ -695,20 +696,21 @@ body {
 .mb-4 { margin-bottom: var(--space-4); }
 .mb-5 { margin-bottom: var(--space-5); }
 
-/* Brand mark leaf animation */
-.brand-mark { display: inline-flex; align-items: center; gap: 8px; }
+}
 
-@keyframes leaf-sway {
-  0%, 100% { transform: rotate(-4deg) scale(1); }
-  50% { transform: rotate(5deg) scale(1.06); }
+
+/* Brand mark — I + leaf + Nature animated logo */
+.brand-mark { display: inline-flex; align-items: center; gap: 2px; }
+.brand-leaf { flex-shrink: 0; margin: 0 2px; display: inline-block; }
+@keyframes leaf-float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-3px) scale(1.08); }
 }
 .brand-leaf {
-  animation: leaf-sway 3.8s ease-in-out infinite;
-  transform-origin: 60% 75%;
+  animation: leaf-float 2.8s ease-in-out infinite;
+  transform-origin: center;
 }
-.brand-mark:hover .brand-leaf {
-  animation-duration: 1.2s;
-}
+.brand-mark:hover .brand-leaf { animation-duration: 1s; }
 @media (prefers-reduced-motion: reduce) {
   .brand-leaf { animation: none; }
 }

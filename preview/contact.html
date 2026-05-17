@@ -8,21 +8,24 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>:root{--bg:#F8F4ED;--surface:#FFFFFF;--ink:#2A2D2A;--muted:#5C625B;--primary:#7B9F7E;--primary-dark:#5A7C5D;--accent:#C97B5C;--border:#E6DED1;--page-w:1320px;--section-y:96px;--font-heading:'Fraunces',Georgia,serif;--font-body:'Inter',system-ui,sans-serif;}
-.brand-mark{display:inline-flex !important;align-items:center;gap:8px;}
-.brand-leaf{color:var(--primary-dark);flex-shrink:0;}
-@keyframes leaf-sway {
-  0%, 100% { transform: rotate(-4deg) scale(1); }
-  50% { transform: rotate(5deg) scale(1.06); }
+.brand-mark{display:inline-flex !important;align-items:center;gap:2px;font-family:var(--font-heading);font-weight:500;letter-spacing:.02em;}
+.brand-mark .brand-i{display:inline-block;}
+.brand-mark .brand-nature{display:inline-block;}
+.brand-leaf{flex-shrink:0;margin:0 2px;display:inline-block;}
+@keyframes leaf-float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-3px) scale(1.08); }
 }
 .brand-leaf {
-  animation: leaf-sway 3.8s ease-in-out infinite;
-  transform-origin: 60% 75%;
+  animation: leaf-float 2.8s ease-in-out infinite;
+  transform-origin: center;
 }
 .brand-mark:hover .brand-leaf {
-  animation-duration: 1.2s;
+  animation-duration: 1s;
 }
 @media (prefers-reduced-motion: reduce) {
   .brand-leaf { animation: none; }
+}
 }
 
 </style>
@@ -36,7 +39,7 @@
 <header class="site-header">
   <div class="wrap site-header__inner">
     <nav class="site-header__nav"><a href="collection.html">Shop all</a><a href="collection.html">Baby &amp; Pregnancy</a><a href="collection.html">Personal Care</a><a href="collection.html">Sun Care</a><a href="about.html">Story</a></nav>
-    <a href="index.html" class="brand-mark"><svg class="brand-leaf" width="22" height="22" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color:var(--primary-dark);flex-shrink:0;"><path d="M16 4 C10 8 7 14 8 22 C16 22 23 17 25 11 C24 7 21 5 16 4 Z" fill="currentColor" fill-opacity="0.18"/><path d="M18 6 C17 12 14 18 9 22"/></svg>INature</a>
+    <a href="index.html" class="brand-mark"><span class="brand-i">I</span><svg class="brand-leaf" width="26" height="26" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M3 28 C 3 14, 14 3, 28 4 C 28 18, 18 28, 3 28 Z" fill="#7BC940"/><path d="M28 4 C 22 12, 13 22, 5 27" stroke="#5A9F2C" stroke-width="1.2" stroke-linecap="round" fill="none"/></svg><span class="brand-nature">Nature</span></a>
     <div class="site-header__actions">
       <button class="icon-btn" aria-label="Search"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></button>
       <a class="icon-btn" href="#" aria-label="Account"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg></a>
