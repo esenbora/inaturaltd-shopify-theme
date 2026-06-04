@@ -30,10 +30,9 @@
       assign font_heading = settings.font_heading
       assign font_body = settings.font_body
     -%}
-    {{ font_heading | font_face: font_display: 'swap' }}
-    {{ font_body | font_face: font_display: 'swap' }}
-
     <style>
+      {{ font_heading | font_face: font_display: 'swap' }}
+      {{ font_body | font_face: font_display: 'swap' }}
       :root {
         --bg: {{ settings.color_bg }};
         --surface: {{ settings.color_surface }};
