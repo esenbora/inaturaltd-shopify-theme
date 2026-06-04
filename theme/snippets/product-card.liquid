@@ -8,15 +8,15 @@
   <a href="{{ p.url }}" class="product-card__media" aria-label="{{ p.title }}">
     <div class="product-card__badges">
       {% if p.compare_at_price > p.price %}
-        <span class="pill pill-accent">−{{ p.compare_at_price | minus: p.price | times: 100 | divided_by: p.compare_at_price }}%</span>
+        <span class="pill pill-accent">−{{ p.compare_at_price | minus: p.price | times: 100.0 | divided_by: p.compare_at_price | round: 0 }}%</span>
       {% endif %}
       {% if p.tags contains 'new' %}<span class="pill pill-soft">New</span>{% endif %}
       {% if p.tags contains 'bestseller' %}<span class="pill pill-soft">Bestseller</span>{% endif %}
     </div>
     {% if p.featured_image %}
-      <img src="{{ p.featured_image | image_url: width: 600 }}" alt="{{ p.title }}" loading="lazy" width="600" height="750">
+      <img src="{{ p.featured_image | image_url: width: 600 }}" alt="{{ p.title }}" loading="lazy" width="600" height="600">
     {% else %}
-      <img src="https://static.wixstatic.com/media/bf3c53_93c25fe67c184c8fadae0a006b289efa~mv2.webp/v1/fill/w_600,h_600,al_c,q_85/bf3c53_93c25fe67c184c8fadae0a006b289efa~mv2.webp" alt="{{ p.title }}" loading="lazy" width="600" height="750">
+      <div class="product-card__placeholder" aria-hidden="true">{% render 'icon', name: 'leaf' %}</div>
     {% endif %}
     <div class="product-card__quick">
       <button class="btn btn-primary btn-block btn-sm" data-add-to-cart data-label="Add to bag" type="button">Quick add</button>

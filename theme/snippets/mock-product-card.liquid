@@ -6,7 +6,7 @@
   <a href="{{ url | default: '/products/sample' }}" class="product-card__media" aria-label="{{ title }}">
     <div class="product-card__badges">
       {% if badge != blank %}<span class="pill pill-soft">{{ badge }}</span>{% endif %}
-      {% if was != blank %}<span class="pill pill-accent">−{{ was | minus: price | times: 100 | divided_by: was }}%</span>{% endif %}
+      {% if was != blank %}<span class="pill pill-accent">−{{ was | minus: price | times: 100.0 | divided_by: was | round: 0 }}%</span>{% endif %}
     </div>
     <img src="{{ image }}" alt="{{ title }}" loading="lazy" width="600" height="750">
     <div class="product-card__quick">

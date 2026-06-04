@@ -38,6 +38,10 @@
         {% for product in collection.products %}
           {% render 'product-card', product: product %}
         {% endfor %}
+      {%- elsif collections.all.products.size > 0 -%}
+        {% for product in collections.all.products %}
+          {% render 'product-card', product: product %}
+        {% endfor %}
       {%- else -%}
         {% render 'mock-product-card',
           image: 'https://static.wixstatic.com/media/bf3c53_3f63a6bb7a204965ad128ad9ade77c05~mv2.webp/v1/fill/w_600,h_600,al_c,q_85/bf3c53_3f63a6bb7a204965ad128ad9ade77c05~mv2.webp',
