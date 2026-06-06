@@ -14,7 +14,20 @@
   }
   openBtns.forEach((b) => b.addEventListener('click', (e) => { e.preventDefault(); setDrawer(true); }));
   closeEls.forEach((b) => b.addEventListener('click', (e) => { e.preventDefault(); setDrawer(false); }));
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setDrawer(false); });
+
+  // Mobile menu
+  const mobileMenu = document.querySelector('[data-mobile-menu]');
+  const mobileMenuOpenBtns = document.querySelectorAll('[data-mobile-menu-open]');
+  const mobileMenuCloseEls = document.querySelectorAll('[data-mobile-menu-close]');
+  function setMobileMenu(open) {
+    if (!mobileMenu) return;
+    mobileMenu.classList.toggle('is-open', open);
+    mobileMenu.setAttribute('aria-hidden', open ? 'false' : 'true');
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+  mobileMenuOpenBtns.forEach((b) => b.addEventListener('click', (e) => { e.preventDefault(); setMobileMenu(true); }));
+  mobileMenuCloseEls.forEach((b) => b.addEventListener('click', (e) => { e.preventDefault(); setMobileMenu(false); }));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { setDrawer(false); setMobileMenu(false); } });
 
   // Quantity selector
   document.querySelectorAll('[data-qty]').forEach((wrap) => {

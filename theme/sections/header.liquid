@@ -1,13 +1,19 @@
 <header class="site-header" data-header>
   <div class="wrap site-header__inner">
+    <button class="icon-btn mobile-menu-toggle" data-mobile-menu-open aria-label="Open menu" type="button">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+
     <nav class="site-header__nav" aria-label="Primary">
       {% for link in section.settings.menu.links %}
         <a href="{{ link.url }}">{{ link.title }}</a>
       {% else %}
         <a href="{{ routes.all_products_collection_url }}">Shop all</a>
-        <a href="/collections/baby-pregnancy">Baby &amp; Pregnancy</a>
+        <a href="/collections/bestsellers">Bestsellers</a>
+        <a href="/collections/mom-baby-care">Mom &amp; Baby Care</a>
         <a href="/collections/personal-care">Personal Care</a>
         <a href="/collections/sun-care">Sun Care</a>
+        <a href="/collections/lip-balms">Lip Balms</a>
         <a href="/pages/about">Story</a>
       {% endfor %}
     </nav>
@@ -28,6 +34,29 @@
     </div>
   </div>
 </header>
+
+<aside class="mobile-menu" data-mobile-menu aria-hidden="true" aria-label="Mobile navigation">
+  <div class="mobile-menu__backdrop" data-mobile-menu-close></div>
+  <div class="mobile-menu__panel" role="dialog" aria-modal="true">
+    <div class="mobile-menu__head">
+      <span class="h4">Menu</span>
+      <button class="icon-btn" data-mobile-menu-close aria-label="Close">{% render 'icon', name: 'close' %}</button>
+    </div>
+    <nav class="mobile-menu__nav">
+      {% for link in section.settings.menu.links %}
+        <a href="{{ link.url }}">{{ link.title }}</a>
+      {% else %}
+        <a href="{{ routes.all_products_collection_url }}">Shop all</a>
+        <a href="/collections/bestsellers">Bestsellers</a>
+        <a href="/collections/mom-baby-care">Mom &amp; Baby Care</a>
+        <a href="/collections/personal-care">Personal Care</a>
+        <a href="/collections/sun-care">Sun Care</a>
+        <a href="/collections/lip-balms">Lip Balms</a>
+        <a href="/pages/about">Story</a>
+      {% endfor %}
+    </nav>
+  </div>
+</aside>
 
 {% schema %}
 {
