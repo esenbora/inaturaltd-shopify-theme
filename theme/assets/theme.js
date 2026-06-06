@@ -1,4 +1,4 @@
-/* INature UK — minimal interaction layer (mock) */
+/* INature UK — minimal interaction layer */
 (function () {
   'use strict';
 
@@ -50,15 +50,83 @@
     });
   });
 
-  // Mock add-to-cart
+  // Real Shopify Ajax cart
+  async function fetchCart() {
+    const r = await fetch('/cart.js', { credentials: 'same-origin' });
+    return r.json();
+  }
+
+  async function refreshDrawer() {
+    // Refetch current page and extract fresh cart-drawer markup
+    const r = await fetch(window.location.pathname, { credentials: 'same-origin' });
+    const html = await r.text();
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    const newDrawer = tmp.querySelector('[data-cart-drawer]');
+    if (newDrawer && drawer) {
+      drawer.innerHTML = newDrawer.innerHTML;
+      // Rebind close buttons inside new content
+      drawer.querySelectorAll('[data-cart-close]').forEach((b) => b.addEventListener('click', (e) => { e.preventDefault(); setDrawer(false); }));
+      drawer.querySelectorAll('[data-cart-remove]').forEach((a) => a.addEventListener('click', removeFromCart));
+    }
+  }
+
+  function updateCount(count) {
+    document.querySelectorAll('[data-cart-count]').forEach((el) => { el.textContent = count; });
+  }
+
+  async function removeFromCart(e) {
+    e.preventDefault();
+    const key = e.currentTarget.dataset.lineKey;
+    const r = await fetch('/cart/change.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      body: JSON.stringify({ id: key, quantity: 0 }),
+    });
+    if (r.ok) {
+      const cart = await r.json();
+      updateCount(cart.item_count);
+      await refreshDrawer();
+    }
+  }
+
+  // Real add-to-cart
   document.querySelectorAll('[data-add-to-cart]').forEach((btn) => {
-    btn.addEventListener('click', (e) => {
+    btn.addEventListener('click', async (e) => {
       e.preventDefault();
-      btn.textContent = 'Added ✓';
-      setTimeout(() => setDrawer(true), 300);
-      setTimeout(() => { btn.textContent = btn.dataset.label || 'Add to bag'; }, 1800);
+      const variantId = btn.dataset.variantId;
+      if (!variantId) {
+        // No variant context — preview/mock card → just open drawer
+        setDrawer(true);
+        return;
+      }
+      btn.disabled = true;
+      const originalText = btn.textContent;
+      btn.textContent = 'Adding…';
+      try {
+        const r = await fetch('/cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'same-origin',
+          body: JSON.stringify({ items: [{ id: variantId, quantity: 1 }] }),
+        });
+        if (!r.ok) throw new Error('add failed');
+        const cart = await fetchCart();
+        updateCount(cart.item_count);
+        await refreshDrawer();
+        btn.textContent = 'Added ✓';
+        setTimeout(() => setDrawer(true), 200);
+        setTimeout(() => { btn.textContent = btn.dataset.label || originalText; btn.disabled = false; }, 1600);
+      } catch (err) {
+        btn.textContent = 'Try again';
+        setTimeout(() => { btn.textContent = btn.dataset.label || originalText; btn.disabled = false; }, 1600);
+      }
     });
   });
+
+  // Also wire any existing remove links on initial page-load drawer state
+  document.querySelectorAll('[data-cart-remove]').forEach((a) => a.addEventListener('click', removeFromCart));
   // Brand verb cycler (above leaf)
   const brandVerbs = ['am', 'love', 'protect', 'trust', 'choose', 'care for', 'embrace', 'return to'];
   document.querySelectorAll('[data-brand-verb]').forEach((el) => {

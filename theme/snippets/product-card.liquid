@@ -19,7 +19,14 @@
       <div class="product-card__placeholder" aria-hidden="true">{% render 'icon', name: 'leaf' %}</div>
     {% endif %}
     <div class="product-card__quick">
-      <button class="btn btn-primary btn-block btn-sm" data-add-to-cart data-label="Add to bag" type="button">Quick add</button>
+      <button class="btn btn-primary btn-block btn-sm"
+        data-add-to-cart
+        data-variant-id="{{ p.variants.first.id }}"
+        data-label="Quick add"
+        type="button"
+        {% if p.variants.first.available == false %}disabled aria-disabled="true"{% endif %}>
+        {% if p.variants.first.available %}Quick add{% else %}Sold out{% endif %}
+      </button>
     </div>
   </a>
   <div>

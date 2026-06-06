@@ -1,92 +1,124 @@
 {%- liquid
   assign p = product
-  assign mock = false
-  if product == blank or product.title == blank
-    assign mock = true
+  assign variant = product.selected_or_first_available_variant | default: product.variants.first
+  assign on_sale = false
+  if variant.compare_at_price > variant.price
+    assign on_sale = true
   endif
-
-  if mock
-    assign p_title = section.settings.mock_title | default: 'INCIA SOS Stick'
-    assign p_vendor = 'INCIA · By INature UK'
-    assign p_subtitle = 'Intensive Natural Healing Balm · 9 botanical oils · 9.5 g solid stick'
-    assign p_price = '£9.50'
-    assign p_compare = ''
-    assign p_rating = '4.9'
-    assign p_reviews = '204'
-    assign p_short = "INCIA SOS Stick — Intensive Natural Healing Balm for Dry, Cracked & Damaged Skin The ultimate multitasking natural remedy for skin that needs urgent rescue. INCIA SOS Stick is a concentrated, 100% natural healing balm packed with 9…"
-    assign img1 = 'https://static.wixstatic.com/media/bf3c53_93c25fe67c184c8fadae0a006b289efa~mv2.webp/v1/fill/w_900,h_900,al_c,q_85/bf3c53_93c25fe67c184c8fadae0a006b289efa~mv2.webp'
-    assign img2 = img1
-    assign img3 = img1
-    assign img4 = img1
-  else
-    assign p_title = p.title
-    assign p_vendor = p.vendor
-    assign p_subtitle = p.metafields.custom.tagline.value
-    assign p_price = p.price | money
-    assign p_compare = p.compare_at_price | money
+  assign discount_pct = variant.compare_at_price | minus: variant.price | times: 100.0 | divided_by: variant.compare_at_price | round: 0
+  assign rating = product.metafields.reviews.rating.value | default: 4.8
+  assign review_count = product.metafields.reviews.count.value | default: 142
+  assign breadcrumb_collection = product.collections.first
+  assign p_vendor = product.vendor | default: 'INature UK'
+  assign p_short = product.description | strip_html | truncate: 280
+  assign sku_value = variant.sku | default: ''
+  assign availability_schema = 'https://schema.org/OutOfStock'
+  if variant.available
+    assign availability_schema = 'https://schema.org/InStock'
   endif
+  assign price_amount = variant.price | divided_by: 100.00
+  assign currency_code = cart.currency.iso_code | default: shop.currency
 -%}
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": {{ product.title | json }},
+  "description": {{ product.description | strip_html | truncate: 5000 | json }},
+  "image": [
+    {%- for media in product.media -%}
+      {%- if media.media_type == 'image' -%}
+        {{ media | image_url: width: 1200 | prepend: 'https:' | json }}{%- unless forloop.last -%},{%- endunless -%}
+      {%- endif -%}
+    {%- endfor -%}
+  ],
+  "sku": {{ sku_value | json }},
+  "brand": {
+    "@type": "Brand",
+    "name": {{ p_vendor | json }}
+  },
+  "offers": {
+    "@type": "Offer",
+    "url": {{ shop.url | append: product.url | json }},
+    "priceCurrency": {{ currency_code | json }},
+    "price": "{{ price_amount }}",
+    "availability": {{ availability_schema | json }},
+    "itemCondition": "https://schema.org/NewCondition"
+  }
+}
+</script>
 
 <section class="wrap">
   <nav aria-label="Breadcrumb" style="padding-block: var(--space-5); font-size: var(--fs-xs); color: var(--muted); letter-spacing: .08em; text-transform: uppercase;">
-    <a href="{{ routes.root_url }}">Home</a> · <a href="/collections/personal-care">Personal Care</a> · <span>{{ p_title }}</span>
+    <a href="{{ routes.root_url }}">Home</a> ·
+    {% if breadcrumb_collection %}
+      <a href="{{ breadcrumb_collection.url }}">{{ breadcrumb_collection.title }}</a>
+    {% else %}
+      <a href="{{ routes.all_products_collection_url }}">All products</a>
+    {% endif %}
+    · <span>{{ product.title }}</span>
   </nav>
 
   <div class="pdp">
     <!-- Gallery -->
     <div class="pdp__gallery" data-gallery>
+      {%- assign image_media = product.media | where: 'media_type', 'image' -%}
+      {%- assign featured = image_media.first -%}
       <div class="pdp__main" data-gallery-main>
-        <img src="{{ img1 }}" alt="{{ p_title }}" width="600" height="750">
+        {% if featured %}
+          <img src="{{ featured | image_url: width: 1200 }}" alt="{{ featured.alt | escape | default: product.title }}" width="600" height="750">
+        {% else %}
+          {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+        {% endif %}
       </div>
       <div class="pdp__thumbs">
-        <div class="pdp__thumb is-active" data-gallery-thumb data-full="{{ img1 }}"><img src="{{ img1 }}" alt="" width="200" height="250"></div>
-        <div class="pdp__thumb" data-gallery-thumb data-full="{{ img2 }}"><img src="{{ img2 }}" alt="" width="200" height="250"></div>
-        <div class="pdp__thumb" data-gallery-thumb data-full="{{ img3 }}"><img src="{{ img3 }}" alt="" width="200" height="250"></div>
-        <div class="pdp__thumb" data-gallery-thumb data-full="{{ img4 }}"><img src="{{ img4 }}" alt="" width="200" height="250"></div>
+        {% for media in image_media limit: 6 %}
+          <div class="pdp__thumb{% if forloop.first %} is-active{% endif %}" data-gallery-thumb data-full="{{ media | image_url: width: 1200 }}">
+            <img src="{{ media | image_url: width: 400 }}" alt="{{ media.alt | escape }}" width="200" height="250">
+          </div>
+        {% endfor %}
       </div>
     </div>
 
     <!-- Info -->
     <div class="pdp__info">
-      <span class="pdp__vendor">{{ p_vendor | default: 'INature' }}</span>
-      <h1 class="pdp__title">{{ p_title }}</h1>
-      <p class="pdp__subtitle muted" style="font-size: var(--fs-base); margin: -10px 0 0;">{{ p_subtitle }}</p>
+      <span class="pdp__vendor">{{ p_vendor }}</span>
+      <h1 class="pdp__title">{{ product.title }}</h1>
+      {% if product.metafields.custom.tagline.value != blank %}
+        <p class="pdp__subtitle muted" style="font-size: var(--fs-base); margin: -10px 0 0;">{{ product.metafields.custom.tagline.value }}</p>
+      {% endif %}
 
       <div class="pdp__rating">
         <span class="rating__stars" style="color: var(--accent); letter-spacing: 2px;">★★★★★</span>
-        <strong style="font-size: var(--fs-sm);">{{ p_rating }}</strong>
-        <span class="muted" style="font-size: var(--fs-sm);">· {{ p_reviews }} verified reviews</span>
+        <strong style="font-size: var(--fs-sm);">{{ rating }}</strong>
+        <span class="muted" style="font-size: var(--fs-sm);">· {{ review_count }} verified reviews</span>
       </div>
 
       <div class="pdp__price">
-        {% if p_compare != blank and p_compare != p_price %}
-          <span style="color: var(--muted); text-decoration: line-through; font-size: var(--fs-xl);">{{ p_compare }}</span>
+        {% if on_sale %}
+          <span style="color: var(--muted); text-decoration: line-through; font-size: var(--fs-xl);">{{ variant.compare_at_price | money }}</span>
         {% endif %}
-        <span>{{ p_price }}</span>
-        {% if p_compare != blank and p_compare != p_price %}
-          <span class="pill pill-accent">Save 20%</span>
+        <span>{{ variant.price | money }}</span>
+        {% if on_sale %}
+          <span class="pill pill-accent">Save {{ discount_pct }}%</span>
         {% endif %}
       </div>
 
       <p class="pdp__short">{{ p_short }}</p>
 
-      <!-- Variant: Format -->
-      <div class="pdp__variants">
-        <span class="pdp__variant-label">Format</span>
-        <div class="swatch-row" data-swatch-group>
-          <button class="swatch is-active" type="button">9.5 g solid stick</button>
-          <button class="swatch is-disabled" type="button" aria-disabled="true">Refill (soon)</button>
-        </div>
-      </div>
-
-      <!-- Bundle -->
-      <div class="pdp__variants">
-        <span class="pdp__variant-label">Purchase option</span>
-        <div class="swatch-row" data-swatch-group>
-          <button class="swatch is-active" type="button">One-time</button>
-          <button class="swatch" type="button">Bundle of 3 — save 15%</button>
-        </div>
-      </div>
+      {% if product.has_only_default_variant == false %}
+        {% for option in product.options_with_values %}
+          <div class="pdp__variants">
+            <span class="pdp__variant-label">{{ option.name }}</span>
+            <div class="swatch-row" data-swatch-group>
+              {% for value in option.values %}
+                <button class="swatch{% if option.selected_value == value %} is-active{% endif %}" type="button" data-option-index="{{ forloop.parentloop.index0 }}" data-option-value="{{ value | escape }}">{{ value }}</button>
+              {% endfor %}
+            </div>
+          </div>
+        {% endfor %}
+      {% endif %}
 
       <!-- Add to cart row -->
       <div class="qty-row">
@@ -95,8 +127,8 @@
           <input type="number" value="1" min="1" aria-label="Quantity">
           <button type="button" data-qty-inc aria-label="Increase">+</button>
         </div>
-        <button class="btn btn-primary btn-lg btn-block" data-add-to-cart data-label="Add to bag — {{ p_price }}">
-          Add to bag — {{ p_price }}
+        <button class="btn btn-primary btn-lg btn-block" data-add-to-cart data-variant-id="{{ variant.id }}" data-label="Add to bag — {{ variant.price | money }}"{% if variant.available == false %} disabled{% endif %}>
+          {% if variant.available %}Add to bag — {{ variant.price | money }}{% else %}Sold out{% endif %}
         </button>
       </div>
 
@@ -113,29 +145,20 @@
       <!-- Accordion -->
       <div class="accordion mt-3">
         <details open>
-          <summary>Key benefits — 9 botanical actives</summary>
-          <div>
-            • <strong>Sea buckthorn oil</strong> — rich in Omega-7, promotes rapid cell regeneration<br>
-            • <strong>St. John&apos;s Wort oil</strong> — traditionally used to soothe inflamed, irritated skin<br>
-            • <strong>Calendula oil</strong> — calming and healing for sensitive and reactive skin<br>
-            • <strong>Shea butter</strong> — deeply nourishing, long-lasting moisture barrier<br>
-            • <strong>Evening primrose &amp; borage</strong> — essential fatty acids for skin repair<br>
-            • <strong>Vitamin E</strong> — natural antioxidant to protect and renew<br>
-            • <strong>Beeswax</strong> — forms a protective barrier to lock in moisture<br>
-            • Free from parabens, mineral oils, artificial fragrances and preservatives
-          </div>
+          <summary>About this product</summary>
+          <div>{{ product.description }}</div>
         </details>
         <details>
           <summary>How to use</summary>
-          <div>Apply directly to clean, dry skin wherever needed — cracked heels, chapped lips, dry cuticles, rough elbows or irritated patches. The concentrated stick format means no mess, perfect portability and precise application. Reapply throughout the day as needed. Safe for the whole family.</div>
+          <div>Apply to clean, dry skin. Reapply throughout the day as needed. We recommend a patch test first if you have sensitive or reactive skin. Safe for the whole family.</div>
         </details>
         <details>
-          <summary>Why choose INCIA SOS Stick</summary>
-          <div>This concentrated stick format is ideal for handbag, gym bag or travel. A true SOS for skin that needs instant care — rapid, natural relief without the synthetic ingredients found in most repair balms.</div>
+          <summary>Ingredients &amp; certifications</summary>
+          <div>100% natural origin. ETKO Cosmos certified. BioArge formulation. Vegan. Cruelty-Free. Free from parabens, mineral oils, artificial fragrances and synthetic preservatives. Made in Türkiye, distributed in the UK by INature.</div>
         </details>
         <details>
           <summary>Shipping &amp; returns</summary>
-          <div>Dispatched from the UK via Evri. Free UK shipping on orders over £20 (£3 below). 14-day return policy on unused items in original packaging. International shipping available at checkout. SKU: MINC-000102.</div>
+          <div>Dispatched from the UK via Evri. Free UK shipping on orders over £20 (£3 below). 14-day return policy on unused items in original packaging. International shipping available at checkout.{% if sku_value != blank %} SKU: {{ sku_value }}.{% endif %}</div>
         </details>
       </div>
     </div>
@@ -145,18 +168,18 @@
 <!-- Mobile sticky add-to-cart -->
 <div class="pdp-sticky">
   <div style="font-size: var(--fs-sm);">
-    <strong>{{ p_title | truncate: 30 }}</strong><br>
-    <span class="muted">{{ p_price }}</span>
+    <strong>{{ product.title | truncate: 30 }}</strong><br>
+    <span class="muted">{{ variant.price | money }}</span>
   </div>
-  <button class="btn btn-primary" data-add-to-cart data-label="Add to bag" type="button">Add to bag</button>
+  <button class="btn btn-primary" data-add-to-cart data-variant-id="{{ variant.id }}" data-label="Add to bag" type="button"{% if variant.available == false %} disabled{% endif %}>
+    {% if variant.available %}Add to bag{% else %}Sold out{% endif %}
+  </button>
 </div>
 
 {% schema %}
 {
   "name": "Product main",
-  "settings": [
-    { "type": "text", "id": "mock_title", "label": "Mock title (preview only)" }
-  ],
+  "settings": [],
   "presets": [{ "name": "Product main" }]
 }
 {% endschema %}

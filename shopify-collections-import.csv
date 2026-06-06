@@ -1,0 +1,9 @@
+ID,Handle,Command,Title,Body HTML,Sort Order,Template Suffix,Published,Published Scope,Smart Rule: Column,Smart Rule: Relation,Smart Rule: Condition,Smart Rules: Apply Disjunctively,Row #,Top Row
+,bestsellers,MERGE,Bestsellers,"<p>Our most-loved products — hand-picked weekly from real customer reviews. 100% natural, ETKO Cosmos certified.</p>",best-selling,,TRUE,global,Tag,equals,Bestsellers,FALSE,1,TRUE
+,personal-care,MERGE,Personal Care,"<p>Daily essentials for skin, hair and body — gentle formulas with plant-derived actives. No SLS, no parabens, no synthetic fragrances.</p>",best-selling,,TRUE,global,Tag,equals,Personal Care,FALSE,2,TRUE
+,mom-baby-care,MERGE,Mom & Baby Care,"<p>Safe enough for newborns, gentle enough for sensitive mums. Pregnancy-safe, dermatologically tested, fragrance-friendly.</p>",best-selling,,TRUE,global,Tag,equals,Mom & Baby Care,FALSE,3,TRUE
+,sun-care,MERGE,Sun Care,"<p>Non-nano mineral sunscreen for the whole family. SPF50, reef-safe, suitable for sensitive skin — even in pregnancy.</p>",best-selling,,TRUE,global,Tag,equals,Sun Care,FALSE,4,TRUE
+,must-haves,MERGE,Must Haves,<p>The INature edit — the products we use daily and recommend to every new customer.</p>,best-selling,,TRUE,global,Tag,equals,Must Haves,FALSE,5,TRUE
+,sale,MERGE,Sale,<p>Limited-time offers across the INCIA range. Free UK shipping on orders over £20.</p>,price-descending,,TRUE,global,Tag,equals,On Sale,FALSE,6,TRUE
+,home-care,MERGE,Home Care,"<p>Plant-derived cleaning essentials for a naturally clean home — laundry, dishes, hand soap. Safe around babies and pets.</p>",best-selling,,TRUE,global,Tag,equals,Home Care,FALSE,7,TRUE
+,lip-balms,MERGE,Lip Balms,"<p>Our complete lip balm collection — coconut, cinnamon, orange, bergamot-lemon and kids flavours. 100% natural beeswax & shea base.</p>",manual,,TRUE,global,Title,contains,Lip Balm,FALSE,8,TRUE

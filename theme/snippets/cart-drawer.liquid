@@ -6,43 +6,34 @@
       <button class="icon-btn" data-cart-close aria-label="Close">{% render 'icon', name: 'close' %}</button>
     </div>
 
-    <div class="cart-drawer__items">
-      {% comment %} Mock cart lines for preview {% endcomment %}
-      <div class="cart-line">
-        <div class="cart-line__img"><img src="https://static.wixstatic.com/media/bf3c53_3f63a6bb7a204965ad128ad9ade77c05~mv2.webp/v1/fill/w_200,h_200,al_c,q_85/bf3c53_3f63a6bb7a204965ad128ad9ade77c05~mv2.webp" alt="" width="200" height="250"></div>
-        <div>
-          <div class="cart-line__title">INCIA Natural Deodorant for Sensitive Skin</div>
-          <div class="cart-line__variant">50 ml · Qty 1</div>
-          <div style="margin-top: 6px;"><a href="#" style="font-size: var(--fs-xs); color: var(--muted); text-decoration: underline;">Remove</a></div>
+    <div class="cart-drawer__items" data-cart-items>
+      {% if cart.item_count > 0 %}
+        {% for item in cart.items %}
+          <div class="cart-line" data-cart-line data-line-key="{{ item.key }}">
+            <div class="cart-line__img"><img src="{{ item.image | image_url: width: 200 }}" alt="{{ item.product.title }}" width="200" height="200"></div>
+            <div>
+              <div class="cart-line__title">{{ item.product.title }}</div>
+              <div class="cart-line__variant">{{ item.variant.title | replace: 'Default Title', '' }} {% if item.variant.title contains 'Default' %}{% else %} · {% endif %}Qty {{ item.quantity }}</div>
+              <div style="margin-top: 6px;"><a href="#" data-cart-remove data-line-key="{{ item.key }}" style="font-size: var(--fs-xs); color: var(--muted); text-decoration: underline;">Remove</a></div>
+            </div>
+            <div class="cart-line__price">{{ item.final_line_price | money }}</div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="cart-empty" style="text-align: center; padding: var(--space-7) var(--space-4);">
+          <p class="muted">Your bag is empty.</p>
+          <a href="{{ routes.all_products_collection_url }}" class="btn btn-outline mt-3">Shop bestsellers</a>
         </div>
-        <div class="cart-line__price">£5.95</div>
-      </div>
-
-      <div class="cart-line">
-        <div class="cart-line__img"><img src="https://static.wixstatic.com/media/bf3c53_93c25fe67c184c8fadae0a006b289efa~mv2.webp/v1/fill/w_200,h_200,al_c,q_85/bf3c53_93c25fe67c184c8fadae0a006b289efa~mv2.webp" alt="" width="200" height="250"></div>
-        <div>
-          <div class="cart-line__title">INCIA SOS Stick</div>
-          <div class="cart-line__variant">9.5 g · Qty 2</div>
-          <div style="margin-top: 6px;"><a href="#" style="font-size: var(--fs-xs); color: var(--muted); text-decoration: underline;">Remove</a></div>
-        </div>
-        <div class="cart-line__price">£19.00</div>
-      </div>
-
-      <div class="cart-line">
-        <div class="cart-line__img"><img src="https://static.wixstatic.com/media/bf3c53_b6212b6355fb434f9fa499b58ec5293c~mv2.webp/v1/fill/w_200,h_200,al_c,q_85/bf3c53_b6212b6355fb434f9fa499b58ec5293c~mv2.webp" alt="" width="200" height="250"></div>
-        <div>
-          <div class="cart-line__title">INCIA Lip Balm Coconut <span style="color: var(--primary-dark); font-size: var(--fs-xs);">— FREE GIFT</span></div>
-          <div class="cart-line__variant">Spend £12+ · Qty 1</div>
-        </div>
-        <div class="cart-line__price" style="color: var(--primary-dark);">£0.00</div>
-      </div>
+      {% endif %}
     </div>
 
-    <div class="cart-drawer__foot">
-      <div class="cart-totals"><span>Subtotal</span><span>£24.95</span></div>
-      <p style="font-size: var(--fs-xs); color: var(--primary-dark); margin: 0;">✓ Free UK shipping unlocked · ✓ Free lip balm added</p>
-      <a href="/checkout" class="btn btn-primary btn-block btn-lg">Checkout — £24.95</a>
-      <a href="{{ routes.cart_url }}" class="btn btn-ghost btn-block">View bag</a>
-    </div>
+    {% if cart.item_count > 0 %}
+      <div class="cart-drawer__foot">
+        <div class="cart-totals"><span>Subtotal</span><span>{{ cart.total_price | money }}</span></div>
+        <p style="font-size: var(--fs-xs); color: var(--primary-dark); margin: 0;">{% if cart.total_price >= 2000 %}✓ Free UK shipping unlocked{% else %}Spend {{ 2000 | minus: cart.total_price | money }} more for free UK shipping{% endif %}</p>
+        <a href="/checkout" class="btn btn-primary btn-block btn-lg">Checkout — {{ cart.total_price | money }}</a>
+        <a href="{{ routes.cart_url }}" class="btn btn-ghost btn-block">View bag</a>
+      </div>
+    {% endif %}
   </div>
 </aside>

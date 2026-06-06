@@ -23,7 +23,7 @@
       </a>
       <button class="icon-btn" data-cart-open aria-label="Open cart" type="button">
         {% render 'icon', name: 'bag' %}
-        <span class="count">{{ cart.item_count | default: 2 }}</span>
+        <span class="count" data-cart-count>{{ cart.item_count }}</span>
       </button>
     </div>
   </div>
