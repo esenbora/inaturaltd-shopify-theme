@@ -1,0 +1,76 @@
+<section class="section">
+  <div class="wrap">
+    <header class="section-head section-head--center text-center mx-auto">
+      <span class="eyebrow">{{ section.settings.eyebrow | default: 'Our quality marks' }}</span>
+      <h2 class="h2">{{ section.settings.heading | default: 'Certified, not just claimed.' }}</h2>
+      <p class="lead muted">{{ section.settings.subheading | default: 'Independently verified by the most respected naturals authorities in Europe.' }}</p>
+    </header>
+
+    <div class="quality-grid">
+      {% if section.blocks.size > 0 %}
+        {% for block in section.blocks %}
+          <figure class="quality-mark" {{ block.shopify_attributes }}>
+            <div class="quality-mark__logo">
+              {% if block.settings.image %}
+                <img src="{{ block.settings.image | image_url: width: 200 }}" alt="{{ block.settings.title }}" width="120" height="120" loading="lazy">
+              {% endif %}
+            </div>
+            <figcaption>
+              <strong>{{ block.settings.title }}</strong>
+              <span class="muted">{{ block.settings.description }}</span>
+            </figcaption>
+          </figure>
+        {% endfor %}
+      {% else %}
+        <figure class="quality-mark">
+          <div class="quality-mark__logo"><img src="{{ 'cert-cosmos-natural.svg' | asset_url }}" alt="ETKO Cosmos Natural" width="120" height="120" loading="lazy"></div>
+          <figcaption><strong>ETKO Cosmos Natural</strong><span class="muted">95%+ plant-derived. No SLES, no silicone, no parabens, no synthetic dyes.</span></figcaption>
+        </figure>
+        <figure class="quality-mark">
+          <div class="quality-mark__logo"><img src="{{ 'cert-ecocert.svg' | asset_url }}" alt="Ecocert" width="120" height="120" loading="lazy"></div>
+          <figcaption><strong>Ecocert</strong><span class="muted">99% naturally derived ingredients on average — third-party verified.</span></figcaption>
+        </figure>
+        <figure class="quality-mark">
+          <div class="quality-mark__logo"><img src="{{ 'cert-vegan.svg' | asset_url }}" alt="Vegan Society" width="120" height="120" loading="lazy"></div>
+          <figcaption><strong>Vegan</strong><span class="muted">No animal-derived ingredients. Approved by The Vegan Society.</span></figcaption>
+        </figure>
+        <figure class="quality-mark">
+          <div class="quality-mark__logo"><img src="{{ 'cert-cruelty-free.svg' | asset_url }}" alt="Cruelty-Free" width="120" height="120" loading="lazy"></div>
+          <figcaption><strong>Cruelty-Free</strong><span class="muted">No animal testing — ever — at any stage of formulation or production.</span></figcaption>
+        </figure>
+        <figure class="quality-mark">
+          <div class="quality-mark__logo"><img src="{{ 'cert-halal.svg' | asset_url }}" alt="Halal certified" width="120" height="120" loading="lazy"></div>
+          <figcaption><strong>Halal Certified</strong><span class="muted">No pork derivatives, no alcohol, no animal testing — verified hygienic production.</span></figcaption>
+        </figure>
+        <figure class="quality-mark">
+          <div class="quality-mark__logo"><img src="{{ 'cert-gmp.png' | asset_url }}" alt="GMP Good Manufacturing Practice" width="120" height="120" loading="lazy"></div>
+          <figcaption><strong>GMP Certified</strong><span class="muted">Good Manufacturing Practice — controlled, hygienic, traceable production end-to-end.</span></figcaption>
+        </figure>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Quality marks",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Our quality marks" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Certified, not just claimed." },
+    { "type": "textarea", "id": "subheading", "label": "Subheading" }
+  ],
+  "blocks": [
+    {
+      "type": "mark",
+      "name": "Mark",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Logo" },
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "textarea", "id": "description", "label": "Description" }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [{ "name": "Quality marks" }]
+}
+{% endschema %}

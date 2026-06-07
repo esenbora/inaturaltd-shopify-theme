@@ -36,8 +36,9 @@
     "ingredients": { "type": "ingredients", "blocks": {} },
     "testimonials": { "type": "testimonials", "blocks": {} },
     "trust": { "type": "trust-row", "blocks": {} },
+    "quality_marks": { "type": "quality-marks", "blocks": {} },
     "newsletter": { "type": "newsletter", "settings": {} },
     "journal": { "type": "journal-strip", "blocks": {} }
   },
-  "order": ["hero", "marquee", "values", "featured", "editorial", "ingredients", "testimonials", "trust", "newsletter", "journal"]
+  "order": ["hero", "marquee", "values", "featured", "editorial", "ingredients", "quality_marks", "testimonials", "trust", "newsletter", "journal"]
 }
