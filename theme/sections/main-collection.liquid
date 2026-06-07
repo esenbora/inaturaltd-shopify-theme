@@ -14,23 +14,25 @@
   <div class="wrap">
     <div class="collection-toolbar">
       <div class="filter-pills">
-        <button class="pill pill-soft" type="button">All (22)</button>
-        <button class="pill" type="button">Bestsellers</button>
-        <button class="pill" type="button">Baby &amp; Pregnancy</button>
-        <button class="pill" type="button">Personal Care</button>
-        <button class="pill" type="button">Sun Care</button>
-        <button class="pill" type="button">Sale</button>
+        {%- assign current_handle = collection.handle | default: 'all-products' -%}
+        <a href="{{ routes.all_products_collection_url }}" class="pill {% if current_handle == 'all-products' or current_handle == '' %}pill-soft{% endif %}">All</a>
+        <a href="/collections/bestsellers" class="pill {% if current_handle == 'bestsellers' %}pill-soft{% endif %}">Bestsellers</a>
+        <a href="/collections/mom-baby-care" class="pill {% if current_handle == 'mom-baby-care' %}pill-soft{% endif %}">Mom &amp; Baby</a>
+        <a href="/collections/personal-care" class="pill {% if current_handle == 'personal-care' %}pill-soft{% endif %}">Personal Care</a>
+        <a href="/collections/sun-care" class="pill {% if current_handle == 'sun-care' %}pill-soft{% endif %}">Sun Care</a>
+        <a href="/collections/lip-balms" class="pill {% if current_handle == 'lip-balms' %}pill-soft{% endif %}">Lip Balms</a>
+        <a href="/collections/sale" class="pill {% if current_handle == 'sale' %}pill-soft{% endif %}">Sale</a>
       </div>
-      <div class="cluster" style="--gap: var(--space-2);">
-        <span class="muted" style="font-size: var(--fs-sm);">{{ collection.products_count | default: 22 }} products</span>
-        <select aria-label="Sort">
-          <option>Sort: Featured</option>
-          <option>Bestsellers</option>
-          <option>Newest</option>
-          <option>Price: low to high</option>
-          <option>Price: high to low</option>
+      <form method="get" class="cluster" style="--gap: var(--space-2);">
+        <span class="muted" style="font-size: var(--fs-sm);">{{ collection.products_count | default: collection.all_products_count }} products</span>
+        <select name="sort_by" aria-label="Sort" onchange="this.form.submit()">
+          <option value="manual" {% if collection.sort_by == 'manual' %}selected{% endif %}>Sort: Featured</option>
+          <option value="best-selling" {% if collection.sort_by == 'best-selling' %}selected{% endif %}>Bestsellers</option>
+          <option value="created-descending" {% if collection.sort_by == 'created-descending' %}selected{% endif %}>Newest</option>
+          <option value="price-ascending" {% if collection.sort_by == 'price-ascending' %}selected{% endif %}>Price: low to high</option>
+          <option value="price-descending" {% if collection.sort_by == 'price-descending' %}selected{% endif %}>Price: high to low</option>
         </select>
-      </div>
+      </form>
     </div>
 
     <div class="grid product-grid">

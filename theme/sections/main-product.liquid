@@ -83,7 +83,11 @@
 
     <!-- Info -->
     <div class="pdp__info">
-      <span class="pdp__vendor">{{ p_vendor }}</span>
+      {%- assign title_upper = product.title | upcase -%}
+      {%- assign vendor_upper = p_vendor | upcase -%}
+      {%- unless title_upper contains vendor_upper -%}
+        <span class="pdp__vendor">{{ p_vendor }}</span>
+      {%- endunless -%}
       <h1 class="pdp__title">{{ product.title }}</h1>
       {% if product.metafields.custom.tagline.value != blank %}
         <p class="pdp__subtitle muted" style="font-size: var(--fs-base); margin: -10px 0 0;">{{ product.metafields.custom.tagline.value }}</p>
