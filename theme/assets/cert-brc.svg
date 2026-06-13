@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="BRCGS certified">
+  <defs>
+    <path id="brc-top" d="M60 60 m-44 0 a44 44 0 0 1 88 0" fill="none"/>
+    <path id="brc-bot" d="M60 60 m44 0 a44 44 0 0 1 -88 0" fill="none"/>
+  </defs>
+  <circle cx="60" cy="60" r="58" fill="#2B3B2D"/>
+  <circle cx="60" cy="60" r="50" fill="none" stroke="#5A9F2C" stroke-width="1.5"/>
+  <circle cx="60" cy="60" r="34" fill="#F8F4ED"/>
+  <text font-family="Georgia, 'Times New Roman', serif" font-size="8.5" letter-spacing="2.4" fill="#F8F4ED" font-weight="600">
+    <textPath href="#brc-top" startOffset="50%" text-anchor="middle">GLOBAL STANDARD</textPath>
+  </text>
+  <text font-family="Georgia, 'Times New Roman', serif" font-size="7.5" letter-spacing="2" fill="#5A9F2C" font-weight="600">
+    <textPath href="#brc-bot" startOffset="50%" text-anchor="middle">FOOD &amp; CONSUMER SAFETY</textPath>
+  </text>
+  <text x="60" y="58" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="22" font-weight="700" fill="#2B3B2D" letter-spacing="0.5">BRC</text>
+  <text x="60" y="72" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="7" letter-spacing="3" fill="#2B3B2D">CERTIFIED</text>
+</svg>

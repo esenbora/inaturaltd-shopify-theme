@@ -841,7 +841,7 @@ body {
 /* Quality marks grid */
 .quality-grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: var(--space-5);
   margin-top: var(--space-6);
 }
@@ -863,7 +863,7 @@ body {
 .quality-mark figcaption strong { font-size: var(--fs-sm); color: var(--ink); }
 .quality-mark figcaption .muted { font-size: var(--fs-xs); line-height: 1.45; }
 @media (max-width: 1024px) {
-  .quality-grid { grid-template-columns: repeat(3, 1fr); }
+  .quality-grid { grid-template-columns: repeat(4, 1fr); }
 }
 @media (max-width: 720px) {
   .quality-grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-4); }
