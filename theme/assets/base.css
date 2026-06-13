@@ -727,8 +727,8 @@ body {
     padding-block: 12px;
   }
   .site-header__actions { gap: var(--space-2); }
-  .brand-mark { font-size: 1.25rem; gap: 2px; }
-  .brand-mark .brand-leaf { width: 26px; height: 26px; }
+  .brand-mark { font-size: 1.35rem; }
+  .brand-leaf { width: 2.05em; height: auto; }
   .product-grid { grid-template-columns: repeat(2, 1fr); --gap: var(--space-4); }
   .ingredient-grid { grid-template-columns: repeat(2, 1fr); }
   .trust-row { grid-template-columns: 1fr 1fr; }
@@ -756,29 +756,41 @@ body {
 .mb-4 { margin-bottom: var(--space-4); }
 .mb-5 { margin-bottom: var(--space-5); }
 
+/* Brand mark — I [leaf] Nature, verb floats at upper-right tip of leaf */
+.brand-mark {
+  display: inline-flex; align-items: center; gap: 0;
+  line-height: 1;
+  font-family: var(--font-heading);
+  font-size: 1.7rem; letter-spacing: -.01em; font-weight: 500;
 }
-
-
-}
-
-
-/* Brand mark — I + leaf with rotating verb above */
-.brand-mark { display: inline-flex; align-items: center; gap: 4px; line-height: 1; }
 .brand-mark .brand-i { color: var(--ink); }
 .brand-mark .brand-nature { color: var(--ink); font-style: normal; }
-.brand-leaf-wrap { position: relative; display: inline-flex; align-items: center; }
-.brand-leaf { flex-shrink: 0; display: inline-block; }
+.brand-leaf-wrap {
+  position: relative;
+  display: inline-flex; align-items: center;
+  /* leaf overlaps the gap between I and Nature, rises above text */
+  margin: 0 -2px 0 -1px;
+}
+.brand-leaf {
+  flex-shrink: 0; display: block;
+  width: 2.05em; height: auto;
+  /* slight lift so the leaf body rises above the cap line */
+  transform: translateY(-.05em);
+}
 .brand-verb {
-  position: absolute; bottom: calc(100% - 4px); left: 50%;
-  transform: translateX(-30%);
+  position: absolute;
+  z-index: 2;
+  /* float fully above the leaf, in the empty cream space (upper-right tip) */
+  bottom: 100%; left: 50%;
+  margin-bottom: .04em;
   font-family: var(--font-body), Inter, sans-serif;
-  font-size: .42em;
-  font-weight: 500;
+  font-size: .36em;
+  font-weight: 600;
   font-style: italic;
   color: #5A9F2C;
   white-space: nowrap;
-  letter-spacing: -.005em;
-  transition: opacity 250ms ease;
+  letter-spacing: 0;
+  transition: opacity 240ms ease;
   pointer-events: none;
 }
 
