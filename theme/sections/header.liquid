@@ -5,18 +5,13 @@
     </button>
 
     <nav class="site-header__nav" aria-label="Primary">
-      {% for link in section.settings.menu.links %}
-        <a href="{{ link.url }}">{{ link.title }}</a>
-      {% else %}
-        <a href="{{ routes.all_products_collection_url }}">Shop all</a>
-        <a href="/collections/bestsellers">Bestsellers</a>
-        <a href="/collections/mom-baby-care">Mom &amp; Baby Care</a>
-        <a href="/collections/personal-care">Personal Care</a>
-        <a href="/collections/sun-care">Sun Care</a>
-        <a href="/collections/lip-balms">Lip Balms</a>
-        <a href="/blogs/news">Journal</a>
-        <a href="/pages/about">Story</a>
-      {% endfor %}
+      <a href="{{ routes.all_products_collection_url }}">Shop all</a>
+      <a href="/collections/bestsellers">Bestsellers</a>
+      <a href="/collections/mom-baby-care">Mom &amp; Baby Care</a>
+      <a href="/collections/personal-care">Personal Care</a>
+      <a href="/collections/sun-care">Sun Care</a>
+      <a href="/blogs/news">Journal</a>
+      <a href="/pages/about">Story</a>
     </nav>
 
     <a href="{{ routes.root_url }}" class="brand-mark" aria-label="{{ shop.name }} home"><span class="brand-i">I</span><span class="brand-leaf-wrap"><span class="brand-verb" data-brand-verb>am</span><img class="brand-leaf" src="{{ 'brand-leaf.png' | asset_url }}" width="502" height="293" alt="" aria-hidden="true" loading="eager"></span><span class="brand-nature">Nature</span></a>
@@ -44,18 +39,14 @@
       <button class="icon-btn" data-mobile-menu-close aria-label="Close">{% render 'icon', name: 'close' %}</button>
     </div>
     <nav class="mobile-menu__nav">
-      {% for link in section.settings.menu.links %}
-        <a href="{{ link.url }}">{{ link.title }}</a>
-      {% else %}
-        <a href="{{ routes.all_products_collection_url }}">Shop all</a>
-        <a href="/collections/bestsellers">Bestsellers</a>
-        <a href="/collections/mom-baby-care">Mom &amp; Baby Care</a>
-        <a href="/collections/personal-care">Personal Care</a>
-        <a href="/collections/sun-care">Sun Care</a>
-        <a href="/collections/lip-balms">Lip Balms</a>
-        <a href="/blogs/news">Journal</a>
-        <a href="/pages/about">Story</a>
-      {% endfor %}
+      <a href="{{ routes.all_products_collection_url }}">Shop all</a>
+      <a href="/collections/bestsellers">Bestsellers</a>
+      <a href="/collections/mom-baby-care">Mom &amp; Baby Care</a>
+      <a href="/collections/personal-care">Personal Care</a>
+      <a href="/collections/sun-care">Sun Care</a>
+      <a href="/collections/lip-balms">Lip Balms</a>
+      <a href="/blogs/news">Journal</a>
+      <a href="/pages/about">Story</a>
     </nav>
   </div>
 </aside>
