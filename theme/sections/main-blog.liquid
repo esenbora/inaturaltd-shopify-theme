@@ -1,0 +1,50 @@
+<section class="section">
+  <div class="wrap">
+    <header class="section-head section-head--center text-center mx-auto" style="max-width: 60ch;">
+      <span class="eyebrow">{{ section.settings.eyebrow | default: 'The Journal' }}</span>
+      <h1 class="h1 mt-3">{{ blog.title | default: 'Journal' }}</h1>
+      <p class="lead muted mt-3">{{ section.settings.subheading | default: 'Honest guides to natural skincare, clean living and the science behind INCIA — from the INature family to yours.' }}</p>
+    </header>
+
+    {%- paginate blog.articles by 12 -%}
+      <div class="grid product-grid" style="margin-top: var(--space-7);">
+        {%- for article in blog.articles -%}
+          <article class="product-card">
+            <a href="{{ article.url }}" class="product-card__media" aria-label="{{ article.title }}" style="aspect-ratio: 16/10;">
+              {%- if article.image -%}
+                <img src="{{ article.image | image_url: width: 600 }}" alt="{{ article.image.alt | escape | default: article.title }}" loading="lazy" width="600" height="375" style="object-fit: cover; padding: 0;">
+              {%- else -%}
+                <div class="product-card__placeholder" aria-hidden="true">{% render 'icon', name: 'leaf' %}</div>
+              {%- endif -%}
+            </a>
+            <div>
+              <span class="product-card__sub">{{ article.published_at | date: '%-d %B %Y' }}{% if article.tags.size > 0 %} · {{ article.tags.first }}{% endif %}</span>
+              <h2 class="product-card__title" style="font-size: var(--fs-lg);"><a href="{{ article.url }}">{{ article.title }}</a></h2>
+              <p class="muted" style="font-size: var(--fs-sm); margin-top: var(--space-2);">{{ article.excerpt_or_content | strip_html | truncatewords: 22 }}</p>
+              <a href="{{ article.url }}" class="btn btn-ghost" style="padding-inline: 0; margin-top: var(--space-2);">Read more {% render 'icon', name: 'arrow-right' %}</a>
+            </div>
+          </article>
+        {%- else -%}
+          <p class="muted text-center" style="grid-column: 1 / -1;">No posts yet — check back soon.</p>
+        {%- endfor -%}
+      </div>
+
+      {%- if paginate.pages > 1 -%}
+        <nav class="text-center" style="margin-top: var(--space-7);" aria-label="Pagination">
+          {%- if paginate.previous -%}<a class="btn btn-outline" href="{{ paginate.previous.url }}">← Newer</a>{%- endif -%}
+          {%- if paginate.next -%}<a class="btn btn-outline" href="{{ paginate.next.url }}">Older →</a>{%- endif -%}
+        </nav>
+      {%- endif -%}
+    {%- endpaginate -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Blog posts",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The Journal" },
+    { "type": "textarea", "id": "subheading", "label": "Subheading" }
+  ]
+}
+{% endschema %}

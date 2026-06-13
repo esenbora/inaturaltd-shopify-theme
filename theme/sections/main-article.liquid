@@ -1,0 +1,67 @@
+<article class="section">
+  <div class="wrap" style="max-width: 760px;">
+    <nav aria-label="Breadcrumb" style="font-size: var(--fs-xs); color: var(--muted); letter-spacing: .08em; text-transform: uppercase; margin-bottom: var(--space-5);">
+      <a href="{{ routes.root_url }}">Home</a> · <a href="{{ blog.url }}">{{ blog.title }}</a> · <span>{{ article.title }}</span>
+    </nav>
+
+    <header class="text-center mx-auto" style="max-width: 60ch;">
+      {%- if article.tags.size > 0 -%}
+        <span class="eyebrow">{{ article.tags.first }}</span>
+      {%- endif -%}
+      <h1 class="h1 mt-3">{{ article.title }}</h1>
+      <p class="muted mt-3" style="font-size: var(--fs-sm);">
+        {{ article.published_at | date: '%-d %B %Y' }}{% if article.author != blank %} · By {{ article.author }}{% endif %}
+      </p>
+    </header>
+
+    {%- if article.image -%}
+      <div style="margin: var(--space-6) 0; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border);">
+        <img src="{{ article.image | image_url: width: 1400 }}" alt="{{ article.image.alt | escape | default: article.title }}" width="1400" height="788" style="width: 100%; height: auto; display: block;">
+      </div>
+    {%- else -%}
+      <div style="height: var(--space-6);"></div>
+    {%- endif -%}
+
+    <div class="article-body flow" style="--flow: 1.1em; font-size: var(--fs-lg); line-height: 1.7;">
+      {{ article.content }}
+    </div>
+
+    {%- if article.tags.size > 0 -%}
+      <div class="cluster" style="--gap: var(--space-2); margin-top: var(--space-7);">
+        {%- for tag in article.tags -%}
+          <span class="pill pill-soft">{{ tag }}</span>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    <div class="text-center" style="margin-top: var(--space-7); padding-top: var(--space-6); border-top: 1px solid var(--border);">
+      <a href="{{ blog.url }}" class="btn btn-outline">← Back to {{ blog.title }}</a>
+    </div>
+  </div>
+</article>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": {{ article.title | json }},
+  "datePublished": {{ article.published_at | date: '%Y-%m-%d' | json }},
+  "dateModified": {{ article.updated_at | date: '%Y-%m-%d' | json }},
+  "author": { "@type": "Organization", "name": {{ article.author | default: shop.name | json }} },
+  "publisher": {
+    "@type": "Organization",
+    "name": {{ shop.name | json }},
+    "logo": { "@type": "ImageObject", "url": "{{ shop.url }}{{ 'brand-leaf.png' | asset_url }}" }
+  },
+  {%- if article.image %}"image": "{{ article.image | image_url: width: 1200 | prepend: 'https:' }}",{% endif %}
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "{{ shop.url }}{{ article.url }}" },
+  "description": {{ article.excerpt_or_content | strip_html | truncatewords: 30 | json }}
+}
+</script>
+
+{% schema %}
+{
+  "name": "Article",
+  "settings": []
+}
+{% endschema %}

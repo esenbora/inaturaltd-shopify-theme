@@ -1,23 +1,30 @@
+{%- assign jblog = blogs[section.settings.blog] -%}
 <section class="section">
   <div class="wrap">
     <header class="section-head section-head--split">
       <div class="stack" style="--gap: var(--space-3);">
         <span class="eyebrow">{{ section.settings.eyebrow | default: 'The Journal' }}</span>
-        <h2 class="h2">{{ section.settings.heading | default: 'Slow notes on rituals, ingredients & places.' }}</h2>
+        <h2 class="h2">{{ section.settings.heading | default: 'Honest notes on natural skincare & clean living.' }}</h2>
       </div>
-      <a href="/blogs/journal" class="btn btn-outline">All articles {% render 'icon', name: 'arrow-right' %}</a>
+      <a href="{{ jblog.url | default: '/blogs/news' }}" class="btn btn-outline">All articles {% render 'icon', name: 'arrow-right' %}</a>
     </header>
 
     <div class="grid" style="grid-template-columns: repeat(3, 1fr); --gap: var(--space-6);">
-      {% for block in section.blocks %}
-        <article class="stack" style="--gap: var(--space-3);" {{ block.shopify_attributes }}>
-          <a href="{{ block.settings.url | default: '#' }}" class="product-card__media" style="aspect-ratio: 4/3;">
-            <img src="{{ block.settings.image_url }}" alt="{{ block.settings.title }}" loading="lazy" width="600" height="450">
-          </a>
-          <span class="product-card__sub">{{ block.settings.tag }} · {{ block.settings.read }} min read</span>
-          <h3 class="h4"><a href="{{ block.settings.url | default: '#' }}">{{ block.settings.title }}</a></h3>
-          <p class="muted" style="font-size: var(--fs-sm);">{{ block.settings.excerpt }}</p>
-        </article>
+      {% if jblog.articles.size > 0 %}
+        {% for article in jblog.articles limit: 3 %}
+          <article class="stack" style="--gap: var(--space-3);">
+            <a href="{{ article.url }}" class="product-card__media" style="aspect-ratio: 4/3;">
+              {%- if article.image -%}
+                <img src="{{ article.image | image_url: width: 600 }}" alt="{{ article.image.alt | escape | default: article.title }}" loading="lazy" width="600" height="450" style="object-fit: cover; padding: 0;">
+              {%- else -%}
+                <div class="product-card__placeholder" aria-hidden="true">{% render 'icon', name: 'leaf' %}</div>
+              {%- endif -%}
+            </a>
+            <span class="product-card__sub">{% if article.tags.size > 0 %}{{ article.tags.first }} · {% endif %}{{ article.published_at | date: '%-d %b %Y' }}</span>
+            <h3 class="h4"><a href="{{ article.url }}">{{ article.title }}</a></h3>
+            <p class="muted" style="font-size: var(--fs-sm);">{{ article.excerpt_or_content | strip_html | truncatewords: 22 }}</p>
+          </article>
+        {% endfor %}
       {% else %}
         <article class="stack" style="--gap: var(--space-3);">
           <a href="#" class="product-card__media" style="aspect-ratio: 4/3;">
@@ -53,7 +60,8 @@
   "name": "Journal strip",
   "settings": [
     { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
-    { "type": "text", "id": "heading", "label": "Heading" }
+    { "type": "text", "id": "heading", "label": "Heading" },
+    { "type": "blog", "id": "blog", "label": "Blog", "default": "news" }
   ],
   "blocks": [
     {
