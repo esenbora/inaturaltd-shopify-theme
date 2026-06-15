@@ -5,7 +5,15 @@
         {% if section.settings.image %}
           <img src="{{ section.settings.image | image_url: width: 900 }}" alt="{{ section.settings.image.alt }}" width="900" height="1125">
         {% else %}
-          <img src="https://images.unsplash.com/photo-1556228841-7df40d6f3a93?w=900&q=85" alt="Olive grove in the Aegean region of Türkiye" width="900" height="1125">
+          <video class="editorial__video"
+            controls preload="none" playsinline
+            poster="{{ 'our-story-poster.jpg' | asset_url }}">
+            {% if section.settings.video_url != blank %}
+              <source src="{{ section.settings.video_url }}" type="video/mp4">
+            {% else %}
+              <source src="{{ 'our-story.mp4' | asset_url }}" type="video/mp4">
+            {% endif %}
+          </video>
         {% endif %}
       </div>
       <div class="stack" style="--gap: var(--space-4); max-width: 50ch;">
@@ -26,7 +34,8 @@
 {
   "name": "Image with text",
   "settings": [
-    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "image_picker", "id": "image", "label": "Image (leave empty to show the Our Story video)" },
+    { "type": "text", "id": "video_url", "label": "Video URL (optional — Shopify Files .mp4 URL; overrides the bundled video)" },
     { "type": "select", "id": "media_position", "label": "Media position",
       "options": [{ "value": "left", "label": "Left" }, { "value": "right", "label": "Right" }],
       "default": "left" },

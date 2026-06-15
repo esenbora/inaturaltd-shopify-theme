@@ -399,6 +399,7 @@ body {
   box-shadow: var(--shadow-md);
 }
 .editorial__media img { width: 100%; height: 100%; object-fit: cover; }
+.editorial__video { width: 100%; height: 100%; object-fit: cover; display: block; background: #000; cursor: pointer; }
 
 /* ---------- Ingredient spotlight ---------- */
 .ingredients {
@@ -933,4 +934,38 @@ body {
 @media (max-width: 720px) {
   .quality-grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-4); }
   .quality-mark__logo { width: 80px; height: 80px; padding: 10px; }
+}
+
+/* ---------- Welcome promo popup (eBay social proof) ---------- */
+.promo-popup { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; padding: var(--space-4); }
+.promo-popup[hidden] { display: none; }
+.promo-popup__backdrop { position: absolute; inset: 0; background: rgba(34, 43, 38, .55); opacity: 0; transition: opacity .3s ease; }
+.promo-popup.is-open .promo-popup__backdrop { opacity: 1; }
+.promo-popup__panel {
+  position: relative; z-index: 1;
+  width: min(440px, 100%);
+  background: var(--bg); border-radius: var(--radius-lg);
+  padding: var(--space-7) var(--space-6) var(--space-6);
+  box-shadow: var(--shadow-lg); text-align: center;
+  transform: translateY(16px) scale(.98); opacity: 0;
+  transition: transform .32s cubic-bezier(.2, .8, .2, 1), opacity .32s ease;
+}
+.promo-popup.is-open .promo-popup__panel { transform: none; opacity: 1; }
+.promo-popup__close { position: absolute; top: 12px; right: 12px; background: none; border: 0; cursor: pointer; color: var(--muted); padding: 6px; line-height: 0; }
+.promo-popup__close svg { width: 20px; height: 20px; }
+.promo-popup__brand { display: inline-flex; align-items: center; font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: var(--space-3); }
+.promo-popup__brand .brand-leaf { width: 1.5em; }
+.promo-popup__eyebrow { font-size: var(--fs-xs); letter-spacing: .08em; text-transform: uppercase; color: var(--primary-dark); margin-bottom: var(--space-2); }
+.promo-popup__title { font-family: var(--font-heading); font-size: var(--fs-2xl); line-height: 1.1; margin-bottom: var(--space-2); }
+.promo-popup__title strong { color: var(--accent); }
+.promo-popup__sub { color: var(--muted); font-size: var(--fs-sm); margin-bottom: var(--space-5); }
+.promo-popup__row { display: flex; gap: var(--space-2); }
+.promo-popup__row input { flex: 1; min-width: 0; border: 1px solid var(--border); border-radius: var(--radius-pill); padding: 12px 18px; font-size: var(--fs-sm); background: var(--surface); }
+.promo-popup__ok { margin-top: var(--space-3); color: var(--primary-dark); font-size: var(--fs-sm); font-weight: 500; }
+.promo-popup__trust { display: flex; align-items: center; justify-content: center; gap: var(--space-2); margin-top: var(--space-5); padding-top: var(--space-4); border-top: 1px solid var(--border); font-size: var(--fs-xs); color: var(--muted); }
+.promo-popup__ebay { height: 22px; width: auto; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+@media (max-width: 480px) {
+  .promo-popup__row { flex-direction: column; }
+  .promo-popup__panel { padding: var(--space-6) var(--space-4) var(--space-5); }
 }
