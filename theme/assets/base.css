@@ -338,9 +338,18 @@ body {
 .product-card__media img {
   width: 100%; height: 100%; object-fit: contain;
   padding: 8%;
-  transition: transform var(--t-slow);
+  transition: transform var(--t-slow), opacity var(--t-base);
 }
 .product-card:hover .product-card__media img { transform: scale(1.04); }
+/* Hover image-swap: 1st (white) → 2nd (colored), hemnature-style cross-fade */
+.product-card__img--secondary {
+  position: absolute; inset: 0;
+  opacity: 0;
+}
+.product-card:hover .product-card__img--secondary { opacity: 1; }
+@media (hover: none) {
+  .product-card__img--secondary { display: none; }
+}
 .product-card__badges {
   position: absolute; top: 12px; left: 12px;
   display: flex; flex-direction: column; gap: 6px; z-index: 2;
@@ -422,6 +431,45 @@ body {
 }
 .testimonial__name { font-size: var(--fs-sm); font-weight: 500; }
 .testimonial__verified { font-size: var(--fs-xs); color: rgba(248, 244, 237, .55); }
+
+/* ---------- Reviews marquee (real eBay feedback, scrolls right→left, pauses on hover) ---------- */
+.reviews { background: var(--ink); color: var(--bg); overflow: hidden; }
+.reviews .eyebrow { color: rgba(248, 244, 237, .6); }
+.reviews .section-head { margin-bottom: var(--space-6); }
+.reviews-marquee { position: relative; width: 100%; }
+.reviews-marquee::before,
+.reviews-marquee::after {
+  content: ""; position: absolute; top: 0; bottom: 0; width: 10%; z-index: 2; pointer-events: none;
+}
+.reviews-marquee::before { left: 0; background: linear-gradient(90deg, var(--ink), transparent); }
+.reviews-marquee::after { right: 0; background: linear-gradient(270deg, var(--ink), transparent); }
+.reviews-marquee__track {
+  display: flex; gap: var(--space-4); width: max-content;
+  animation: reviews-scroll 90s linear infinite;
+}
+.reviews-marquee:hover .reviews-marquee__track { animation-play-state: paused; }
+.rev-card {
+  flex: 0 0 340px; width: 340px;
+  background: rgba(255, 255, 255, .05);
+  border: 1px solid rgba(255, 255, 255, .09);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  display: flex; flex-direction: column; gap: var(--space-3);
+}
+.rev-card__stars { color: var(--accent); letter-spacing: 2px; font-size: var(--fs-sm); }
+.rev-card__quote { font-size: var(--fs-base); line-height: 1.5; color: rgba(248, 244, 237, .92); margin: 0; }
+.rev-card__meta { margin-top: auto; display: flex; flex-direction: column; gap: 2px; }
+.rev-card__name { font-size: var(--fs-sm); font-weight: 600; letter-spacing: .04em; }
+.rev-card__verified { font-size: var(--fs-xs); color: rgba(248, 244, 237, .5); display: inline-flex; align-items: center; gap: 4px; }
+.rev-card__verified svg { width: 12px; height: 12px; }
+@keyframes reviews-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) {
+  .reviews-marquee__track { animation: none; overflow-x: auto; }
+}
+@media (max-width: 720px) {
+  .rev-card { flex-basis: 280px; width: 280px; }
+  .reviews-marquee__track { animation-duration: 60s; }
+}
 
 /* ---------- Trust badges ---------- */
 .trust-row {

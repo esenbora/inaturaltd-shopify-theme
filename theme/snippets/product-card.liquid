@@ -14,7 +14,10 @@
       {% if p.tags contains 'bestseller' %}<span class="pill pill-soft">Bestseller</span>{% endif %}
     </div>
     {% if p.featured_image %}
-      <img src="{{ p.featured_image | image_url: width: 600 }}" alt="{{ p.title }}" loading="lazy" width="600" height="600">
+      <img class="product-card__img product-card__img--primary" src="{{ p.featured_image | image_url: width: 600 }}" alt="{{ p.title }}" loading="lazy" width="600" height="600">
+      {% if p.images.size > 1 %}
+        <img class="product-card__img product-card__img--secondary" src="{{ p.images[1] | image_url: width: 600 }}" alt="" aria-hidden="true" loading="lazy" width="600" height="600">
+      {% endif %}
     {% else %}
       <div class="product-card__placeholder" aria-hidden="true">{% render 'icon', name: 'leaf' %}</div>
     {% endif %}

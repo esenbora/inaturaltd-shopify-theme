@@ -1,68 +1,56 @@
-<section class="testimonials section">
+<section class="reviews section">
   <div class="wrap">
     <header class="section-head section-head--center text-center mx-auto" style="color: var(--bg);">
       <span class="eyebrow">{{ section.settings.eyebrow | default: 'Reviews' }}</span>
-      <h2 class="h2" style="color: var(--bg);">{{ section.settings.heading | default: '5-star rated — trusted by 50,000+ across Europe.' }}</h2>
+      <h2 class="h2" style="color: var(--bg);">{{ section.settings.heading | default: '100% positive feedback — straight from our buyers.' }}</h2>
+      <p class="lead" style="color: rgba(248,244,237,.72);">{{ section.settings.subheading | default: 'Real, verified eBay reviews from families across the UK.' }}</p>
     </header>
+  </div>
 
-    <div class="grid testimonials__grid">
-      {% for block in section.blocks %}
-        <article class="testimonial" {{ block.shopify_attributes }}>
-          <span class="rating__stars" style="color: var(--accent); letter-spacing: 2px;">★★★★★</span>
-          <p class="testimonial__quote">“{{ block.settings.quote }}”</p>
-          <div class="testimonial__author">
-            <span class="testimonial__avatar">{{ block.settings.name | slice: 0, 1 }}</span>
-            <div>
-              <div class="testimonial__name">{{ block.settings.name }}</div>
-              <div class="testimonial__verified">{% render 'icon', name: 'check' %} Verified buyer · {{ block.settings.product }}</div>
-            </div>
+  {%- capture review_cards -%}
+    {%- if section.blocks.size > 0 -%}
+      {%- for block in section.blocks -%}
+        <article class="rev-card" {{ block.shopify_attributes }}>
+          <span class="rev-card__stars">★★★★★</span>
+          <p class="rev-card__quote">{{ block.settings.quote }}</p>
+          <div class="rev-card__meta">
+            <span class="rev-card__name">{{ block.settings.name }}</span>
+            <span class="rev-card__verified">{% render 'icon', name: 'check' %} Verified · eBay{% if block.settings.product != blank %} · {{ block.settings.product }}{% endif %}</span>
           </div>
         </article>
-      {% else %}
-        <article class="testimonial">
-          <span class="rating__stars" style="color: var(--accent); letter-spacing: 2px;">★★★★★</span>
-          <p class="testimonial__quote">"Lovely, this sunscreen is great. It's light on the skin and it smells lovely. I love the fact that it is made of natural ingredients and it can be used by all of my family without worrying about what is in it."</p>
-          <div class="testimonial__author">
-            <span class="testimonial__avatar">C</span>
-            <div>
-              <div class="testimonial__name">Charlie Eaton</div>
-              <div class="testimonial__verified">✓ Verified buyer · INCIA Natural Sunscreen</div>
-            </div>
+      {%- endfor -%}
+    {%- else -%}
+      {%- assign quotes = "Received this morning. Happy with product and is exactly as described, thank you~~~Quick delivery, exactly what I wanted. Lovely note in the box, thank you guys — I wish you all a Merry Christmas and Happy New Year~~~My first item was lost by the courier, but the INature team kept me informed every step of the way and promptly sent a replacement. A lovely natural deodorant which smells gorgeous. 100% recommended.~~~To be honest this item surpassed my expectations. Arrived well-packaged and exactly as described — what impressed me most was the quality. Worth every cent. Communication quick, shipping fast.~~~Incia Natural Roll-On is the most effective and natural deodorant I've purchased on eBay. Fantastic scent and a gentle formula, perfect for daily use. Highly recommend!~~~Just tried the Roll-On Deodorant for Sensitive Skin. It's gentle, smells great, and really works! Love that it's 100% natural — highly recommend.~~~An excellent alcohol-free, perfume-free product with extremely clean ingredients. Provides a great clean.~~~Great, safe product — we will use it on our newborn baby with peace of mind.~~~Using it for 6 days now. I like the smell, it doesn't disturb me like other roll-ons, and it works well. Definitely recommended.~~~Lovely cream, a little pricey but to be expected when it's organic. Soaks into the skin very well.~~~Soaks into skin well. Fast delivery and a very nice touch with a couple of samples.~~~Just arrived, looking forward to trying it — thank you for the freebies xx~~~Excellent product. I would definitely recommend for extra dry cuticles.~~~Lovely natural, cruelty-free product from a lovely seller. A++++++~~~Very pleased with the effect on my nails over the past two days.~~~Great product at a great price — fast delivery too.~~~Nice dry balm for the hands & feet!~~~Order delivered on time with no issues." | split: "~~~" -%}
+      {%- assign names = "o***l~~~e***e~~~l***o~~~w***m~~~f***0~~~2***6~~~n***t~~~n***t~~~_***2~~~h***5~~~4***a~~~f***a~~~e***e~~~z***1~~~y***r~~~9***3~~~c***e~~~buyer" | split: "~~~" -%}
+      {%- assign prods = "Baby & Child Sunscreen SPF50~~~Intensive Repair Cream~~~Natural Deodorant~~~Intensive Repair Cream~~~Roll-on Deodorant~~~Roll-on Deodorant~~~Baby Laundry Soap~~~Natural Baby Oil~~~Natural Deodorant~~~Intensive Repair Cream~~~Nail & Cuticle Balm~~~Dishwashing Soap~~~Nail & Cuticle Balm~~~Nail & Cuticle Balm~~~Nail & Cuticle Balm~~~Nail & Cuticle Balm~~~Nail & Cuticle Balm~~~Roll-on Deodorant" | split: "~~~" -%}
+      {%- for q in quotes -%}
+        <article class="rev-card">
+          <span class="rev-card__stars">★★★★★</span>
+          <p class="rev-card__quote">{{ q }}</p>
+          <div class="rev-card__meta">
+            <span class="rev-card__name">{{ names[forloop.index0] }}</span>
+            <span class="rev-card__verified">{% render 'icon', name: 'check' %} Verified · eBay · {{ prods[forloop.index0] }}</span>
           </div>
         </article>
-        <article class="testimonial">
-          <span class="rating__stars" style="color: var(--accent); letter-spacing: 2px;">★★★★★</span>
-          <p class="testimonial__quote">"Best baby laundry ever. My son has very sensitive skin, so we can't use just any product. We chose this one because it has natural ingredients, and we absolutely love it. We've been using it safely for a long time."</p>
-          <div class="testimonial__author">
-            <span class="testimonial__avatar">M</span>
-            <div>
-              <div class="testimonial__name">Merve Erk</div>
-              <div class="testimonial__verified">✓ Verified buyer · INCIA Baby &amp; Kids Shampoo</div>
-            </div>
-          </div>
-        </article>
-        <article class="testimonial">
-          <span class="rating__stars" style="color: var(--accent); letter-spacing: 2px;">★★★★★</span>
-          <p class="testimonial__quote">"My first item was lost by the courier, but the customer service team at INature kept me informed every step of the way. A lovely natural deodorant which smells gorgeous. I will definitely buy more. 100% recommended."</p>
-          <div class="testimonial__author">
-            <span class="testimonial__avatar">C</span>
-            <div>
-              <div class="testimonial__name">Charlie Eaton</div>
-              <div class="testimonial__verified">✓ Verified buyer · INCIA Natural Deodorant</div>
-            </div>
-          </div>
-        </article>
-      {% endfor %}
+      {%- endfor -%}
+    {%- endif -%}
+  {%- endcapture -%}
+
+  <div class="reviews-marquee" data-reviews-marquee>
+    <div class="reviews-marquee__track">
+      {{ review_cards }}
+      {{ review_cards }}
     </div>
   </div>
 </section>
 
 {% schema %}
 {
-  "name": "Testimonials",
+  "name": "Reviews marquee",
   "settings": [
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
-    { "type": "text", "id": "heading", "label": "Heading" }
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Reviews" },
+    { "type": "text", "id": "heading", "label": "Heading" },
+    { "type": "textarea", "id": "subheading", "label": "Subheading" }
   ],
   "blocks": [
     {
@@ -75,7 +63,7 @@
       ]
     }
   ],
-  "max_blocks": 6,
-  "presets": [{ "name": "Testimonials" }]
+  "max_blocks": 24,
+  "presets": [{ "name": "Reviews marquee" }]
 }
 {% endschema %}

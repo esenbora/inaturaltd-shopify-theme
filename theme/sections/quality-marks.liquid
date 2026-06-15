@@ -23,6 +23,10 @@
         {% endfor %}
       {% else %}
         <figure class="quality-mark">
+          <div class="quality-mark__logo"><img src="{{ 'cert-brc.svg' | asset_url }}" alt="BRCGS — British Retail Consortium Global Standard" width="120" height="120" loading="lazy"></div>
+          <figcaption><strong>BRCGS Certified</strong><span class="muted">British Retail Consortium Global Standard — food &amp; consumer-product safety, audited at every stage.</span></figcaption>
+        </figure>
+        <figure class="quality-mark">
           <div class="quality-mark__logo"><img src="{{ 'cert-cosmos-natural.svg' | asset_url }}" alt="ETKO Cosmos Natural" width="120" height="120" loading="lazy"></div>
           <figcaption><strong>ETKO Cosmos Natural</strong><span class="muted">95%+ plant-derived. No SLES, no silicone, no parabens, no synthetic dyes.</span></figcaption>
         </figure>
@@ -31,20 +35,12 @@
           <figcaption><strong>Ecocert</strong><span class="muted">99% naturally derived ingredients on average — third-party verified.</span></figcaption>
         </figure>
         <figure class="quality-mark">
-          <div class="quality-mark__logo"><img src="{{ 'cert-brc.svg' | asset_url }}" alt="BRCGS — British Retail Consortium Global Standard" width="120" height="120" loading="lazy"></div>
-          <figcaption><strong>BRCGS Certified</strong><span class="muted">British Retail Consortium Global Standard — food &amp; consumer-product safety, audited at every stage.</span></figcaption>
-        </figure>
-        <figure class="quality-mark">
           <div class="quality-mark__logo"><img src="{{ 'cert-vegan.svg' | asset_url }}" alt="Vegan Society" width="120" height="120" loading="lazy"></div>
           <figcaption><strong>Vegan</strong><span class="muted">No animal-derived ingredients. Approved by The Vegan Society.</span></figcaption>
         </figure>
         <figure class="quality-mark">
           <div class="quality-mark__logo"><img src="{{ 'cert-cruelty-free.svg' | asset_url }}" alt="Cruelty-Free" width="120" height="120" loading="lazy"></div>
           <figcaption><strong>Cruelty-Free</strong><span class="muted">No animal testing — ever — at any stage of formulation or production.</span></figcaption>
-        </figure>
-        <figure class="quality-mark">
-          <div class="quality-mark__logo"><img src="{{ 'cert-halal.svg' | asset_url }}" alt="Halal certified" width="120" height="120" loading="lazy"></div>
-          <figcaption><strong>Halal Certified</strong><span class="muted">No pork derivatives, no alcohol, no animal testing — verified hygienic production.</span></figcaption>
         </figure>
         <figure class="quality-mark">
           <div class="quality-mark__logo"><img src="{{ 'cert-gmp.png' | asset_url }}" alt="GMP Good Manufacturing Practice" width="120" height="120" loading="lazy"></div>

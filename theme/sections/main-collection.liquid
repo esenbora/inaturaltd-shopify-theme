@@ -1,7 +1,6 @@
 <section class="collection-hero">
   <div class="wrap">
-    <span class="eyebrow">{{ collection.title | default: 'All products' }}</span>
-    <h1 class="h1 mt-3">{{ collection.title | default: 'The full INCIA range, distributed in the UK.' }}</h1>
+    <h1 class="h1">{{ collection.title | default: 'The full INCIA range, distributed in the UK.' }}</h1>
     {% if collection.description != blank %}
       <p class="lead muted mt-3 mx-auto" style="max-width: 60ch;">{{ collection.description }}</p>
     {% else %}
