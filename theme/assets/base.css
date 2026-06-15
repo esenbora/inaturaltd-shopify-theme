@@ -314,6 +314,23 @@ body {
 .value-card h4 { margin-bottom: var(--space-2); }
 .value-card p { color: var(--muted); font-size: var(--fs-sm); }
 
+/* Why band — white horizontal scrolling band ("beyaz akan bant"), pauses on hover */
+.why-band { background: #fff; overflow: hidden; }
+.why-marquee { position: relative; width: 100%; margin-top: var(--space-6); }
+.why-marquee::before,
+.why-marquee::after { content: ""; position: absolute; top: 0; bottom: 0; width: 8%; z-index: 2; pointer-events: none; }
+.why-marquee::before { left: 0; background: linear-gradient(90deg, #fff, transparent); }
+.why-marquee::after { right: 0; background: linear-gradient(270deg, #fff, transparent); }
+.why-marquee__track { display: flex; gap: var(--space-5); width: max-content; animation: why-scroll 70s linear infinite; }
+.why-marquee:hover .why-marquee__track { animation-play-state: paused; }
+.why-marquee .value-card { flex: 0 0 300px; width: 300px; }
+@keyframes why-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .why-marquee__track { animation: none; overflow-x: auto; } }
+@media (max-width: 720px) {
+  .why-marquee .value-card { flex-basis: 260px; width: 260px; }
+  .why-marquee__track { animation-duration: 50s; }
+}
+
 /* ---------- Section header ---------- */
 .section-head { display: grid; gap: var(--space-3); max-width: 60ch; margin-bottom: var(--space-7); }
 .section-head--center { margin-inline: auto; text-align: center; }

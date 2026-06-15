@@ -1,24 +1,31 @@
-<section class="section">
+<section class="why-band section">
   <div class="wrap">
     <header class="section-head section-head--center text-center mx-auto">
       <span class="eyebrow">{{ section.settings.eyebrow | default: 'Why INature' }}</span>
       <h2 class="h2">{{ section.settings.heading | default: 'Naturals you can actually trust.' }}</h2>
       <p class="lead muted">{{ section.settings.subheading | default: 'Every INCIA formula is 100% natural, dermatologically tested, and certified — already loved across Europe for over five years.' }}</p>
     </header>
+  </div>
 
-    <div class="grid values">
-      {% for block in section.blocks %}
-        <div class="value-card" {{ block.shopify_attributes }}>
-          <div class="value-card__icon">{% render 'icon', name: block.settings.icon %}</div>
-          <h4>{{ block.settings.title }}</h4>
-          <p>{{ block.settings.text }}</p>
-        </div>
-      {% else %}
-        <div class="value-card"><div class="value-card__icon">{% render 'icon', name: 'leaf' %}</div><h4>100% natural formulas</h4><p>Plant-derived actives, mineral filters and botanical oils — never synthetic alternatives. All ingredients of natural origin.</p></div>
-        <div class="value-card"><div class="value-card__icon">{% render 'icon', name: 'shield' %}</div><h4>Safe for babies &amp; sensitive skin</h4><p>Free from SLS, parabens, fluoride, mineral oils and synthetic fragrances. Dermatologically tested, eczema-friendly.</p></div>
-        <div class="value-card"><div class="value-card__icon">{% render 'icon', name: 'sparkle' %}</div><h4>Certified, not just claimed</h4><p>ETKO Cosmos, BioArge, Vegan and Cruelty-Free certifications. Same formulas trusted by ETOS in the Netherlands.</p></div>
-        <div class="value-card"><div class="value-card__icon">{% render 'icon', name: 'truck' %}</div><h4>Shipped via Evri from UK</h4><p>Dispatched promptly from the UK. Free shipping over £20, £3 below. 14-day returns, no questions.</p></div>
-      {% endfor %}
+  {%- capture why_cards -%}
+    {% for block in section.blocks %}
+      <div class="value-card" {{ block.shopify_attributes }}>
+        <div class="value-card__icon">{% render 'icon', name: block.settings.icon %}</div>
+        <h4>{{ block.settings.title }}</h4>
+        <p>{{ block.settings.text }}</p>
+      </div>
+    {% else %}
+      <div class="value-card"><div class="value-card__icon">{% render 'icon', name: 'leaf' %}</div><h4>100% natural formulas</h4><p>Plant-derived actives, mineral filters and botanical oils — never synthetic alternatives.</p></div>
+      <div class="value-card"><div class="value-card__icon">{% render 'icon', name: 'shield' %}</div><h4>Safe for babies &amp; sensitive skin</h4><p>Free from SLS, parabens, fluoride, mineral oils and synthetic fragrances. Dermatologically tested.</p></div>
+      <div class="value-card"><div class="value-card__icon">{% render 'icon', name: 'sparkle' %}</div><h4>Certified, not just claimed</h4><p>ETKO Cosmos, BioArge, Vegan and Cruelty-Free. Same formulas trusted by ETOS in the Netherlands.</p></div>
+      <div class="value-card"><div class="value-card__icon">{% render 'icon', name: 'truck' %}</div><h4>Shipped via Evri from the UK</h4><p>Dispatched promptly. Free shipping over £20, £3 below. 14-day returns, no questions.</p></div>
+    {% endfor %}
+  {%- endcapture -%}
+
+  <div class="why-marquee" data-why-marquee>
+    <div class="why-marquee__track">
+      {{ why_cards }}
+      {{ why_cards }}
     </div>
   </div>
 </section>
