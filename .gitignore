@@ -6,3 +6,7 @@ Thumbs.db
 node_modules/
 .shopifyignore
 preview/images/
+blog-engine/.env
+blog-engine/dist/
+blog-engine/processed.json
+blog-engine/processed.json.tmp

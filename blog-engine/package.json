@@ -1,0 +1,26 @@
+{
+  "name": "inature-blog-engine",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "INature UK Shopify blog automation engine for Hemnature source articles.",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "postinstall": "node scripts/repair-blog-automation.mjs",
+    "build": "tsc",
+    "start": "node dist/run.js",
+    "dev": "tsx src/run.ts"
+  },
+  "dependencies": {
+    "blog-automation": "github:pandnyr/blog-automation#cbbe8955f048a324015de3f3e221912bad7f2019",
+    "cheerio": "^1.0.0",
+    "dotenv": "^16.4.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
