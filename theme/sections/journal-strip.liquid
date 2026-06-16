@@ -1,4 +1,5 @@
 {%- assign jblog = blogs[section.settings.blog] -%}
+{%- unless jblog.articles.size > 0 -%}{%- assign jblog = blogs.news -%}{%- endunless -%}
 <section class="section">
   <div class="wrap">
     <header class="section-head section-head--split">
@@ -61,7 +62,7 @@
   "settings": [
     { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
     { "type": "text", "id": "heading", "label": "Heading" },
-    { "type": "blog", "id": "blog", "label": "Blog", "default": "news" }
+    { "type": "blog", "id": "blog", "label": "Blog" }
   ],
   "blocks": [
     {
