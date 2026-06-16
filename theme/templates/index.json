@@ -4,7 +4,7 @@
       "type": "hero",
       "settings": {
         "eyebrow": "Sun care · now in the UK",
-        "heading": "Enjoy the sun, <em>naturally</em>.",
+        "heading": "<p>Enjoy the sun, <em>naturally</em>.</p>",
         "subheading": "100% natural mineral SPF50 — reef-safe, non-nano, safe for babies. Loved by 50,000+ families across Europe, now in the UK.",
         "cta_primary_label": "Shop sun care",
         "cta_primary_url": "/collections/sun-care",
