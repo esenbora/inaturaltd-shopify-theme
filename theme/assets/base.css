@@ -184,11 +184,11 @@ body {
 }
 .site-header__inner {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: auto 1fr auto;
   align-items: center; gap: var(--space-5);
   padding-block: 18px;
 }
-.site-header__nav { display: flex; gap: var(--space-6); align-items: center; }
+.site-header__nav { display: none; }
 .site-header__nav a {
   font-size: var(--fs-sm); font-weight: 500;
   position: relative; padding: 6px 0;
@@ -856,7 +856,7 @@ body {
 .product-card__placeholder svg { width: 40%; height: 40%; }
 
 /* Mobile menu */
-.mobile-menu-toggle { display: none; }
+.mobile-menu-toggle { display: inline-flex; }
 .mobile-menu {
   position: fixed; inset: 0; z-index: 90;
   pointer-events: none; visibility: hidden;
