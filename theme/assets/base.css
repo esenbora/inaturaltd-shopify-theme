@@ -233,15 +233,16 @@ body {
   box-shadow: var(--shadow-md); background: #bfe3f0;
 }
 .hero-banner__img {
-  display: block; width: 100%; height: auto;
-  max-height: 76vh; object-fit: cover; object-position: center;
+  display: block; width: 100%;
+  height: clamp(360px, 36vw, 500px);
+  object-fit: cover; object-position: left center;
 }
-.hero-banner__overlay { position: absolute; inset: 0; display: flex; align-items: center; }
+.hero-banner__overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: flex-end; }
 .hero-banner__overlay::before {
   content: ""; position: absolute; inset: 0;
-  background: linear-gradient(90deg, rgba(248,244,237,.96) 0%, rgba(248,244,237,.84) 36%, rgba(248,244,237,.4) 55%, transparent 72%);
+  background: linear-gradient(270deg, var(--bg) 0%, var(--bg) 42%, rgba(248,244,237,.78) 56%, rgba(248,244,237,.25) 72%, transparent 84%);
 }
-.hero-banner__content { position: relative; max-width: 52%; padding: clamp(24px, 5vw, 64px); }
+.hero-banner__content { position: relative; max-width: 46%; padding: clamp(24px, 5vw, 60px); text-align: left; }
 .hero__title { font-size: var(--fs-4xl); }
 .hero__title em { font-style: italic; color: var(--primary-dark); position: relative; display: inline-block; }
 .hero__title em::after {
@@ -249,12 +250,12 @@ body {
   height: 8px; background: rgba(201, 123, 92, .25); z-index: -1; border-radius: 4px;
 }
 @media (max-width: 820px) {
-  .hero-banner__img { min-height: 340px; max-height: 62vh; object-position: 72% center; }
-  .hero-banner__overlay { align-items: flex-end; }
+  .hero-banner__img { height: clamp(380px, 78vw, 520px); object-position: 30% center; }
+  .hero-banner__overlay { align-items: flex-end; justify-content: stretch; }
   .hero-banner__overlay::before {
-    background: linear-gradient(180deg, rgba(248,244,237,0) 30%, rgba(248,244,237,.72) 58%, rgba(248,244,237,.98) 100%);
+    background: linear-gradient(180deg, rgba(248,244,237,0) 28%, rgba(248,244,237,.7) 56%, rgba(248,244,237,.98) 100%);
   }
-  .hero-banner__content { max-width: 100%; padding: var(--space-6) var(--space-4) var(--space-6); }
+  .hero-banner__content { max-width: 100%; padding: var(--space-6) var(--space-4) var(--space-6); text-align: left; }
 }
 
 /* ---------- Marquee ---------- */
