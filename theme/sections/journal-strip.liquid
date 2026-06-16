@@ -18,7 +18,9 @@
               {%- if article.image -%}
                 <img src="{{ article.image | image_url: width: 600 }}" alt="{{ article.image.alt | escape | default: article.title }}" loading="lazy" width="600" height="450" style="object-fit: cover; padding: 0;">
               {%- else -%}
-                <div class="product-card__placeholder" aria-hidden="true">{% render 'icon', name: 'leaf' %}</div>
+                {%- assign cover_n = forloop.index0 | modulo: 3 | plus: 1 -%}
+                {%- capture cover_file -%}blog-cover-{{ cover_n }}.jpg{%- endcapture -%}
+                <img src="{{ cover_file | asset_url }}" alt="{{ article.title | escape }}" loading="lazy" width="600" height="450" style="object-fit: cover; padding: 0;">
               {%- endif -%}
             </a>
             <span class="product-card__sub">{% if article.tags.size > 0 %}{{ article.tags.first }} · {% endif %}{{ article.published_at | date: '%-d %b %Y' }}</span>
