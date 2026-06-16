@@ -234,15 +234,15 @@ body {
 }
 .hero-banner__img {
   display: block; width: 100%;
-  height: clamp(360px, 36vw, 500px);
+  height: clamp(440px, 46vw, 600px);
   object-fit: cover; object-position: left center;
 }
 .hero-banner__overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: flex-end; }
 .hero-banner__overlay::before {
   content: ""; position: absolute; inset: 0;
-  background: linear-gradient(270deg, var(--bg) 0%, var(--bg) 47%, transparent 51%);
+  background: linear-gradient(270deg, var(--bg) 0%, var(--bg) 38%, transparent 48%);
 }
-.hero-banner__content { position: relative; max-width: 46%; padding: clamp(24px, 5vw, 60px); text-align: left; }
+.hero-banner__content { position: relative; max-width: 40%; padding: clamp(24px, 4vw, 56px); text-align: left; }
 .hero__title { font-size: var(--fs-4xl); }
 .hero__title em { font-style: italic; color: var(--primary-dark); position: relative; display: inline-block; }
 .hero__title em::after {
