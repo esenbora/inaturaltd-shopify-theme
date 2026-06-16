@@ -240,7 +240,7 @@ body {
 .hero-banner__overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: flex-end; }
 .hero-banner__overlay::before {
   content: ""; position: absolute; inset: 0;
-  background: linear-gradient(270deg, var(--bg) 0%, var(--bg) 42%, rgba(248,244,237,.78) 56%, rgba(248,244,237,.25) 72%, transparent 84%);
+  background: linear-gradient(270deg, var(--bg) 0%, var(--bg) 47%, transparent 51%);
 }
 .hero-banner__content { position: relative; max-width: 46%; padding: clamp(24px, 5vw, 60px); text-align: left; }
 .hero__title { font-size: var(--fs-4xl); }
