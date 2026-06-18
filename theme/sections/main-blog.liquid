@@ -3,7 +3,7 @@
     <header class="section-head section-head--center text-center mx-auto" style="max-width: 60ch;">
       <span class="eyebrow">{{ section.settings.eyebrow | default: 'The Journal' }}</span>
       <h1 class="h1 mt-3">{{ blog.title | default: 'Journal' }}</h1>
-      <p class="lead muted mt-3">{{ section.settings.subheading | default: 'Honest guides to natural skincare, clean living and the science behind INCIA — from the INature family to yours.' }}</p>
+      <p class="lead muted mt-3">{{ section.settings.subheading | default: 'Honest guides to natural skincare, clean living and the science behind INCIA, from the INature family to yours.' }}</p>
     </header>
 
     {%- paginate blog.articles by 12 -%}
@@ -25,7 +25,7 @@
             </div>
           </article>
         {%- else -%}
-          <p class="muted text-center" style="grid-column: 1 / -1;">No posts yet — check back soon.</p>
+          <p class="muted text-center" style="grid-column: 1 / -1;">No posts yet, check back soon.</p>
         {%- endfor -%}
       </div>
 

@@ -31,7 +31,7 @@
       <div class="cart-drawer__foot">
         <div class="cart-totals"><span>Subtotal</span><span>{{ cart.total_price | money }}</span></div>
         <p style="font-size: var(--fs-xs); color: var(--primary-dark); margin: 0;">{% if cart.total_price >= 2000 %}✓ Free UK shipping unlocked{% else %}Spend {{ 2000 | minus: cart.total_price | money }} more for free UK shipping{% endif %}</p>
-        <a href="/checkout" class="btn btn-primary btn-block btn-lg">Checkout — {{ cart.total_price | money }}</a>
+        <a href="/checkout" class="btn btn-primary btn-block btn-lg">Checkout · {{ cart.total_price | money }}</a>
         <a href="{{ routes.cart_url }}" class="btn btn-ghost btn-block">View bag</a>
       </div>
     {% endif %}

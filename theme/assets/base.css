@@ -208,6 +208,9 @@ body {
 }
 .brand-mark .brand-nature { color: var(--primary-dark); font-style: italic; }
 .brand-mark .brand-i { color: var(--ink); }
+/* Footer is dark: brand wordmark must be light so 'I' + 'Nature' stay visible */
+.site-footer .brand-mark .brand-i { color: var(--bg); }
+.site-footer .brand-mark .brand-nature { color: #9FC47F; }
 
 .site-header__actions { display: flex; gap: var(--space-3); justify-content: flex-end; align-items: center; }
 .icon-btn {
@@ -829,8 +832,8 @@ body {
 .brand-leaf {
   flex-shrink: 0; display: block;
   width: 2.05em; height: auto;
-  /* slight lift so the leaf body rises above the cap line */
-  transform: translateY(-.05em);
+  /* lift so the leaf body rises above the cap line */
+  transform: translateY(-.16em);
 }
 .brand-verb {
   position: absolute;

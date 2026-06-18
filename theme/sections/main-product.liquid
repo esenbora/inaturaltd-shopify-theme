@@ -6,8 +6,8 @@
     assign on_sale = true
   endif
   assign discount_pct = variant.compare_at_price | minus: variant.price | times: 100.0 | divided_by: variant.compare_at_price | round: 0
-  assign rating = product.metafields.reviews.rating.value | default: 4.8
-  assign review_count = product.metafields.reviews.count.value | default: 142
+  assign rating = product.metafields.reviews.rating.value
+  assign review_count = product.metafields.reviews.count.value
   assign breadcrumb_collection = product.collections.first
   assign p_vendor = product.vendor | default: 'INature UK'
   assign p_short = product.description | strip_html | truncate: 280
@@ -93,11 +93,13 @@
         <p class="pdp__subtitle muted" style="font-size: var(--fs-base); margin: -10px 0 0;">{{ product.metafields.custom.tagline.value }}</p>
       {% endif %}
 
+      {% if rating != blank %}
       <div class="pdp__rating">
         <span class="rating__stars" style="color: var(--accent); letter-spacing: 2px;">★★★★★</span>
         <strong style="font-size: var(--fs-sm);">{{ rating }}</strong>
-        <span class="muted" style="font-size: var(--fs-sm);">· {{ review_count }} verified reviews</span>
+        {% if review_count != blank %}<span class="muted" style="font-size: var(--fs-sm);">· {{ review_count }} verified reviews</span>{% endif %}
       </div>
+      {% endif %}
 
       <div class="pdp__price">
         {% if on_sale %}
@@ -131,8 +133,8 @@
           <input type="number" value="1" min="1" aria-label="Quantity">
           <button type="button" data-qty-inc aria-label="Increase">+</button>
         </div>
-        <button class="btn btn-primary btn-lg btn-block" data-add-to-cart data-variant-id="{{ variant.id }}" data-label="Add to bag — {{ variant.price | money }}"{% if variant.available == false %} disabled{% endif %}>
-          {% if variant.available %}Add to bag — {{ variant.price | money }}{% else %}Sold out{% endif %}
+        <button class="btn btn-primary btn-lg btn-block" data-add-to-cart data-variant-id="{{ variant.id }}" data-label="Add to bag · {{ variant.price | money }}"{% if variant.available == false %} disabled{% endif %}>
+          {% if variant.available %}Add to bag · {{ variant.price | money }}{% else %}Sold out{% endif %}
         </button>
       </div>
 
@@ -140,9 +142,9 @@
 
       <!-- Perks -->
       <div class="pdp__perks">
-        <div class="perk">{% render 'icon', name: 'truck' %} <span><strong>Free UK shipping over £20</strong> — £3 below. Dispatched via Evri, usually 1-3 working days.</span></div>
-        <div class="perk">{% render 'icon', name: 'shield' %} <span><strong>14-day return policy.</strong> Unused, original packaging — we&apos;ll exchange or refund.</span></div>
-        <div class="perk">{% render 'icon', name: 'heart' %} <span><strong>Spend £12+ → free gift.</strong> Add a Lip Balm or Diaper Rash Gel — on us.</span></div>
+        <div class="perk">{% render 'icon', name: 'truck' %} <span><strong>Free UK shipping over £20</strong>, £3 below. Dispatched via Evri, usually 1-3 working days.</span></div>
+        <div class="perk">{% render 'icon', name: 'shield' %} <span><strong>14-day return policy.</strong> Unused, original packaging, we&apos;ll exchange or refund.</span></div>
+        <div class="perk">{% render 'icon', name: 'heart' %} <span><strong>Spend £12+ → free gift.</strong> Add a Lip Balm or Diaper Rash Gel, on us.</span></div>
         <div class="perk">{% render 'icon', name: 'leaf' %} <span><strong>ETKO Cosmos · BioArge · Vegan · Cruelty-Free.</strong> 100% natural origin. Made in Türkiye.</span></div>
       </div>
 

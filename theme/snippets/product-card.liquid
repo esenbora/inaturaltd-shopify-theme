@@ -1,7 +1,7 @@
 {%- liquid
   assign p = product
-  assign rating = p.metafields.reviews.rating.value | default: 4.8
-  assign review_count = p.metafields.reviews.count.value | default: 142
+  assign rating = p.metafields.reviews.rating.value
+  assign review_count = p.metafields.reviews.count.value
   assign tagline = p.metafields.custom.tagline.value | default: p.type
 -%}
 <article class="product-card">
@@ -35,10 +35,12 @@
   <div>
     <span class="product-card__sub">{{ tagline }}</span>
     <h3 class="product-card__title"><a href="{{ p.url }}">{{ p.title }}</a></h3>
-    <span class="rating">
-      <span class="rating__stars">{% for i in (1..5) %}★{% endfor %}</span>
-      {{ rating }} ({{ review_count }})
-    </span>
+    {% if rating != blank %}
+      <span class="rating">
+        <span class="rating__stars">{% for i in (1..5) %}★{% endfor %}</span>
+        {{ rating }}{% if review_count != blank %} ({{ review_count }}){% endif %}
+      </span>
+    {% endif %}
     {% render 'price', product: p %}
   </div>
 </article>

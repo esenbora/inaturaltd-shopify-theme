@@ -10,7 +10,7 @@
         <div class="hero-banner__content stack" style="--gap: var(--space-4);">
           <span class="eyebrow">{{ section.settings.eyebrow | default: 'Sun care · now in the UK' }}</span>
           <h1 class="h-display hero__title">{{ section.settings.heading | default: 'Enjoy the sun, <em>naturally</em>.' }}</h1>
-          <p class="lead">{{ section.settings.subheading | default: '100% natural mineral SPF50 — reef-safe, non-nano, safe for babies. Loved by 50,000+ families across Europe, now in the UK.' }}</p>
+          <p class="lead">{{ section.settings.subheading | default: '100% natural mineral SPF50, reef-safe, non-nano, safe for babies. Loved by 50,000+ families across Europe, now in the UK.' }}</p>
           <div class="cluster" style="--gap: var(--space-3);">
             <a href="{{ section.settings.cta_primary_url | default: '/collections/sun-care' }}" class="btn btn-primary btn-lg">
               {{ section.settings.cta_primary_label | default: 'Shop sun care' }}
@@ -28,7 +28,7 @@
 {
   "name": "Hero",
   "settings": [
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Naturals — UK collection" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Naturals, UK collection" },
     { "type": "richtext", "id": "heading", "label": "Heading", "default": "<p>Skincare with <em>roots</em>, made for modern routines.</p>" },
     { "type": "textarea", "id": "subheading", "label": "Subheading" },
     { "type": "text", "id": "cta_primary_label", "label": "Primary CTA label", "default": "Shop the edit" },

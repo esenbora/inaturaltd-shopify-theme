@@ -1,4 +1,4 @@
-{%- comment -%} Welcome popup — first-visit discount + eBay social proof. JS-controlled (theme.js), once per visitor. {%- endcomment -%}
+{%- comment -%} Welcome popup, first-visit discount + eBay social proof. JS-controlled (theme.js), once per visitor. {%- endcomment -%}
 <div class="promo-popup" data-promo-popup hidden>
   <div class="promo-popup__backdrop" data-promo-close></div>
   <div class="promo-popup__panel" role="dialog" aria-modal="true" aria-label="Welcome offer">
@@ -8,8 +8,8 @@
       <span class="brand-i">I</span><img class="brand-leaf" src="{{ 'brand-leaf.png' | asset_url }}" width="502" height="293" alt="" aria-hidden="true"><span class="brand-nature">Nature</span>
     </span>
 
-    <p class="promo-popup__eyebrow">Welcome — 100% natural, dispatched from the UK</p>
-    <h3 class="promo-popup__title">Get <strong>10% off</strong> your first order</h3>
+    <p class="promo-popup__eyebrow">Welcome, 100% natural, dispatched from the UK</p>
+    <h3 class="promo-popup__title">Get <strong>15% off</strong> your first order</h3>
     <p class="promo-popup__sub">Join our list and we'll send your discount code, plus early access to new drops and offers.</p>
 
     {%- assign popup_done = false -%}
@@ -23,7 +23,7 @@
         <button type="submit" class="btn btn-primary">Get my code</button>
       </div>
       {% if popup_done %}
-        <p class="promo-popup__ok">Thanks! Check your inbox for your 10% code.</p>
+        <p class="promo-popup__ok">Thanks! Check your inbox for your 15% code.</p>
       {% endif %}
     {% endform %}
 
