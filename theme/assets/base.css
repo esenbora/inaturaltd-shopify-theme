@@ -220,6 +220,14 @@ body {
   position: relative;
 }
 .icon-btn:hover { background: rgba(42, 45, 42, .06); }
+.header-trustpilot {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: var(--fs-xs); font-weight: 600; letter-spacing: .02em;
+  color: var(--ink); white-space: nowrap;
+}
+.header-trustpilot__star { width: 16px; height: 16px; fill: #00B67A; flex-shrink: 0; }
+.header-trustpilot:hover { color: var(--primary-dark); }
+@media (max-width: 720px) { .header-trustpilot span { display: none; } }
 .icon-btn .count {
   position: absolute; top: 4px; right: 4px;
   background: var(--accent); color: #fff;

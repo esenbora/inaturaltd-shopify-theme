@@ -17,6 +17,10 @@
     <a href="{{ routes.root_url }}" class="brand-mark" aria-label="{{ shop.name }} home"><span class="brand-i">I</span><span class="brand-leaf-wrap"><span class="brand-verb" data-brand-verb>am</span><img class="brand-leaf" src="{{ 'brand-leaf.png' | asset_url }}" width="502" height="293" alt="" aria-hidden="true" loading="eager"></span><span class="brand-nature">Nature</span></a>
 
     <div class="site-header__actions">
+      <a class="header-trustpilot" href="{{ section.settings.trustpilot_url | default: 'https://www.trustpilot.com/review/inatureltd.com' }}" target="_blank" rel="noopener" aria-label="Read our reviews on Trustpilot">
+        <svg class="header-trustpilot__star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.95 6.5L22 9.27l-5 4.87L18.18 22 12 18.3 5.82 22 7 14.14l-5-4.87 7.05-.77z"/></svg>
+        <span>Trustpilot</span>
+      </a>
       <button class="icon-btn" aria-label="Search" type="button">
         {% render 'icon', name: 'search' %}
       </button>
@@ -55,7 +59,8 @@
 {
   "name": "Header",
   "settings": [
-    { "type": "link_list", "id": "menu", "label": "Main menu", "default": "main-menu" }
+    { "type": "link_list", "id": "menu", "label": "Main menu", "default": "main-menu" },
+    { "type": "url", "id": "trustpilot_url", "label": "Trustpilot review URL" }
   ],
   "enabled_on": { "groups": ["header"] }
 }
