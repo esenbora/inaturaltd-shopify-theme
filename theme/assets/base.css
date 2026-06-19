@@ -69,9 +69,9 @@ body {
 
 .lead { font-size: var(--fs-lg); color: var(--muted); line-height: 1.5; }
 .eyebrow {
-  font-size: var(--fs-xs);
+  font-size: var(--fs-lg);
   text-transform: uppercase;
-  letter-spacing: .14em;
+  letter-spacing: .08em;
   font-weight: 600;
   color: var(--primary-dark);
 }
@@ -141,7 +141,7 @@ body {
   text-transform: uppercase;
   overflow: hidden;
   min-height: 34px;
-  position: relative;
+  position: sticky; top: 0; z-index: 60;
 }
 .announce__marquee { display: flex; padding: 9px 0; }
 .announce__track {
@@ -177,7 +177,7 @@ body {
 
 /* ---------- Header ---------- */
 .site-header {
-  position: sticky; top: 0; z-index: 50;
+  position: sticky; top: 34px; z-index: 50;
   background: rgba(248, 244, 237, .92);
   /* backdrop-filter removed for perf */
   border-bottom: 1px solid var(--border);
@@ -324,7 +324,7 @@ body {
 }
 
 /* ---------- Section header ---------- */
-.section-head { display: grid; gap: var(--space-3); max-width: 60ch; margin-bottom: var(--space-7); }
+.section-head { display: grid; gap: var(--space-2); max-width: 60ch; margin-bottom: var(--space-5); }
 .section-head--center { margin-inline: auto; text-align: center; }
 .section-head--split {
   display: flex; align-items: end; justify-content: space-between; gap: var(--space-5);
@@ -845,7 +845,7 @@ body {
   font-size: .36em;
   font-weight: 600;
   font-style: italic;
-  color: #5A9F2C;
+  color: #8a5a2c;
   white-space: nowrap;
   letter-spacing: 0;
   transition: opacity 240ms ease;
@@ -898,11 +898,11 @@ body {
 
 /* Quality marks grid */
 .quality-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-5);
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: var(--space-5) var(--space-6);
   margin-top: var(--space-6);
 }
+.quality-mark { flex: 0 1 190px; }
 .quality-mark {
   display: flex; flex-direction: column; align-items: center; text-align: center;
   gap: var(--space-3); margin: 0;
@@ -920,11 +920,9 @@ body {
 .quality-mark figcaption { display: flex; flex-direction: column; gap: 4px; }
 .quality-mark figcaption strong { font-size: var(--fs-sm); color: var(--ink); }
 .quality-mark figcaption .muted { font-size: var(--fs-xs); line-height: 1.45; }
-@media (max-width: 1024px) {
-  .quality-grid { grid-template-columns: repeat(4, 1fr); }
-}
 @media (max-width: 720px) {
-  .quality-grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-4); }
+  .quality-grid { gap: var(--space-4) var(--space-5); }
+  .quality-mark { flex-basis: 120px; }
   .quality-mark__logo { width: 80px; height: 80px; padding: 10px; }
 }
 
