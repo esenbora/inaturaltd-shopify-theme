@@ -31,4 +31,20 @@
   Yapılacak: `product-card.liquid`'de `product.images[1]` varsa `<img>` üstüne `data-hover-src` attribute ekle, `base.css`'e `.product-card__media img { transition: opacity 200ms }` + hover kuralı yaz, `theme.js`'e `mouseenter`/`mouseleave` handler'ı ekle.
   Kabul kriteri: desktop'ta ikinci görseli olan ürünlerde hover'da 200ms opacity fade ile görsel değişir, ikinci görsel yoksa hiçbir değişiklik olmaz, mobilde tetiklenmez.
 
+- [ ] **PDP varyant değişimi — fiyat + variant ID güncelleme**
+  Senaryo: Kullanıcı ürün sayfasında farklı bir beden/renk swatchına tıkladığında `data-add-to-cart` butonunun `data-variant-id` değeri güncellenmez, gösterilen fiyat da değişmez. Bu sadece CSS renklendirmesi yapan, satın alma yolunu kıran bir fonksiyon hatasıdır.
+  Kabul kriteri: Swatch tıklaması (a) butonun `data-variant-id`'sini seçili varyantla günceller, (b) sayfadaki fiyat span'ını o varyantın fiyatıyla günceller, (c) varyant stokta değilse butonu "Sold out" yapıp devre dışı bırakır. Sayfa yenilemesi gerektirmez.
+
+- [ ] **PDP akordeon — "Nasıl kullanılır" ve "INCI listesi" metafieldlerden okusun**
+  Senaryo: Tüm ürünlerde "How to use" ve "Ingredients & certifications" akordeon panelleri aynı hardcoded metni gösteriyor. Gerçek ürün özelliklerine göre farklılaşması gerekiyor.
+  Kabul kriteri: `product.metafields.custom.how_to_use.value` doluysa akordeon o içeriği gösterir; boşsa mevcut genel metin fallback olarak kalır. Aynı mantık `product.metafields.custom.inci_list.value` için de geçerli. Akordeonun görsel yapısı değişmez.
+
+- [ ] **Ürün kartı + PDP galeri — responsive srcset ekle**
+  Senaryo: `product-card.liquid` tüm ekran boyutlarında sabit `width: 600` yükler; PDP ana galeri resmi `width: 1200` yükler. Mobilde gereğinden büyük resim = yavaş LCP.
+  Kabul kriteri: `product-card.liquid` içindeki `<img>` etiketi en az 3 breakpoint içeren `srcset` (300w, 600w, 1200w) ve uygun `sizes` attribute'a sahip olur. PDP ana galeri görseli de benzer şekilde `srcset` alır. Görsel bozulma yok.
+
+- [ ] **Related products — gerçek koleksiyon ürünlerini çek, mock'tan çık**
+  Senaryo: `related-products.liquid` mevcut ürün verisine bakmaksızın daima 4 hardcoded mock kart gösteriyor. Gerçek bir mağazada alakasız görünür.
+  Kabul kriteri: Mevcut ürünün ilk koleksiyonundan (mevcut ürün hariç, limit 4) gerçek ürünler `product-card` snippet'iyle render edilir. Koleksiyon boşsa (veya ürün koleksiyonsuzsa) mevcut mock kartlara fallback yapılır.
+
 ## Done
