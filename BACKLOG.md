@@ -47,4 +47,14 @@
   Senaryo: `related-products.liquid` mevcut ürün verisine bakmaksızın daima 4 hardcoded mock kart gösteriyor. Gerçek bir mağazada alakasız görünür.
   Kabul kriteri: Mevcut ürünün ilk koleksiyonundan (mevcut ürün hariç, limit 4) gerçek ürünler `product-card` snippet'iyle render edilir. Koleksiyon boşsa (veya ürün koleksiyonsuzsa) mevcut mock kartlara fallback yapılır.
 
+- [ ] **main-cart.liquid: mobil için responsive breakpoint**
+  Cart sayfası `grid-template-columns: 1.5fr 1fr` ile sabit iki sütun kullanıyor; mobilde yan yana sığmadığı için layout kırılıyor.
+  Yapılacak: `base.css`'e veya `main-cart.liquid`'e `@media (max-width: 720px)` bloğu ekle, grid'i tek sütuna düşür, özet `aside`'ını içeriğin üstüne taşı.
+  Kabul kriteri: 375px viewport'ta cart içerik ve özet dikey sıralanır; hiçbir element overflow oluşturmaz.
+
+- [ ] **locales/tr.json: Türkçe locale dosyası**
+  `en.default.json`'un Türkçe karşılığı yok; README'de açıkça "Locale TR ekle" yazıyor. Türkçe mağaza arayüzü için gerekli.
+  Yapılacak: `locales/tr.json` oluştur, `en.default.json`'daki tüm anahtarları Türkçeye çevir.
+  Kabul kriteri: `locales/tr.json` tüm anahtarları içerir, geçerli JSON'dur ve Shopify locale dosya formatına uygundur.
+
 ## Done
