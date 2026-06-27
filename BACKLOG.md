@@ -57,4 +57,14 @@
   Yapılacak: `locales/tr.json` oluştur, `en.default.json`'daki tüm anahtarları Türkçeye çevir.
   Kabul kriteri: `locales/tr.json` tüm anahtarları içerir, geçerli JSON'dur ve Shopify locale dosya formatına uygundur.
 
+- [ ] **Search sonuç sayfası template'i — `/search` rotasını çalıştır**
+  "Search drawer" görevi kullanıcıyı `/search?q=<terim>` sayfasına yönlendiriyor ama `templates/search.json` ve `sections/main-search.liquid` yok; sayfa 404 veriyor. Drawer sadece yarı çözüm; sonuç sayfası olmadan kullanıcı cevap alamaz.
+  Yapılacak: `templates/search.json` oluştur (main-search + header + footer section'larıyla), `sections/main-search.liquid` oluştur (`search.results` Liquid nesnesiyle ürünleri listele, `product-card` snippet'ini kullan), sonuç yoksa dostane "Sonuç bulunamadı, deneyebileceğin ürünler:" önerisi göster.
+  Kabul kriteri: `/search?q=serum` URL'i açıldığında ilgili ürünler grid görünümünde listelenir; geçersiz bir terimde boş durum mesajı ve önerilen ürünler görünür.
+
+- [ ] **Open Graph ve Twitter Card meta tag'leri ekle**
+  Şu anda bir ürün/blog linki WhatsApp, Twitter, LinkedIn'de paylaşıldığında preview tamamen boş gelir çünkü `theme.liquid` `<head>` bölümünde `og:title`, `og:image`, `og:description` veya `twitter:card` tag'leri yok. UK skincare hedef kitlesinin Instagram/TikTok linklerine bağımlı olduğu düşünülürse bu önemli bir kayıp.
+  Yapılacak: `theme.liquid` `<head>` içine page-type'a göre (product / article / collection / default) koşullu OG ve Twitter Card meta tag'leri ekle; product sayfasında ilk ürün görseli `og:image` olarak kullanılsın.
+  Kabul kriteri: Bir ürün URL'i Twitter Card Validator veya OpenGraph.xyz'e yapıştırıldığında başlık, açıklama ve ürün görseli doğru şekilde önizlenir.
+
 ## Done
