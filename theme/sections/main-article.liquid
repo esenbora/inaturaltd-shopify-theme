@@ -10,7 +10,7 @@
       {%- endif -%}
       <h1 class="h1 mt-3">{{ article.title }}</h1>
       <p class="muted mt-3" style="font-size: var(--fs-sm);">
-        {{ article.published_at | date: '%-d %B %Y' }}{% if article.author != blank %} · By {{ article.author }}{% endif %}
+        {{ article.published_at | date: '%-d %B %Y' }}
       </p>
     </header>
 
@@ -23,7 +23,7 @@
     {%- endif -%}
 
     <div class="article-body flow" style="--flow: 1.1em; font-size: var(--fs-lg); line-height: 1.7;">
-      {{ article.content }}
+      {{ article.content | replace: ' — ', ', ' | replace: ' – ', ', ' | replace: '—', ', ' }}
     </div>
 
     {%- if article.tags.size > 0 -%}
@@ -47,7 +47,7 @@
   "headline": {{ article.title | json }},
   "datePublished": {{ article.published_at | date: '%Y-%m-%d' | json }},
   "dateModified": {{ article.updated_at | date: '%Y-%m-%d' | json }},
-  "author": { "@type": "Organization", "name": {{ article.author | default: shop.name | json }} },
+  "author": { "@type": "Organization", "name": {{ shop.name | json }} },
   "publisher": {
     "@type": "Organization",
     "name": {{ shop.name | json }},

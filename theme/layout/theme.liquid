@@ -20,7 +20,7 @@
     </title>
 
     {%- liquid
-      assign brand_default_desc = 'INature UK, distributor of INCIA Naturals. 100% natural skincare, ETKO Cosmos certified, trusted by 50,000+ families across Europe.'
+      assign brand_default_desc = 'INature UK, distributor of INCIA. 100% natural skincare, ETKO Cosmos certified, trusted by 50,000+ families across Europe.'
       if settings.brand_meta_description != blank
         assign brand_default_desc = settings.brand_meta_description
       endif
@@ -80,7 +80,7 @@
         "https://www.instagram.com/inatureltd",
         "https://www.tiktok.com/@inatureltd"
       ],
-      "description": "Official UK distributor of INCIA Naturals, 100% natural skincare, ETKO Cosmos certified, dispatched from the UK."
+      "description": "Official UK distributor of INCIA, 100% natural skincare, ETKO Cosmos certified, dispatched from the UK."
     }
     </script>
     <script type="application/ld+json">
@@ -132,6 +132,8 @@
     <a class="skip-link" href="#MainContent">{{ 'accessibility.skip_to_text' | t }}</a>
 
     {% sections 'header-group' %}
+
+    {% render 'relaunch-note' %}
 
     <main id="MainContent" role="main">
       {{ content_for_layout }}

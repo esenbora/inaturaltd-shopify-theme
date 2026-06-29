@@ -3,6 +3,18 @@
   assign rating = p.metafields.reviews.rating.value
   assign review_count = p.metafields.reviews.count.value
   assign tagline = p.metafields.custom.tagline.value | default: p.type
+  comment
+    These products lead with a promo/dark-bg shot in Shopify; show the clean white pack shot first for a consistent grid.
+  endcomment
+  assign primary_image = p.featured_image
+  assign secondary_image = p.images.last
+  case p.handle
+    when 'incia-natural-deodorant-for-sensitive-skin' or 'incia-eyelash-serum-for-eyelashes-and-eyebrows' or 'incia-natural-deodorant-for-dark-armpits'
+      assign primary_image = p.images[1]
+    when 'incia-sunscreen-stick-spf-50-with-mineral-filters'
+      assign primary_image = p.images[0]
+      assign secondary_image = p.images[2]
+  endcase
 -%}
 <article class="product-card">
   <a href="{{ p.url }}" class="product-card__media" aria-label="{{ p.title }}">
@@ -13,11 +25,11 @@
       {% if p.tags contains 'new' %}<span class="pill pill-soft">New</span>{% endif %}
       {% if p.tags contains 'bestseller' %}<span class="pill pill-soft">Bestseller</span>{% endif %}
     </div>
-    {% if p.featured_image %}
-      <img class="product-card__img product-card__img--primary" src="{{ p.featured_image | image_url: width: 600 }}" alt="{{ p.title }}" loading="lazy" width="600" height="600">
+    {% if primary_image %}
+      <img class="product-card__img product-card__img--primary" src="{{ primary_image | image_url: width: 600 }}" alt="{{ p.title }}" loading="lazy" width="600" height="600">
       {% if p.images.size > 1 %}
-        {%- comment -%} Hover shows the lifestyle/coloured shot (last image), not the back-of-pack {%- endcomment -%}
-        <img class="product-card__img product-card__img--secondary" src="{{ p.images.last | image_url: width: 600 }}" alt="" aria-hidden="true" loading="lazy" width="600" height="600">
+        {%- comment -%} Hover shows the lifestyle/coloured shot (last image by default; per-product override above), not the back-of-pack {%- endcomment -%}
+        <img class="product-card__img product-card__img--secondary" src="{{ secondary_image | image_url: width: 600 }}" alt="" aria-hidden="true" loading="lazy" width="600" height="600">
       {% endif %}
     {% else %}
       <div class="product-card__placeholder" aria-hidden="true">{% render 'icon', name: 'leaf' %}</div>

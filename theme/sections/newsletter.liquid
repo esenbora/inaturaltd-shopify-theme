@@ -4,11 +4,15 @@
       <span class="eyebrow" style="color: rgba(255,255,255,.85);">{{ section.settings.eyebrow | default: 'First-time shopper?' }}</span>
       <h2 class="h2">{{ section.settings.heading | default: 'Get 15% off your first order.' }}</h2>
       <p>{{ section.settings.subheading | default: 'Plus restock alerts, INCIA arrivals from Türkiye, and the occasional founder note. Unsubscribe in one click.' }}</p>
-      <form action="#" method="post">
-        <input type="email" name="email" placeholder="{{ section.settings.placeholder | default: 'your@email.com' }}" required>
-        <button type="submit">{{ section.settings.button_label | default: 'Send my 20% code' }}</button>
-      </form>
-      <small style="color: rgba(255,255,255,.7); font-size: var(--fs-xs);">New parents, use code <strong style="color: white;">NEWLIFE</strong> at checkout for 15% off your first INature order.</small>
+      {%- form 'customer' -%}
+        {%- if form.posted_successfully? -%}
+          <p class="form-note form-note--ok" style="color: #fff;">You're in! 🌿 Your <strong>15% off</strong> code is on its way — check your inbox, and your <strong>spam/junk folder</strong> just in case.</p>
+        {%- endif -%}
+        <input type="hidden" name="contact[tags]" value="newsletter, prospect">
+        <input type="email" name="contact[email]" placeholder="{{ section.settings.placeholder | default: 'your@email.com' }}" aria-label="Email address" required>
+        <button type="submit">Get my 15% off</button>
+      {%- endform -%}
+      <small style="color: rgba(255,255,255,.7); font-size: var(--fs-xs);">New customers get <strong style="color: white;">15% off</strong> their first INature order, applied automatically.</small>
     </div>
   </div>
 </section>
@@ -21,7 +25,7 @@
     { "type": "text", "id": "heading", "label": "Heading", "default": "Get 15% off your first order." },
     { "type": "textarea", "id": "subheading", "label": "Subheading", "default": "Plus restock alerts, INCIA arrivals from Türkiye, and the occasional founder note. Unsubscribe in one click." },
     { "type": "text", "id": "placeholder", "label": "Input placeholder", "default": "your@email.com" },
-    { "type": "text", "id": "button_label", "label": "Button label", "default": "Send my 20% code" }
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Get my 15% off" }
   ],
   "presets": [{ "name": "Newsletter" }]
 }

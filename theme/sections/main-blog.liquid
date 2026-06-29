@@ -9,10 +9,26 @@
     {%- paginate blog.articles by 12 -%}
       <div class="grid product-grid" style="margin-top: var(--space-7);">
         {%- for article in blog.articles -%}
+          {%- if article.content == blank -%}{%- continue -%}{%- endif -%}
           <article class="product-card">
+            {%- liquid
+              assign ah = article.handle | split: '/' | last
+              assign cover_url = ''
+              if article.image
+                assign cover_url = article.image | image_url: width: 600
+              elsif ah == 'nappy-rash-causes-prevention-a-natural-gel-that-helps'
+                assign cover_url = 'blog-nappy.jpg' | asset_url
+              elsif ah == 'how-to-use-the-incia-sos-stick-a-natural-skin-relief-guide'
+                assign cover_url = 'blog-sos.jpg' | asset_url
+              elsif ah == 'why-we-chose-incia-the-inature-story'
+                assign cover_url = 'blog-story.jpg' | asset_url
+              elsif ah == 'cruelty-free-skincare-uk-how-to-spot-it'
+                assign cover_url = 'blog-cruelty.jpg' | asset_url
+              endif
+            -%}
             <a href="{{ article.url }}" class="product-card__media" aria-label="{{ article.title }}" style="aspect-ratio: 16/10;">
-              {%- if article.image -%}
-                <img src="{{ article.image | image_url: width: 600 }}" alt="{{ article.image.alt | escape | default: article.title }}" loading="lazy" width="600" height="375" style="object-fit: cover; padding: 0;">
+              {%- if cover_url != blank -%}
+                <img src="{{ cover_url }}" alt="{{ article.title | escape }}" loading="lazy" width="600" height="375" style="object-fit: cover; padding: 0;">
               {%- else -%}
                 <div class="product-card__placeholder" aria-hidden="true">{% render 'icon', name: 'leaf' %}</div>
               {%- endif -%}

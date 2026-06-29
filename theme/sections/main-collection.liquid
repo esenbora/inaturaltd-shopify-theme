@@ -4,7 +4,7 @@
     {% if collection.description != blank %}
       <p class="lead muted mt-3 mx-auto" style="max-width: 60ch;">{{ collection.description }}</p>
     {% else %}
-      <p class="lead muted mt-3 mx-auto" style="max-width: 60ch;">31 natural products from INCIA, already trusted across Europe for over 5 years. Now dispatched from the UK by INature.</p>
+      <p class="lead muted mt-3 mx-auto" style="max-width: 60ch;">{{ collections.all.products_count }} natural products from INCIA, already trusted across Europe for over 5 years. Now dispatched from the UK by INature.</p>
     {% endif %}
   </div>
 </section>
@@ -71,7 +71,7 @@
         {% render 'mock-product-card',
           image: 'https://static.wixstatic.com/media/bf3c53_b6212b6355fb434f9fa499b58ec5293c~mv2.webp/v1/fill/w_600,h_600,al_c,q_85/bf3c53_b6212b6355fb434f9fa499b58ec5293c~mv2.webp',
           title: 'INCIA Lip Balm Coconut', sub: '100% natural coconut lip balm · Soothes dry, chapped lips · Halal · 5 ml',
-          price: '5.95', rating: '4.9', reviews: '412', badge: 'Free gift £12+', url: '/products/incia-lip-balm-coconut' %}
+          price: '5.95', rating: '4.9', reviews: '412', badge: 'Free gift £20+', url: '/products/incia-lip-balm-coconut' %}
         {% render 'mock-product-card',
           image: 'https://static.wixstatic.com/media/bf3c53_2124fee16f9b4d19a6aab711629f7989~mv2.webp/v1/fill/w_600,h_600,al_c,q_85/bf3c53_2124fee16f9b4d19a6aab711629f7989~mv2.webp',
           title: 'INCIA Stretch Mark Gel Cream', sub: 'Pregnancy-safe gel cream · Prevents & fades stretch marks · Dermatologically tested · 75 ml',
@@ -90,12 +90,10 @@
           price: '9', was: '11', rating: '4.8', reviews: '256', url: '/products/incia-intensive-repair-care-cream-for-dry-skin' %}
       {%- endif -%}
     </div>
-
-    <div class="text-center mt-5" style="margin-top: var(--space-7);">
-      <button class="btn btn-outline btn-lg" type="button">Load more</button>
-    </div>
   </div>
 </section>
+
+<div style="height: var(--space-8);" aria-hidden="true"></div>
 
 {% schema %}
 {

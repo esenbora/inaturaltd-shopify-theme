@@ -1,22 +1,64 @@
 <section class="hero hero--banner">
   <div class="wrap">
-    <div class="hero-banner">
-      {% if section.settings.image %}
-        <img class="hero-banner__img" src="{{ section.settings.image | image_url: width: 1690 }}" alt="" width="845" height="677" fetchpriority="high">
-      {% else %}
-        <img class="hero-banner__img" src="{{ 'hero-summer.jpg' | asset_url }}" alt="The INCIA natural sun care range under a beach umbrella" width="2000" height="677" fetchpriority="high">
-      {% endif %}
+    <div class="hero-banner" data-hero-carousel>
+      <div class="hero-banner__slides">
+        <div class="hero-banner__slide is-active">
+          <picture>
+            <source media="(max-width: 820px)" srcset="{{ 'hero-2-mobile.jpg' | asset_url }}">
+            <img class="hero-banner__img" src="{{ 'hero-2.jpg' | asset_url }}" alt="INCIA natural face sunscreen SPF50" width="2000" height="848" fetchpriority="high">
+          </picture>
+        </div>
+        <div class="hero-banner__slide">
+          <picture>
+            <source media="(max-width: 820px)" srcset="{{ 'hero-3-mobile.jpg' | asset_url }}">
+            <img class="hero-banner__img" src="{{ 'hero-3.jpg' | asset_url }}" alt="INCIA natural baby & kids shampoo" width="2000" height="848" loading="lazy">
+          </picture>
+        </div>
+        <div class="hero-banner__slide">
+          <picture>
+            <source media="(max-width: 820px)" srcset="{{ 'hero-4-mobile.jpg' | asset_url }}">
+            <img class="hero-banner__img" src="{{ 'hero-4.jpg' | asset_url }}" alt="INCIA intensive repair care cream" width="2000" height="848" loading="lazy">
+          </picture>
+        </div>
+        <div class="hero-banner__slide">
+          <picture>
+            <source media="(max-width: 820px)" srcset="{{ 'hero-5-mobile.jpg' | asset_url }}">
+            <img class="hero-banner__img" src="{{ 'hero-5.jpg' | asset_url }}" alt="INCIA natural lip balm" width="2000" height="848" loading="lazy">
+          </picture>
+        </div>
+        <div class="hero-banner__slide">
+          <picture>
+            <source media="(max-width: 820px)" srcset="{{ 'hero-6-mobile.jpg' | asset_url }}">
+            <img class="hero-banner__img" src="{{ 'hero-6.jpg' | asset_url }}" alt="INCIA foaming facial cleanser" width="2000" height="848" loading="lazy">
+          </picture>
+        </div>
+        <div class="hero-banner__slide">
+          <picture>
+            <source media="(max-width: 820px)" srcset="{{ 'hero-7-mobile.jpg' | asset_url }}">
+            <img class="hero-banner__img" src="{{ 'hero-7.jpg' | asset_url }}" alt="INCIA natural herbal shampoo" width="2000" height="848" loading="lazy">
+          </picture>
+        </div>
+        <div class="hero-banner__dots" role="tablist" aria-label="Banner slides">
+          <button type="button" class="is-active" aria-label="Slide 1"></button>
+          <button type="button" aria-label="Slide 2"></button>
+          <button type="button" aria-label="Slide 3"></button>
+          <button type="button" aria-label="Slide 4"></button>
+          <button type="button" aria-label="Slide 5"></button>
+          <button type="button" aria-label="Slide 6"></button>
+        </div>
+      </div>
+
       <div class="hero-banner__overlay">
         <div class="hero-banner__content stack" style="--gap: var(--space-4);">
-          <span class="eyebrow">{{ section.settings.eyebrow | default: 'Sun care · now in the UK' }}</span>
-          <h1 class="h-display hero__title">{{ section.settings.heading | default: 'Enjoy the sun, <em>naturally</em>.' }}</h1>
-          <p class="lead">{{ section.settings.subheading | default: '100% natural mineral SPF50, reef-safe, non-nano, safe for babies. Loved by 50,000+ families across Europe, now in the UK.' }}</p>
+          <span class="eyebrow">{{ section.settings.eyebrow | default: '100% natural · now in the UK' }}</span>
+          <h1 class="h-display hero__title">Clean care, <em>naturally.</em></h1>
+          <p class="lead">{{ section.settings.subheading | default: '100% natural, dermatologically tested skincare for the whole family, sun care, baby, face and body. Trusted by 50,000+ across Europe, now in the UK.' }}</p>
           <div class="cluster" style="--gap: var(--space-3);">
-            <a href="{{ section.settings.cta_primary_url | default: '/collections/sun-care' }}" class="btn btn-primary btn-lg">
-              {{ section.settings.cta_primary_label | default: 'Shop sun care' }}
+            <a href="{{ section.settings.cta_primary_url | default: routes.all_products_collection_url }}" class="btn btn-primary btn-lg">
+              {{ section.settings.cta_primary_label | default: 'Shop the range' }}
               {% render 'icon', name: 'arrow-right' %}
             </a>
-            <a href="{{ section.settings.cta_secondary_url | default: routes.all_products_collection_url }}" class="btn btn-ghost btn-lg">{{ section.settings.cta_secondary_label | default: 'Shop all' }}</a>
+            <a href="{{ section.settings.cta_secondary_url | default: '/collections/bestsellers' }}" class="btn btn-ghost btn-lg">{{ section.settings.cta_secondary_label | default: 'Bestsellers' }}</a>
           </div>
         </div>
       </div>
@@ -24,18 +66,40 @@
   </div>
 </section>
 
+<script>
+  (function () {
+    var hero = document.querySelector('[data-hero-carousel]');
+    if (!hero) return;
+    var slides = hero.querySelectorAll('.hero-banner__slide');
+    var dots = hero.querySelectorAll('.hero-banner__dots button');
+    if (slides.length < 2) { hero.querySelector('.hero-banner__dots').style.display = 'none'; return; }
+    var i = 0, timer;
+    function go(n) {
+      slides[i].classList.remove('is-active');
+      if (dots[i]) dots[i].classList.remove('is-active');
+      i = (n + slides.length) % slides.length;
+      slides[i].classList.add('is-active');
+      if (dots[i]) dots[i].classList.add('is-active');
+    }
+    function start() { timer = setInterval(function () { go(i + 1); }, 5500); }
+    dots.forEach(function (d, n) {
+      d.addEventListener('click', function () { clearInterval(timer); go(n); start(); });
+    });
+    start();
+  })();
+</script>
+
 {% schema %}
 {
   "name": "Hero",
   "settings": [
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Naturals, UK collection" },
-    { "type": "richtext", "id": "heading", "label": "Heading", "default": "<p>Skincare with <em>roots</em>, made for modern routines.</p>" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Sun care · now in the UK" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Enjoy the sun, <em>naturally</em>." },
     { "type": "textarea", "id": "subheading", "label": "Subheading" },
-    { "type": "text", "id": "cta_primary_label", "label": "Primary CTA label", "default": "Shop the edit" },
+    { "type": "text", "id": "cta_primary_label", "label": "Primary CTA label", "default": "Shop sun care" },
     { "type": "url", "id": "cta_primary_url", "label": "Primary CTA URL" },
-    { "type": "text", "id": "cta_secondary_label", "label": "Secondary CTA label", "default": "Read our story" },
-    { "type": "url", "id": "cta_secondary_url", "label": "Secondary CTA URL" },
-    { "type": "image_picker", "id": "image", "label": "Hero image" }
+    { "type": "text", "id": "cta_secondary_label", "label": "Secondary CTA label", "default": "Shop all" },
+    { "type": "url", "id": "cta_secondary_url", "label": "Secondary CTA URL" }
   ],
   "presets": [{ "name": "Hero" }]
 }

@@ -20,8 +20,9 @@
       <a class="header-trustpilot" href="{{ section.settings.trustpilot_url | default: 'https://www.trustpilot.com/review/inatureltd.com' }}" target="_blank" rel="noopener" aria-label="Read our reviews on Trustpilot">
         <svg class="header-trustpilot__star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.95 6.5L22 9.27l-5 4.87L18.18 22 12 18.3 5.82 22 7 14.14l-5-4.87 7.05-.77z"/></svg>
         <span>Trustpilot</span>
+        <span class="header-trustpilot__score">4.5</span>
       </a>
-      <button class="icon-btn" aria-label="Search" type="button">
+      <button class="icon-btn" data-search-open aria-label="Search" type="button">
         {% render 'icon', name: 'search' %}
       </button>
       <a class="icon-btn" href="{{ routes.account_url }}" aria-label="Account">
@@ -34,6 +35,17 @@
     </div>
   </div>
 </header>
+
+<div class="site-search" data-search hidden>
+  <div class="site-search__backdrop" data-search-close></div>
+  <form class="site-search__bar" action="{{ routes.search_url }}" method="get" role="search">
+    <input type="hidden" name="type" value="product">
+    <span class="site-search__icon" aria-hidden="true">{% render 'icon', name: 'search' %}</span>
+    <input class="site-search__input" type="search" name="q" placeholder="Search for products…" aria-label="Search the store" autocomplete="off" data-search-input>
+    <button type="submit" class="btn btn-primary site-search__submit">Search</button>
+    <button type="button" class="icon-btn site-search__close" data-search-close aria-label="Close search">{% render 'icon', name: 'close' %}</button>
+  </form>
+</div>
 
 <aside class="mobile-menu" data-mobile-menu aria-hidden="true" aria-label="Mobile navigation">
   <div class="mobile-menu__backdrop" data-mobile-menu-close></div>
@@ -51,6 +63,7 @@
       <a href="/collections/lip-balms">Lip Balms</a>
       <a href="/blogs/news">Journal</a>
       <a href="/pages/about">Story</a>
+      <a href="/pages/faq">FAQ</a>
     </nav>
   </div>
 </aside>

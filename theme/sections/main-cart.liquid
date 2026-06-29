@@ -1,20 +1,27 @@
-<section class="section">
+<section class="section" data-cart-page>
   <div class="wrap">
     <h1 class="h1 mb-5">Your bag</h1>
     {% if cart.item_count > 0 %}
-      <div class="grid" style="grid-template-columns: 1.5fr 1fr; --gap: var(--space-7);">
-        <div class="stack" style="--gap: var(--space-4);">
+      <div class="grid cart-grid" style="--gap: var(--space-7);">
+        <form action="{{ routes.cart_url }}" method="post" class="stack" style="--gap: var(--space-4);">
           {% for item in cart.items %}
-            <div class="cart-line" style="padding: var(--space-4) 0; border-bottom: 1px solid var(--border);">
-              <div class="cart-line__img"><img src="{{ item.image | image_url: width: 200 }}" alt="" width="200" height="250"></div>
+            <div class="cart-line" data-cart-line data-line-key="{{ item.key }}" style="padding: var(--space-4) 0; border-bottom: 1px solid var(--border);">
+              <a href="{{ item.url }}" class="cart-line__img"><img src="{{ item.image | image_url: width: 200 }}" alt="{{ item.product.title | escape }}" width="200" height="250"></a>
               <div>
-                <div class="cart-line__title">{{ item.product.title }}</div>
-                <div class="cart-line__variant">{{ item.variant.title }}</div>
+                <a href="{{ item.url }}" class="cart-line__title">{{ item.product.title }}</a>
+                {% unless item.variant.title contains 'Default' %}<div class="cart-line__variant">{{ item.variant.title }}</div>{% endunless %}
+                <div class="qty cart-line__qty" data-cart-qty data-line-key="{{ item.key }}">
+                  <button type="button" data-cart-qty-dec aria-label="Decrease quantity">&minus;</button>
+                  <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" inputmode="numeric" data-cart-qty-input aria-label="Quantity for {{ item.product.title | escape }}">
+                  <button type="button" data-cart-qty-inc aria-label="Increase quantity">+</button>
+                </div>
+                <button type="button" class="cart-line__remove" data-cart-line-remove data-line-key="{{ item.key }}">Remove</button>
               </div>
               <div class="cart-line__price">{{ item.final_line_price | money }}</div>
             </div>
           {% endfor %}
-        </div>
+          <noscript><button type="submit" name="update" class="btn btn-outline mt-3">Update bag</button></noscript>
+        </form>
         <aside style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-6); align-self: start; position: sticky; top: 100px;">
           <h3 class="h3 mb-4">Summary</h3>
           <div class="flow" style="--flow: var(--space-3);">

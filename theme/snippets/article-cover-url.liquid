@@ -1,0 +1,17 @@
+{%- liquid
+  assign w = width | default: 600
+  if article.image
+    echo article.image | image_url: width: w
+  else
+    case article.handle
+      when 'nappy-rash-causes-prevention-a-natural-gel-that-helps'
+        echo 'blog-nappy.jpg' | asset_url
+      when 'how-to-use-the-incia-sos-stick-a-natural-skin-relief-guide'
+        echo 'blog-sos.jpg' | asset_url
+      when 'why-we-chose-incia-the-inature-story'
+        echo 'blog-story.jpg' | asset_url
+      when 'cruelty-free-skincare-uk-how-to-spot-it'
+        echo 'blog-cruelty.jpg' | asset_url
+    endcase
+  endif
+-%}

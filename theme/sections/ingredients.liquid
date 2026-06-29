@@ -1,102 +1,68 @@
 <section class="ingredients section">
   <div class="wrap">
-    <header class="section-head section-head--center text-center mx-auto">
-      <span class="eyebrow">{{ section.settings.eyebrow | default: 'Discover the difference' }}</span>
-      <h2 class="h2">{{ section.settings.heading | default: 'What goes in, and what never does.' }}</h2>
-      <p class="lead muted">{{ section.settings.subheading | default: 'Plant-derived actives and mineral filters, with the harsh stuff left out. The same INCIA formulas trusted across Europe for over five years.' }}</p>
-    </header>
+    {%- liquid
+      assign before_url = 'skin-before.jpg' | asset_url
+      if section.settings.before_image
+        assign before_url = section.settings.before_image | image_url: width: 1200
+      endif
+      assign after_url = 'skin-after.jpg' | asset_url
+      if section.settings.after_image
+        assign after_url = section.settings.after_image | image_url: width: 1400
+      endif
+      assign cta_url = section.settings.cta_url | default: routes.all_products_collection_url
+    -%}
 
-    <div class="grid ingredient-grid">
-      {% for block in section.blocks %}
-        <div class="ingredient" {{ block.shopify_attributes }}>
-          <div class="ingredient__media">
-            {% if block.settings.image %}
-              <img src="{{ block.settings.image | image_url: width: 400 }}" alt="{{ block.settings.title }}" width="400" height="400">
-            {% else %}
-              <img src="{{ block.settings.fallback_url }}" alt="{{ block.settings.title }}" width="400" height="400">
-            {% endif %}
-          </div>
-          <h4>{{ block.settings.title }}</h4>
-          <p>{{ block.settings.text }}</p>
+    <div class="ba-block">
+      <div class="ba" data-ba>
+        <img class="ba__img ba__img--after" src="{{ after_url }}" alt="Calm, healthy skin after switching to INCIA natural care" loading="lazy">
+        <div class="ba__before" data-ba-before>
+          <img class="ba__img" src="{{ before_url }}" alt="Irritated, eczema-prone skin before INCIA natural care" loading="lazy">
         </div>
-      {% else %}
-        <div class="ingredient">
-          <div class="ingredient__media" style="display: grid; place-items: center; background: linear-gradient(135deg, #EFE7D6, #F8F4ED);">
-            <svg width="60" height="60" viewBox="0 0 80 80" fill="none" stroke="#5A7C5D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="40" cy="40" r="32"/>
-              <path d="M40 18 C 30 30 30 50 40 62 C 50 50 50 30 40 18 Z"/>
-              <path d="M40 18 L 40 62" stroke-width="1.5"/>
-            </svg>
-          </div>
-          <h4>ETKO Cosmos</h4><p>Strict natural &amp; organic cosmetics standard. Audited every 12 months.</p>
-        </div>
-        <div class="ingredient">
-          <div class="ingredient__media" style="display: grid; place-items: center; background: linear-gradient(135deg, #EFE7D6, #F8F4ED);">
-            <svg width="60" height="60" viewBox="0 0 80 80" fill="none" stroke="#5A7C5D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M40 12 L 56 22 L 56 42 C 56 56 40 68 40 68 C 40 68 24 56 24 42 L 24 22 Z"/>
-              <path d="M32 40 L 38 46 L 50 32"/>
-            </svg>
-          </div>
-          <h4>BioArge</h4><p>Certified organic &amp; environmentally friendly R&amp;D process.</p>
-        </div>
-        <div class="ingredient">
-          <div class="ingredient__media" style="display: grid; place-items: center; background: linear-gradient(135deg, #EFE7D6, #F8F4ED);">
-            <svg width="60" height="60" viewBox="0 0 80 80" fill="none" stroke="#5A7C5D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M40 14 C 28 14 22 22 24 32 C 26 40 32 44 40 44 C 48 44 54 40 56 32 C 58 22 52 14 40 14 Z"/>
-              <path d="M40 44 L 40 66" stroke-width="2"/>
-              <path d="M32 56 L 48 56" stroke-width="2"/>
-            </svg>
-          </div>
-          <h4>Vegan</h4><p>Plant-based, animal-derived-free, effective on eczema-prone skin.</p>
-        </div>
-        <div class="ingredient">
-          <div class="ingredient__media" style="display: grid; place-items: center; background: linear-gradient(135deg, #EFE7D6, #F8F4ED);">
-            <svg width="60" height="60" viewBox="0 0 80 80" fill="none" stroke="#5A7C5D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M28 36 C 22 32 20 24 24 18 C 30 14 36 18 38 22 M 52 36 C 58 32 60 24 56 18 C 50 14 44 18 42 22"/>
-              <ellipse cx="40" cy="46" rx="18" ry="14"/>
-              <circle cx="34" cy="44" r="2" fill="#5A7C5D"/>
-              <circle cx="46" cy="44" r="2" fill="#5A7C5D"/>
-              <path d="M36 52 Q 40 56 44 52"/>
-            </svg>
-          </div>
-          <h4>Cruelty-Free</h4><p>No animal testing, not in research, not in production. Ever.</p>
-        </div>
-        <div class="ingredient">
-          <div class="ingredient__media" style="display: grid; place-items: center; background: linear-gradient(135deg, #EFE7D6, #F8F4ED);">
-            <svg width="60" height="60" viewBox="0 0 80 80" fill="none" stroke="#5A7C5D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="40" cy="28" r="10"/>
-              <path d="M22 64 C 22 50 30 42 40 42 C 50 42 58 50 58 64"/>
-              <path d="M32 22 Q 40 14 48 22" stroke-width="1.5"/>
-            </svg>
-          </div>
-          <h4>Baby-Friendly</h4><p>Safe for mom &amp; baby, gentle enough for newborn skin.</p>
-        </div>
-      {% endfor %}
+        <span class="ba__label ba__label--before">{{ section.settings.before_label | default: 'Before' }}</span>
+        <span class="ba__label ba__label--after">{{ section.settings.after_label | default: 'After' }}</span>
+        <span class="ba__divider" aria-hidden="true"></span>
+        <span class="ba__handle" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 6 L4 12 L9 18"/>
+            <path d="M15 6 L20 12 L15 18"/>
+          </svg>
+        </span>
+        <input class="ba__range" type="range" min="0" max="100" value="50" step="0.1" aria-label="Drag to compare before and after" data-ba-range>
+      </div>
+
+      <div class="ba-block__copy">
+        <span class="eyebrow">Discover the difference</span>
+        <h2 class="h2">See the difference for yourself.</h2>
+        <p class="lead muted">Sensitive, reactive or eczema-prone skin that flares up fast? Our formulas are made for the most delicate, dry skin, from gentle washes to rich creams. Used together they calm redness and itching for softer, more comfortable skin, just as our customers tell us every day.</p>
+        <a href="{{ cta_url }}" class="btn btn-primary btn-lg">{{ section.settings.cta_label | default: 'Shop sensitive skin care' }} {% render 'icon', name: 'arrow-right' %}</a>
+      </div>
     </div>
   </div>
 </section>
 
+<script>
+  (function () {
+    document.querySelectorAll('[data-ba]').forEach(function (ba) {
+      var range = ba.querySelector('[data-ba-range]');
+      if (!range) return;
+      function set(v) { ba.style.setProperty('--pos', v + '%'); }
+      range.addEventListener('input', function () { set(range.value); });
+      set(range.value);
+    });
+  })();
+</script>
+
 {% schema %}
 {
-  "name": "Ingredient spotlight",
+  "name": "Before & after",
   "settings": [
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
-    { "type": "text", "id": "heading", "label": "Heading" },
-    { "type": "textarea", "id": "subheading", "label": "Subheading" }
+    { "type": "image_picker", "id": "before_image", "label": "Before image" },
+    { "type": "image_picker", "id": "after_image", "label": "After image" },
+    { "type": "text", "id": "before_label", "label": "Before label", "default": "Before" },
+    { "type": "text", "id": "after_label", "label": "After label", "default": "After" },
+    { "type": "text", "id": "cta_label", "label": "Button label", "default": "Shop sensitive skin care" },
+    { "type": "url", "id": "cta_url", "label": "Button URL" }
   ],
-  "blocks": [
-    {
-      "type": "ingredient",
-      "name": "Ingredient",
-      "settings": [
-        { "type": "image_picker", "id": "image", "label": "Image" },
-        { "type": "text", "id": "fallback_url", "label": "Fallback image URL" },
-        { "type": "text", "id": "title", "label": "Title" },
-        { "type": "textarea", "id": "text", "label": "Text" }
-      ]
-    }
-  ],
-  "max_blocks": 10,
-  "presets": [{ "name": "Ingredients" }]
+  "presets": [{ "name": "Before & after" }]
 }
 {% endschema %}

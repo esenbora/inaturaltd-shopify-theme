@@ -10,22 +10,36 @@
       <a href="{{ jblog.url | default: '/blogs/news' }}" class="btn btn-outline">All articles {% render 'icon', name: 'arrow-right' %}</a>
     </header>
 
-    <div class="grid" style="grid-template-columns: repeat(3, 1fr); --gap: var(--space-6);">
+    <div class="grid journal-grid" style="--gap: var(--space-6);">
       {% if jblog.articles.size > 0 %}
-        {% for article in jblog.articles limit: 3 %}
+        {%- assign shown = 0 -%}
+        {% for article in jblog.articles %}
+          {%- if article.content == blank or shown >= 3 -%}{%- continue -%}{%- endif -%}
+          {%- assign shown = shown | plus: 1 -%}
           <article class="stack" style="--gap: var(--space-3);">
+            {%- liquid
+              assign ah = article.handle | split: '/' | last
+              assign cover_url = ''
+              if article.image
+                assign cover_url = article.image | image_url: width: 600
+              elsif ah == 'nappy-rash-causes-prevention-a-natural-gel-that-helps'
+                assign cover_url = 'blog-nappy.jpg' | asset_url
+              elsif ah == 'how-to-use-the-incia-sos-stick-a-natural-skin-relief-guide'
+                assign cover_url = 'blog-sos.jpg' | asset_url
+              elsif ah == 'why-we-chose-incia-the-inature-story'
+                assign cover_url = 'blog-story.jpg' | asset_url
+              elsif ah == 'cruelty-free-skincare-uk-how-to-spot-it'
+                assign cover_url = 'blog-cruelty.jpg' | asset_url
+              else
+                assign cover_url = 'blog-story.jpg' | asset_url
+              endif
+            -%}
             <a href="{{ article.url }}" class="product-card__media" style="aspect-ratio: 4/3;">
-              {%- if article.image -%}
-                <img src="{{ article.image | image_url: width: 600 }}" alt="{{ article.image.alt | escape | default: article.title }}" loading="lazy" width="600" height="450" style="object-fit: cover; padding: 0;">
-              {%- else -%}
-                {%- assign cover_n = forloop.index0 | modulo: 3 | plus: 1 -%}
-                {%- capture cover_file -%}blog-cover-{{ cover_n }}.jpg{%- endcapture -%}
-                <img src="{{ cover_file | asset_url }}" alt="{{ article.title | escape }}" loading="lazy" width="600" height="450" style="object-fit: cover; padding: 0;">
-              {%- endif -%}
+              <img src="{{ cover_url }}" alt="{{ article.title | escape }}" loading="lazy" width="600" height="450" style="object-fit: cover; padding: 0;">
             </a>
             <span class="product-card__sub">{% if article.tags.size > 0 %}{{ article.tags.first }} · {% endif %}{{ article.published_at | date: '%-d %b %Y' }}</span>
             <h3 class="h4"><a href="{{ article.url }}">{{ article.title }}</a></h3>
-            <p class="muted" style="font-size: var(--fs-sm);">{{ article.excerpt_or_content | strip_html | truncatewords: 22 }}</p>
+            <p class="muted" style="font-size: var(--fs-sm);">{{ article.excerpt_or_content | strip_html | replace: ' — ', ', ' | replace: ' – ', ', ' | replace: '—', ', ' | truncatewords: 22 }}</p>
           </article>
         {% endfor %}
       {% else %}

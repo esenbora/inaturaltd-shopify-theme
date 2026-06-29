@@ -1,0 +1,51 @@
+{%- comment -%}
+  Temporary launch notice — "we just relaunched, report issues".
+  Dismissible (once per visitor). To remove later: delete this file's
+  render line in layout/theme.liquid.
+{%- endcomment -%}
+<div class="relaunch-note" data-relaunch-note hidden>
+  <div class="relaunch-note__inner">
+    <p class="relaunch-note__text">
+      🌿 We’ve just refreshed our website. If anything looks off, we’d love to hear it —
+      email <a href="mailto:info@inatureltd.com">info@inatureltd.com</a>
+      or message us on Instagram
+      <a href="https://instagram.com/inatureuk" target="_blank" rel="noopener">@inatureuk</a>.
+    </p>
+    <button type="button" class="relaunch-note__close" data-relaunch-close aria-label="Dismiss notice">
+      {% render 'icon', name: 'close' %}
+    </button>
+  </div>
+</div>
+
+<style>
+  .relaunch-note { background: #f3efe7; border-bottom: 1px solid var(--border); }
+  .relaunch-note__inner { max-width: var(--container, 1200px); margin: 0 auto; padding: 10px var(--space-5);
+    display: flex; align-items: center; gap: var(--space-3); justify-content: center; position: relative; }
+  .relaunch-note__text { margin: 0; font-size: var(--fs-xs, 13px); line-height: 1.45; color: var(--ink);
+    text-align: center; text-wrap: balance; }
+  .relaunch-note__text a { color: var(--primary-dark); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+  .relaunch-note__close { flex: 0 0 auto; background: transparent; border: 0; cursor: pointer; color: var(--muted);
+    padding: 4px; line-height: 0; border-radius: 50%; }
+  .relaunch-note__close:hover { color: var(--ink); background: rgba(0,0,0,.06); }
+  .relaunch-note__close svg { width: 15px; height: 15px; }
+  @media (max-width: 600px) {
+    .relaunch-note__inner { padding-inline: var(--space-4); gap: var(--space-2); }
+    .relaunch-note__close { position: absolute; right: 6px; top: 6px; }
+  }
+</style>
+
+<script>
+  (function () {
+    var el = document.querySelector('[data-relaunch-note]');
+    if (!el) return;
+    var KEY = 'inature_relaunch_note_v1';
+    var done = false;
+    try { done = localStorage.getItem(KEY) === '1'; } catch (e) {}
+    if (done) return;
+    el.hidden = false;
+    el.querySelector('[data-relaunch-close]').addEventListener('click', function () {
+      el.hidden = true;
+      try { localStorage.setItem(KEY, '1'); } catch (e) {}
+    });
+  })();
+</script>

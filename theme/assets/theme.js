@@ -27,7 +27,22 @@
   }
   mobileMenuOpenBtns.forEach((b) => b.addEventListener('click', (e) => { e.preventDefault(); setMobileMenu(true); }));
   mobileMenuCloseEls.forEach((b) => b.addEventListener('click', (e) => { e.preventDefault(); setMobileMenu(false); }));
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { setDrawer(false); setMobileMenu(false); } });
+
+  // Search overlay → submits to Shopify's /search results page
+  const search = document.querySelector('[data-search]');
+  const searchInput = search ? search.querySelector('[data-search-input]') : null;
+  function setSearch(open) {
+    if (!search) return;
+    search.hidden = false;
+    requestAnimationFrame(() => search.classList.toggle('is-open', open));
+    document.body.style.overflow = open ? 'hidden' : '';
+    if (open && searchInput) { searchInput.focus(); }
+    if (!open) { setTimeout(() => { if (!search.classList.contains('is-open')) search.hidden = true; }, 280); }
+  }
+  document.querySelectorAll('[data-search-open]').forEach((b) => b.addEventListener('click', (e) => { e.preventDefault(); setSearch(true); }));
+  document.querySelectorAll('[data-search-close]').forEach((b) => b.addEventListener('click', (e) => { e.preventDefault(); setSearch(false); }));
+
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { setDrawer(false); setMobileMenu(false); setSearch(false); } });
 
   // Quantity selector
   document.querySelectorAll('[data-qty]').forEach((wrap) => {
@@ -140,6 +155,32 @@
 
   // Also wire any existing remove links on initial page-load drawer state
   document.querySelectorAll('[data-cart-remove]').forEach((a) => a.addEventListener('click', removeFromCart));
+
+  // Cart PAGE: quantity steppers + remove. Uses a distinct [data-cart-line-remove]
+  // (not the drawer's [data-cart-remove]) so the wiring above never double-fires here.
+  // Reloads after each change so line prices + the Summary totals stay in sync.
+  const cartPage = document.querySelector('[data-cart-page]');
+  if (cartPage) {
+    const changeLine = async (key, quantity) => {
+      try {
+        await fetch('/cart/change.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'same-origin',
+          body: JSON.stringify({ id: key, quantity: quantity }),
+        });
+      } catch (err) { /* fall through to reload so the UI never desyncs */ }
+      window.location.reload();
+    };
+    cartPage.querySelectorAll('[data-cart-qty]').forEach((wrap) => {
+      const key = wrap.dataset.lineKey;
+      const input = wrap.querySelector('[data-cart-qty-input]');
+      wrap.querySelector('[data-cart-qty-dec]')?.addEventListener('click', () => changeLine(key, Math.max(0, parseInt(input.value || '1', 10) - 1)));
+      wrap.querySelector('[data-cart-qty-inc]')?.addEventListener('click', () => changeLine(key, parseInt(input.value || '1', 10) + 1));
+      input?.addEventListener('change', () => changeLine(key, Math.max(0, parseInt(input.value || '0', 10))));
+    });
+    cartPage.querySelectorAll('[data-cart-line-remove]').forEach((btn) => btn.addEventListener('click', (e) => { e.preventDefault(); changeLine(btn.dataset.lineKey, 0); }));
+  }
   // Brand verb cycler (above leaf)
   const brandVerbs = ['am', 'love', 'protect', 'trust', 'choose', 'care for', 'embrace', 'return to'];
   document.querySelectorAll('[data-brand-verb]').forEach((el) => {
@@ -225,8 +266,12 @@
     };
     popup.querySelectorAll('[data-promo-close]').forEach((b) => b.addEventListener('click', close));
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !popup.hidden) close(); });
-    // form just submitted → show immediately with the thank-you state
-    if (popup.querySelector('.promo-popup__ok')) { open(); return; }
+    // form just submitted → mark as subscribed so it never nags again, show the thank-you state once
+    if (popup.querySelector('[data-promo-success]')) {
+      try { localStorage.setItem(KEY, '1'); } catch (e) {}
+      open();
+      return;
+    }
     let seen = false;
     try { seen = localStorage.getItem(KEY) === '1'; } catch (e) {}
     if (seen) return;

@@ -5,103 +5,74 @@
         <span class="eyebrow">{{ section.settings.eyebrow | default: 'The Edit' }}</span>
         <h2 class="h2">{{ section.settings.heading | default: 'Bestsellers across the INCIA range.' }}</h2>
       </div>
-      <a href="{{ section.settings.cta_url | default: routes.all_products_collection_url }}" class="btn btn-outline">{{ section.settings.cta_label | default: 'Shop all' }} {% render 'icon', name: 'arrow-right' %}</a>
+      <a href="{{ routes.all_products_collection_url }}" class="btn btn-outline">{{ section.settings.cta_label | default: 'Shop all' }} {% render 'icon', name: 'arrow-right' %}</a>
     </header>
+  </div>
 
-    <div class="grid product-grid">
-      {%- assign collection_obj = collections[section.settings.collection] -%}
-      {%- if collection_obj.products.size > 0 -%}
-        {% for product in collection_obj.products limit: 8 %}
-          {% render 'product-card', product: product %}
-        {% endfor %}
-      {%- elsif collections.all.products.size > 0 -%}
-        {%- assign shown = 0 -%}
-        {% for product in collections.all.products %}
-          {%- if product.featured_image and shown < 8 -%}
-            {% render 'product-card', product: product %}
-            {%- assign shown = shown | plus: 1 -%}
-          {%- endif -%}
-        {% endfor %}
-      {%- else -%}
-        {% render 'mock-product-card',
-          image: 'https://static.wixstatic.com/media/bf3c53_3f63a6bb7a204965ad128ad9ade77c05~mv2.webp/v1/fill/w_600,h_600,al_c,q_85/bf3c53_3f63a6bb7a204965ad128ad9ade77c05~mv2.webp',
-          title: 'INCIA Natural Deodorant for Sensitive Skin',
-          sub: 'Aluminium-free roll-on with potassium alum & aloe vera · Safe in pregnancy · 50 ml',
-          price: '5.95',
-          was: '6.50',
-          rating: '4.9',
-          reviews: '318',
-          badge: 'Bestseller',
-          url: '/products/incia-natural-deodorant-for-sensitive-skin' %}
-        {% render 'mock-product-card',
-          image: 'https://static.wixstatic.com/media/bf3c53_93c25fe67c184c8fadae0a006b289efa~mv2.webp/v1/fill/w_600,h_600,al_c,q_85/bf3c53_93c25fe67c184c8fadae0a006b289efa~mv2.webp',
-          title: 'INCIA SOS Stick',
-          sub: 'Multi-purpose healing balm with sea buckthorn, shea & St. John&apos;s Wort · For cracked, dry skin · 9.5 g',
-          price: '9.50',
-          rating: '4.9',
-          reviews: '204',
-          badge: '9 oils',
-          url: '/products/incia-sos-stick' %}
-        {% render 'mock-product-card',
-          image: 'https://static.wixstatic.com/media/bf3c53_4f6e35bf0c9d4faeb9cd42f38776235c~mv2.jpg/v1/fill/w_600,h_600,al_c,q_85/bf3c53_4f6e35bf0c9d4faeb9cd42f38776235c~mv2.jpg',
-          title: 'INCIA Natural Hair Serum',
-          sub: '10 cold-pressed oils, argan, almond, olive · Strengthens & restores shine · Silicone-free · 30 ml',
-          price: '10.45',
-          rating: '4.8',
-          reviews: '147',
-          badge: '10 oils',
-          url: '/products/incia-natural-hair-serum' %}
-        {% render 'mock-product-card',
-          image: 'https://static.wixstatic.com/media/bf3c53_725854f8f31c41b29702a8de321aa7ae~mv2.webp/v1/fill/w_600,h_600,al_c,q_85/bf3c53_725854f8f31c41b29702a8de321aa7ae~mv2.webp',
-          title: 'INCIA Foaming Facial Cleanser',
-          sub: 'Plant-derived foaming cleanser, gentle, no SLS, no parabens · For sensitive skin · 200 ml',
-          price: '8',
-          was: '10',
-          rating: '4.7',
-          reviews: '256',
-          url: '/products/incia-foaming-facial-cleanser' %}
-        {% render 'mock-product-card',
-          image: 'https://static.wixstatic.com/media/bf3c53_47d622abb70842b99bbcda1517ff2dc4~mv2.webp/v1/fill/w_600,h_600,al_c,q_85/bf3c53_47d622abb70842b99bbcda1517ff2dc4~mv2.webp',
-          title: 'INCIA Natural Sunscreen for Face SPF50',
-          sub: 'SPF50 mineral face sunscreen with hyaluronic acid · Ecocert non-nano · Anti-ageing · 50 ml',
-          price: '12',
-          was: '15',
-          rating: '4.9',
-          reviews: '188',
-          badge: 'SPF50',
-          url: '/products/incia-natural-sunscreen-for-face-spf50' %}
-        {% render 'mock-product-card',
-          image: 'https://static.wixstatic.com/media/bf3c53_b6212b6355fb434f9fa499b58ec5293c~mv2.webp/v1/fill/w_600,h_600,al_c,q_85/bf3c53_b6212b6355fb434f9fa499b58ec5293c~mv2.webp',
-          title: 'INCIA Lip Balm Coconut',
-          sub: '100% natural coconut lip balm · Soothes dry, chapped lips · Halal · 5 ml',
-          price: '5.95',
-          rating: '4.9',
-          reviews: '412',
-          badge: 'Free gift £12+',
-          url: '/products/incia-lip-balm-coconut' %}
-        {% render 'mock-product-card',
-          image: 'https://static.wixstatic.com/media/bf3c53_2124fee16f9b4d19a6aab711629f7989~mv2.webp/v1/fill/w_600,h_600,al_c,q_85/bf3c53_2124fee16f9b4d19a6aab711629f7989~mv2.webp',
-          title: 'INCIA Stretch Mark Gel Cream',
-          sub: 'Pregnancy-safe gel cream · Prevents & fades stretch marks · Dermatologically tested · 75 ml',
-          price: '13.50',
-          was: '15',
-          rating: '4.8',
-          reviews: '167',
-          badge: 'Pregnancy',
-          url: '/products/incia-stretch-mark-gel-cream' %}
-        {% render 'mock-product-card',
-          image: 'https://static.wixstatic.com/media/bf3c53_8778d360bc3b480ab28c0673bf09dcd2~mv2.jpg/v1/fill/w_600,h_600,al_c,q_85/bf3c53_8778d360bc3b480ab28c0673bf09dcd2~mv2.jpg',
-          title: 'INCIA Natural Toothpaste',
-          sub: 'Fluoride-free toothpaste · Xylitol fights cavities · Cinnamon & coconut · SLS-free · 50 ml',
-          price: '7',
-          rating: '4.7',
-          reviews: '231',
-          badge: 'Fluoride-free',
-          url: '/products/incia-natural-toothpaste' %}
-      {%- endif -%}
+  {%- comment -%} Bestsellers collection, auto-scrolling marquee (pauses on hover, pointer devices only). {%- endcomment -%}
+  {%- assign fav_products = collections.bestsellers.products -%}
+  {%- if fav_products.size == 0 -%}{%- assign fav_products = collections.all.products -%}{%- endif -%}
+
+  <div class="pmarquee" aria-label="Bestsellers" data-pmarquee>
+    <button class="pmarquee__nav pmarquee__nav--prev" type="button" aria-label="Previous products" data-pm-prev>{% render 'icon', name: 'arrow-right' %}</button>
+    <div class="pmarquee__viewport" data-pm-viewport>
+      <div class="pmarquee__track">
+        {%- for fav in fav_products -%}
+          {% render 'product-card', product: fav %}
+        {%- endfor -%}
+        {%- comment -%} Duplicate set for a seamless infinite loop. {%- endcomment -%}
+        {%- for fav in fav_products -%}
+          {% render 'product-card', product: fav %}
+        {%- endfor -%}
+      </div>
     </div>
+    <button class="pmarquee__nav pmarquee__nav--next" type="button" aria-label="Next products" data-pm-next>{% render 'icon', name: 'arrow-right' %}</button>
   </div>
 </section>
+
+<script>
+(function () {
+  var root = document.querySelector('#shopify-section-{{ section.id }} [data-pmarquee]');
+  if (!root) return;
+  var vp = root.querySelector('[data-pm-viewport]');
+  var track = root.querySelector('.pmarquee__track');
+  if (!vp || !track) return;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var paused = false;
+
+  function setW() { return track.scrollWidth / 2; }            // one product set
+  function norm() { var w = setW(); if (w > 0 && vp.scrollLeft >= w) vp.scrollLeft -= w; }
+  function cardW() { var c = track.querySelector('.product-card'); return c ? c.getBoundingClientRect().width + 20 : 290; }
+
+  vp.addEventListener('scroll', norm, { passive: true });
+
+  // Auto-advance ~50px/s, matching the brand-value strips. Pauses on interaction.
+  if (!reduce) {
+    setInterval(function () { if (!paused && !document.hidden) { vp.scrollLeft += 1; norm(); } }, 20);
+  }
+  var resumeT;
+  function pause() { paused = true; clearTimeout(resumeT); }
+  function resume() { clearTimeout(resumeT); resumeT = setTimeout(function () { paused = false; }, 1200); }
+  root.addEventListener('mouseenter', pause);
+  root.addEventListener('mouseleave', resume);
+  root.addEventListener('touchstart', pause, { passive: true });
+  root.addEventListener('touchend', resume, { passive: true });
+  root.addEventListener('focusin', pause);
+  root.addEventListener('focusout', resume);
+
+  function nudge(dir) {
+    pause();
+    var w = setW();
+    if (dir < 0 && vp.scrollLeft < cardW()) vp.scrollLeft += w;   // pre-wrap so prev is infinite
+    vp.scrollBy({ left: dir * cardW() * 2, behavior: 'smooth' });
+    setTimeout(function () { norm(); resume(); }, 600);
+  }
+  var prev = root.querySelector('[data-pm-prev]');
+  var next = root.querySelector('[data-pm-next]');
+  if (prev) prev.addEventListener('click', function () { nudge(-1); });
+  if (next) next.addEventListener('click', function () { nudge(1); });
+})();
+</script>
 
 {% schema %}
 {
@@ -109,7 +80,7 @@
   "settings": [
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The Edit" },
     { "type": "text", "id": "heading", "label": "Heading" },
-    { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "collection", "id": "collection", "label": "Collection (unused)" },
     { "type": "text", "id": "cta_label", "label": "CTA label", "default": "Shop all" },
     { "type": "url", "id": "cta_url", "label": "CTA URL" }
   ],

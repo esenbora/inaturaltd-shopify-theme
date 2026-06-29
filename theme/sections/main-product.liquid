@@ -65,6 +65,11 @@
     <div class="pdp__gallery" data-gallery>
       {%- assign image_media = product.media | where: 'media_type', 'image' -%}
       {%- assign featured = image_media.first -%}
+      {%- comment -%} Lead with the clean white pack shot for products whose first image is a promo/dark shot. {%- endcomment -%}
+      {%- case product.handle -%}
+        {%- when 'incia-natural-deodorant-for-sensitive-skin' or 'incia-eyelash-serum-for-eyelashes-and-eyebrows' or 'incia-natural-deodorant-for-dark-armpits' -%}
+          {%- assign featured = image_media[1] -%}
+      {%- endcase -%}
       <div class="pdp__main" data-gallery-main>
         {% if featured %}
           <img src="{{ featured | image_url: width: 1200 }}" alt="{{ featured.alt | escape | default: product.title }}" width="600" height="750">
@@ -142,9 +147,9 @@
 
       <!-- Perks -->
       <div class="pdp__perks">
-        <div class="perk">{% render 'icon', name: 'truck' %} <span><strong>Free UK shipping over £20</strong>, £3 below. Dispatched via Evri, usually 1-3 working days.</span></div>
+        <div class="perk">{% render 'icon', name: 'truck' %} <span><strong>Free UK shipping over £20</strong>, £3 below. Dispatched from the UK, usually 1-3 working days.</span></div>
         <div class="perk">{% render 'icon', name: 'shield' %} <span><strong>14-day return policy.</strong> Unused, original packaging, we&apos;ll exchange or refund.</span></div>
-        <div class="perk">{% render 'icon', name: 'heart' %} <span><strong>Spend £12+ → free gift.</strong> Add a Lip Balm or Diaper Rash Gel, on us.</span></div>
+        <div class="perk">{% render 'icon', name: 'heart' %} <span><strong>Spend £20+ → free gift.</strong> Add a Lip Balm, on us.</span></div>
         <div class="perk">{% render 'icon', name: 'leaf' %} <span><strong>ETKO Cosmos · BioArge · Vegan · Cruelty-Free.</strong> 100% natural origin. Made in Türkiye.</span></div>
       </div>
 
@@ -164,7 +169,7 @@
         </details>
         <details>
           <summary>Shipping &amp; returns</summary>
-          <div>Dispatched from the UK via Evri. Free UK shipping on orders over £20 (£3 below). 14-day return policy on unused items in original packaging. International shipping available at checkout.{% if sku_value != blank %} SKU: {{ sku_value }}.{% endif %}</div>
+          <div>Dispatched from the UK. Free UK shipping on orders over £20 (£3 below). 14-day return policy on unused items in original packaging. International shipping available at checkout.{% if sku_value != blank %} SKU: {{ sku_value }}.{% endif %}</div>
         </details>
       </div>
     </div>

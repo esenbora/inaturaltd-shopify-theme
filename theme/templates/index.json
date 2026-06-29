@@ -3,13 +3,13 @@
     "hero": {
       "type": "hero",
       "settings": {
-        "eyebrow": "Sun care · now in the UK",
-        "heading": "<p>Enjoy the sun, <em>naturally</em>.</p>",
-        "subheading": "100% natural mineral SPF50, reef-safe, non-nano, safe for babies. Loved by 50,000+ families across Europe, now in the UK.",
-        "cta_primary_label": "Shop sun care",
-        "cta_primary_url": "/collections/sun-care",
-        "cta_secondary_label": "Shop all",
-        "cta_secondary_url": "/collections/all"
+        "eyebrow": "100% natural · now in the UK",
+        "heading": "<p>Clean care, <em>naturally</em>.</p>",
+        "subheading": "100% natural, dermatologically tested skincare for the whole family, sun care, baby, face and body. Trusted by 50,000+ across Europe, now in the UK.",
+        "cta_primary_label": "Shop the range",
+        "cta_primary_url": "/collections/all",
+        "cta_secondary_label": "Bestsellers",
+        "cta_secondary_url": "/collections/bestsellers"
       }
     },
     "marquee": {

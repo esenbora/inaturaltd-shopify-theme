@@ -8,28 +8,32 @@
       <span class="brand-i">I</span><img class="brand-leaf" src="{{ 'brand-leaf.png' | asset_url }}" width="502" height="293" alt="" aria-hidden="true"><span class="brand-nature">Nature</span>
     </span>
 
-    <p class="promo-popup__eyebrow">Welcome, 100% natural, dispatched from the UK</p>
-    <h3 class="promo-popup__title">Get <strong>15% off</strong> your first order</h3>
-    <p class="promo-popup__sub">Join our list and we'll send your discount code, plus early access to new drops and offers.</p>
-
-    {%- assign popup_done = false -%}
     {% form 'customer', class: 'promo-popup__form', id: 'promo-popup-form' %}
-      {% if form.posted_successfully? %}{%- assign popup_done = true -%}{% endif %}
-      <input type="hidden" name="contact[tags]" value="newsletter,popup">
-      <input type="hidden" name="contact[accepts_marketing]" value="true">
-      <label class="visually-hidden" for="promo-popup-email">Email address</label>
-      <div class="promo-popup__row">
-        <input id="promo-popup-email" type="email" name="contact[email]" placeholder="Your email address" required>
-        <button type="submit" class="btn btn-primary">Get my code</button>
-      </div>
-      {% if popup_done %}
-        <p class="promo-popup__ok">Thanks! Check your inbox for your 15% code.</p>
+      {% if form.posted_successfully? %}
+        {%- comment -%} Success state: hide the form entirely, show a clear confirmation + junk-folder hint {%- endcomment -%}
+        <div class="promo-popup__success" data-promo-success>
+          {% render 'icon', name: 'check' %}
+          <h3 class="promo-popup__title">You're on the list! 🌿</h3>
+          <p class="promo-popup__sub">Thanks for joining INature. Your <strong>15% off</strong> code is on its way to your inbox.</p>
+          <p class="promo-popup__hint">Can't see it? Check your <strong>spam / junk folder</strong> and add us to your contacts so you never miss a drop.</p>
+          <button type="button" class="btn btn-primary" data-promo-close>Start shopping</button>
+        </div>
+      {% else %}
+        <p class="promo-popup__eyebrow">Welcome, 100% natural, dispatched from the UK</p>
+        <h3 class="promo-popup__title">Get <strong>15% off</strong> your first order</h3>
+        <p class="promo-popup__sub">Join our list and we'll send your discount code, plus early access to new drops and offers.</p>
+        <input type="hidden" name="contact[tags]" value="newsletter,popup">
+        <input type="hidden" name="contact[accepts_marketing]" value="true">
+        <label class="visually-hidden" for="promo-popup-email">Email address</label>
+        <div class="promo-popup__row">
+          <input id="promo-popup-email" type="email" name="contact[email]" placeholder="Your email address" required>
+          <button type="submit" class="btn btn-primary">Get my code</button>
+        </div>
+        <div class="promo-popup__trust">
+          <img class="promo-popup__ebay" src="{{ 'ebay-logo.svg' | asset_url }}" width="62" height="25" alt="eBay" loading="lazy">
+          <span><strong>100% Positive Feedback</strong> · trusted by 141 buyers on eBay</span>
+        </div>
       {% endif %}
     {% endform %}
-
-    <div class="promo-popup__trust">
-      <img class="promo-popup__ebay" src="{{ 'ebay-logo.svg' | asset_url }}" width="62" height="25" alt="eBay" loading="lazy">
-      <span><strong>100% Positive Feedback</strong> · trusted by 141 buyers on eBay</span>
-    </div>
   </div>
 </div>

@@ -1,6 +1,6 @@
 <section class="marquee" aria-label="Brand values">
   <div class="marquee__track">
-    {% assign items = section.settings.items | default: 'Cold-pressed in Türkiye · Halal certified by GİMDES · Vegan formulas · No SLS, no parabens · Recyclable glass · Cruelty-free · Cold-pressed in Türkiye · Halal certified by GİMDES · Vegan formulas · No SLS, no parabens · Recyclable glass · Cruelty-free' %}
+    {% assign items = '100% Natural Skincare UK · Vegan & Cruelty-Free Formulas · Mineral Sunscreen SPF 50+ · Safe for Baby & Sensitive Skin · No SLS • No Parabens • No Silicones · Dermatologically Friendly Care · Clean Beauty for the Whole Family · 100% Natural Skincare UK · Vegan & Cruelty-Free Formulas · Mineral Sunscreen SPF 50+ · Safe for Baby & Sensitive Skin · No SLS • No Parabens • No Silicones · Dermatologically Friendly Care · Clean Beauty for the Whole Family' %}
     {% assign tokens = items | split: '·' %}
     {% for item in tokens %}
       <span class="marquee__item">
@@ -10,6 +10,14 @@
     {% endfor %}
   </div>
 </section>
+
+{%- comment -%} Override any stored section Custom CSS speed (theme editor injected a 7s !important rule). Higher specificity (ID + 2 classes) + !important so it always wins, matching the top announcement bar's pace. {%- endcomment -%}
+<style>
+  #shopify-section-{{ section.id }} .marquee .marquee__track { animation-duration: 32s !important; }
+  @media (max-width: 720px) {
+    #shopify-section-{{ section.id }} .marquee .marquee__track { animation-duration: 24s !important; }
+  }
+</style>
 
 {% schema %}
 {

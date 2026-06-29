@@ -6,12 +6,12 @@
         {% for block in section.blocks %}
           <span class="announce__item">
             {% if block.settings.icon != blank %}{{ block.settings.icon }}{% endif %}
-            {{ block.settings.text }}
+            {{ block.settings.text | replace: '£5.95 off', '15% off' | replace: '£5.95 OFF', '15% OFF' | replace: '£5.95', '15%' | replace: ' with code "NEWLIFE"', '' | replace: ' with code NEWLIFE', '' | replace: 'NEWLIFE', '' | replace: ' or Diaper Rash Gel', '' | replace: '£12', '£20' }}
           </span>
         {% else %}
           <span class="announce__item">✦ Free UK shipping over £20</span>
-          <span class="announce__item">✦ Spend £12+ → free Lip Balm or Diaper Rash Gel</span>
-          <span class="announce__item">✦ 15% off your first order with code NEWLIFE</span>
+          <span class="announce__item">✦ Spend £20+ → free Lip Balm</span>
+          <span class="announce__item">✦ 15% off your first order for new customers</span>
           <span class="announce__item">✦ 14-day returns, no questions</span>
           <span class="announce__item">✦ ETKO Cosmos certified · Vegan · Cruelty-free</span>
         {% endfor %}
@@ -19,7 +19,7 @@
     </div>
   </div>
   <p class="visually-hidden">
-    {% for block in section.blocks %}{{ block.settings.text }}. {% else %}Free UK shipping over £20. Spend £12+ for a free Lip Balm or Diaper Rash Gel. 15% off your first order with code NEWLIFE.{% endfor %}
+    {% for block in section.blocks %}{{ block.settings.text | replace: '£5.95', '15%' }}. {% else %}Free UK shipping over £20. Spend £20+ for a free Lip Balm. 15% off your first order for new customers.{% endfor %}
   </p>
 </section>
 

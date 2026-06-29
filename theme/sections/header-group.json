@@ -2,7 +2,17 @@
   "type": "header",
   "name": "Header",
   "sections": {
-    "announcement-bar": { "type": "announcement-bar", "blocks": {} },
+    "announcement-bar": {
+      "type": "announcement-bar",
+      "blocks": {
+        "m1": { "type": "message", "settings": { "icon": "✦", "text": "Free UK shipping over £20" } },
+        "m2": { "type": "message", "settings": { "icon": "✦", "text": "Spend £20+ → free Lip Balm" } },
+        "m3": { "type": "message", "settings": { "icon": "✦", "text": "15% off your first order for new customers" } },
+        "m4": { "type": "message", "settings": { "icon": "✦", "text": "14-day returns, no questions" } },
+        "m5": { "type": "message", "settings": { "icon": "✦", "text": "ETKO Cosmos certified · Vegan · Cruelty-free" } }
+      },
+      "block_order": ["m1", "m2", "m3", "m4", "m5"]
+    },
     "header": { "type": "header", "settings": {} }
   },
   "order": ["announcement-bar", "header"]
