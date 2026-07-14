@@ -93,10 +93,32 @@
     const newDrawer = tmp.querySelector('[data-cart-drawer]');
     if (newDrawer && drawer) {
       drawer.innerHTML = newDrawer.innerHTML;
-      // Rebind close buttons inside new content
+      // Rebind controls inside new content
       drawer.querySelectorAll('[data-cart-close]').forEach((b) => b.addEventListener('click', (e) => { e.preventDefault(); setDrawer(false); }));
       drawer.querySelectorAll('[data-cart-remove]').forEach((a) => a.addEventListener('click', removeFromCart));
+      bindDrawerQty();
     }
+  }
+
+  // Cart DRAWER quantity steppers — AJAX update then re-render the drawer
+  async function changeDrawerLine(key, quantity) {
+    const r = await fetch('/cart/change.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      body: JSON.stringify({ id: key, quantity: quantity }),
+    });
+    if (r.ok) { const cart = await r.json(); updateCount(cart.item_count); await refreshDrawer(); }
+  }
+  function bindDrawerQty() {
+    if (!drawer) return;
+    drawer.querySelectorAll('[data-drawer-qty]').forEach((wrap) => {
+      const key = wrap.dataset.lineKey;
+      const input = wrap.querySelector('[data-drawer-qty-input]');
+      wrap.querySelector('[data-drawer-qty-dec]')?.addEventListener('click', () => changeDrawerLine(key, Math.max(0, parseInt(input.value || '1', 10) - 1)));
+      wrap.querySelector('[data-drawer-qty-inc]')?.addEventListener('click', () => changeDrawerLine(key, parseInt(input.value || '1', 10) + 1));
+      input?.addEventListener('change', () => changeDrawerLine(key, Math.max(0, parseInt(input.value || '0', 10))));
+    });
   }
 
   function updateCount(count) {
@@ -139,7 +161,16 @@
           credentials: 'same-origin',
           body: JSON.stringify({ items: [{ id: variantId, quantity: 1 }] }),
         });
-        if (!r.ok) throw new Error('add failed');
+        if (!r.ok) {
+          // Distinguish "out of stock" from a generic failure so we can tell the customer clearly
+          let soldOut = false;
+          try {
+            const e = await r.json();
+            const desc = ((e && (e.description || e.message)) || '').toLowerCase();
+            soldOut = r.status === 422 || desc.indexOf('sold out') > -1 || desc.indexOf('out of stock') > -1 || desc.indexOf('stock') > -1 || desc.indexOf('unavailable') > -1;
+          } catch (_) {}
+          const fail = new Error('add failed'); fail.soldOut = soldOut; throw fail;
+        }
         const cart = await fetchCart();
         updateCount(cart.item_count);
         await refreshDrawer();
@@ -147,14 +178,23 @@
         setTimeout(() => setDrawer(true), 200);
         setTimeout(() => { btn.textContent = btn.dataset.label || originalText; btn.disabled = false; }, 1600);
       } catch (err) {
-        btn.textContent = 'Try again';
-        setTimeout(() => { btn.textContent = btn.dataset.label || originalText; btn.disabled = false; }, 1600);
+        if (err && err.soldOut) {
+          // Out of stock — show a clear message and keep it disabled (retrying won't help until restocked)
+          btn.textContent = 'Out of stock';
+          btn.disabled = true;
+          btn.setAttribute('aria-disabled', 'true');
+          setTimeout(() => { btn.textContent = btn.dataset.label || originalText; btn.disabled = false; btn.removeAttribute('aria-disabled'); }, 2600);
+        } else {
+          btn.textContent = 'Try again';
+          setTimeout(() => { btn.textContent = btn.dataset.label || originalText; btn.disabled = false; }, 1600);
+        }
       }
     });
   });
 
   // Also wire any existing remove links on initial page-load drawer state
   document.querySelectorAll('[data-cart-remove]').forEach((a) => a.addEventListener('click', removeFromCart));
+  bindDrawerQty();
 
   // Cart PAGE: quantity steppers + remove. Uses a distinct [data-cart-line-remove]
   // (not the drawer's [data-cart-remove]) so the wiring above never double-fires here.

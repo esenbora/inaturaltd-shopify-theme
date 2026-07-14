@@ -26,7 +26,18 @@
           <h3 class="h3 mb-4">Summary</h3>
           <div class="flow" style="--flow: var(--space-3);">
             <div class="cluster" style="justify-content: space-between;"><span class="muted">Subtotal</span><strong>{{ cart.total_price | money }}</strong></div>
-            <div class="cluster" style="justify-content: space-between;"><span class="muted">Shipping</span><strong>Free</strong></div>
+            <div class="cluster" style="justify-content: space-between;"><span class="muted">Shipping</span><strong>{% if cart.total_price >= 2000 %}Free{% else %}Calculated at checkout{% endif %}</strong></div>
+
+            {%- comment -%} Free-shipping progress toward the £20 threshold {%- endcomment -%}
+            <div class="ship-progress">
+              {%- if cart.total_price >= 2000 -%}
+                <p class="ship-progress__msg ship-progress__msg--ok">✓ You've unlocked free UK shipping</p>
+              {%- else -%}
+                <p class="ship-progress__msg">Add <strong>{{ 2000 | minus: cart.total_price | money }}</strong> more for free UK shipping</p>
+              {%- endif -%}
+              <div class="ship-progress__bar"><span style="width: {% if cart.total_price >= 2000 %}100{% else %}{{ cart.total_price | times: 100 | divided_by: 2000 }}{% endif %}%;"></span></div>
+            </div>
+
             <div class="cluster" style="justify-content: space-between; padding-top: var(--space-3); border-top: 1px solid var(--border);"><strong>Total</strong><strong style="font-size: var(--fs-xl);">{{ cart.total_price | money }}</strong></div>
             <a href="/checkout" class="btn btn-primary btn-lg btn-block">Checkout</a>
           </div>

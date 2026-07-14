@@ -9,7 +9,7 @@
         "cta_primary_label": "Shop the range",
         "cta_primary_url": "/collections/all",
         "cta_secondary_label": "Bestsellers",
-        "cta_secondary_url": "/collections/bestsellers"
+        "cta_secondary_url": "/collections/bestsellers-1"
       }
     },
     "marquee": {
@@ -23,8 +23,8 @@
     "featured": {
       "type": "featured-collection",
       "settings": {
-        "eyebrow": "The Edit",
-        "heading": "Bestsellers, hand-picked weekly.",
+        "eyebrow": "Customer Favourites",
+        "heading": "Your most-loved natural essentials.",
         "cta_label": "Shop all",
         "cta_url": "/collections/all"
       }

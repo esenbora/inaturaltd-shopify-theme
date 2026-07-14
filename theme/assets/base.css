@@ -926,6 +926,24 @@ body {
 }
 .cart-totals { display: flex; justify-content: space-between; font-weight: 500; }
 
+/* Cart line quantity steppers + remove (drawer + cart page) */
+.cart-line .qty { margin-top: 8px; }
+.cart-line .qty button { width: 32px; height: 32px; font-size: 1rem; }
+.cart-line .qty input { width: 34px; height: 32px; font-size: var(--fs-sm); }
+.cart-line__remove, .cart-drawer__remove {
+  display: inline-block; margin-top: 8px; background: none; border: 0; padding: 0; cursor: pointer;
+  font-size: var(--fs-xs); color: var(--muted); text-decoration: underline; text-underline-offset: 2px;
+}
+.cart-line__remove:hover, .cart-drawer__remove:hover { color: var(--accent); }
+
+/* Free-shipping progress (cart page + drawer) */
+.ship-progress { display: grid; gap: 6px; }
+.ship-progress__msg { margin: 0; font-size: var(--fs-xs); color: var(--primary-dark); }
+.ship-progress__msg strong { color: var(--accent); }
+.ship-progress__msg--ok { font-weight: 600; }
+.ship-progress__bar { height: 5px; border-radius: var(--radius-pill); background: var(--border); overflow: hidden; }
+.ship-progress__bar > span { display: block; height: 100%; background: var(--primary-dark); border-radius: var(--radius-pill); transition: width .4s ease; }
+
 /* ============================================================
    Responsive
    ============================================================ */
@@ -1084,9 +1102,12 @@ body {
   padding: 14px;
 }
 .quality-mark__logo img { max-width: 100%; max-height: 100%; object-fit: contain; }
-.quality-mark figcaption { display: flex; flex-direction: column; gap: 4px; }
-.quality-mark figcaption strong { font-size: var(--fs-sm); color: var(--ink); }
-.quality-mark figcaption .muted { font-size: var(--fs-xs); line-height: 1.45; }
+.quality-mark__cap { display: flex; flex-direction: column; gap: 4px; }
+.quality-mark__cap strong { font-size: var(--fs-sm); color: var(--ink); }
+.quality-mark__cap .muted { font-size: var(--fs-xs); line-height: 1.45; }
+a.quality-mark { text-decoration: none; color: inherit; cursor: pointer; transition: transform .18s ease; }
+a.quality-mark:hover { transform: translateY(-2px); }
+a.quality-mark:hover .quality-mark__logo { border-color: var(--primary); }
 @media (max-width: 720px) {
   .quality-grid { gap: var(--space-4) var(--space-5); }
   .quality-mark { flex-basis: 120px; }

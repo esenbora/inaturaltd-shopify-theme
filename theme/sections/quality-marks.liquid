@@ -1,3 +1,6 @@
+{%- assign cert_url = section.settings.certificates_url | default: 'https://incia.com/sertifikalarimiz/' -%}
+{%- if cert_url != blank -%}{%- assign mark_tag = 'a' -%}{%- else -%}{%- assign mark_tag = 'figure' -%}{%- endif -%}
+
 <section class="section">
   <div class="wrap">
     <header class="section-head section-head--center text-center mx-auto">
@@ -9,43 +12,45 @@
     <div class="quality-grid">
       {% if section.blocks.size > 0 %}
         {% for block in section.blocks %}
-          <figure class="quality-mark" {{ block.shopify_attributes }}>
+          <{{ mark_tag }} class="quality-mark"{% if cert_url != blank %} href="{{ cert_url }}" target="_blank" rel="noopener nofollow" aria-label="{{ block.settings.title | escape }} — view INCIA certificates"{% endif %} {{ block.shopify_attributes }}>
             <div class="quality-mark__logo">
               {% if block.settings.image %}
                 <img src="{{ block.settings.image | image_url: width: 200 }}" alt="{{ block.settings.title }}" width="120" height="120" loading="lazy">
               {% endif %}
             </div>
-            <figcaption>
+            <div class="quality-mark__cap">
               <strong>{{ block.settings.title }}</strong>
               <span class="muted">{{ block.settings.description }}</span>
-            </figcaption>
-          </figure>
+            </div>
+          </{{ mark_tag }}>
         {% endfor %}
       {% else %}
-        <figure class="quality-mark">
+        {%- assign cert_link_attrs = '' -%}
+        {%- if cert_url != blank -%}{%- capture cert_link_attrs %} href="{{ cert_url }}" target="_blank" rel="noopener nofollow"{% endcapture -%}{%- endif -%}
+        <{{ mark_tag }} class="quality-mark"{{ cert_link_attrs }}{% if cert_url != blank %} aria-label="BRCGS certification — view INCIA certificates"{% endif %}>
           <div class="quality-mark__logo"><img src="{{ 'cert-brc.svg' | asset_url }}" alt="BRCGS, British Retail Consortium Global Standard" width="120" height="120" loading="lazy"></div>
-          <figcaption><strong>BRCGS Certified</strong><span class="muted">British Retail Consortium Global Standard, food &amp; consumer-product safety, audited at every stage.</span></figcaption>
-        </figure>
-        <figure class="quality-mark">
+          <div class="quality-mark__cap"><strong>BRCGS Certified</strong><span class="muted">British Retail Consortium Global Standard, food &amp; consumer-product safety, audited at every stage.</span></div>
+        </{{ mark_tag }}>
+        <{{ mark_tag }} class="quality-mark"{{ cert_link_attrs }}{% if cert_url != blank %} aria-label="ETKO Cosmos Natural certification — view INCIA certificates"{% endif %}>
           <div class="quality-mark__logo"><img src="{{ 'cert-cosmos-natural.svg' | asset_url }}" alt="ETKO Cosmos Natural" width="120" height="120" loading="lazy"></div>
-          <figcaption><strong>ETKO Cosmos Natural</strong><span class="muted">95%+ plant-derived. No SLES, no silicone, no parabens, no synthetic dyes.</span></figcaption>
-        </figure>
-        <figure class="quality-mark">
+          <div class="quality-mark__cap"><strong>ETKO Cosmos Natural</strong><span class="muted">95%+ plant-derived. No SLES, no silicone, no parabens, no synthetic dyes.</span></div>
+        </{{ mark_tag }}>
+        <{{ mark_tag }} class="quality-mark"{{ cert_link_attrs }}{% if cert_url != blank %} aria-label="Ecocert certification — view INCIA certificates"{% endif %}>
           <div class="quality-mark__logo"><img src="{{ 'cert-ecocert.svg' | asset_url }}" alt="Ecocert" width="120" height="120" loading="lazy"></div>
-          <figcaption><strong>Ecocert</strong><span class="muted">99% naturally derived ingredients on average, third-party verified.</span></figcaption>
-        </figure>
-        <figure class="quality-mark">
+          <div class="quality-mark__cap"><strong>Ecocert</strong><span class="muted">99% naturally derived ingredients on average, third-party verified.</span></div>
+        </{{ mark_tag }}>
+        <{{ mark_tag }} class="quality-mark"{{ cert_link_attrs }}{% if cert_url != blank %} aria-label="Vegan Society certification — view INCIA certificates"{% endif %}>
           <div class="quality-mark__logo"><img src="{{ 'cert-vegan.svg' | asset_url }}" alt="Vegan Society" width="120" height="120" loading="lazy"></div>
-          <figcaption><strong>Vegan</strong><span class="muted">No animal-derived ingredients. Approved by The Vegan Society.</span></figcaption>
-        </figure>
-        <figure class="quality-mark">
+          <div class="quality-mark__cap"><strong>Vegan</strong><span class="muted">No animal-derived ingredients. Approved by The Vegan Society.</span></div>
+        </{{ mark_tag }}>
+        <{{ mark_tag }} class="quality-mark"{{ cert_link_attrs }}{% if cert_url != blank %} aria-label="Cruelty-Free certification — view INCIA certificates"{% endif %}>
           <div class="quality-mark__logo"><img src="{{ 'cert-cruelty-free.svg' | asset_url }}" alt="Cruelty-Free" width="120" height="120" loading="lazy"></div>
-          <figcaption><strong>Cruelty-Free</strong><span class="muted">No animal testing, ever, at any stage of formulation or production.</span></figcaption>
-        </figure>
-        <figure class="quality-mark">
+          <div class="quality-mark__cap"><strong>Cruelty-Free</strong><span class="muted">No animal testing, ever, at any stage of formulation or production.</span></div>
+        </{{ mark_tag }}>
+        <{{ mark_tag }} class="quality-mark"{{ cert_link_attrs }}{% if cert_url != blank %} aria-label="GMP certification — view INCIA certificates"{% endif %}>
           <div class="quality-mark__logo"><img src="{{ 'cert-gmp.png' | asset_url }}" alt="GMP Good Manufacturing Practice" width="120" height="120" loading="lazy"></div>
-          <figcaption><strong>GMP Certified</strong><span class="muted">Good Manufacturing Practice, controlled, hygienic, traceable production end-to-end.</span></figcaption>
-        </figure>
+          <div class="quality-mark__cap"><strong>GMP Certified</strong><span class="muted">Good Manufacturing Practice, controlled, hygienic, traceable production end-to-end.</span></div>
+        </{{ mark_tag }}>
       {% endif %}
     </div>
   </div>
@@ -57,7 +62,8 @@
   "settings": [
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Our quality marks" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "Certified, not just claimed." },
-    { "type": "textarea", "id": "subheading", "label": "Subheading" }
+    { "type": "textarea", "id": "subheading", "label": "Subheading" },
+    { "type": "text", "id": "certificates_url", "label": "Certificates link (each mark links here)", "default": "https://incia.com/sertifikalarimiz/", "info": "Leave blank to make the marks non-clickable." }
   ],
   "blocks": [
     {

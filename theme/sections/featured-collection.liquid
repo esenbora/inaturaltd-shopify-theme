@@ -2,15 +2,15 @@
   <div class="wrap">
     <header class="section-head section-head--split">
       <div class="stack" style="--gap: var(--space-3);">
-        <span class="eyebrow">{{ section.settings.eyebrow | default: 'The Edit' }}</span>
-        <h2 class="h2">{{ section.settings.heading | default: 'Bestsellers across the INCIA range.' }}</h2>
+        <span class="eyebrow">{{ section.settings.eyebrow | default: 'Customer Favourites' }}</span>
+        <h2 class="h2">{{ section.settings.heading | default: 'Your most-loved natural essentials.' }}</h2>
       </div>
       <a href="{{ routes.all_products_collection_url }}" class="btn btn-outline">{{ section.settings.cta_label | default: 'Shop all' }} {% render 'icon', name: 'arrow-right' %}</a>
     </header>
   </div>
 
   {%- comment -%} Bestsellers collection, auto-scrolling marquee (pauses on hover, pointer devices only). {%- endcomment -%}
-  {%- assign fav_products = collections.bestsellers.products -%}
+  {%- assign fav_products = collections['bestsellers-1'].products -%}
   {%- if fav_products.size == 0 -%}{%- assign fav_products = collections.all.products -%}{%- endif -%}
 
   <div class="pmarquee" aria-label="Bestsellers" data-pmarquee>
@@ -78,7 +78,7 @@
 {
   "name": "Featured collection",
   "settings": [
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The Edit" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Customer Favourites" },
     { "type": "text", "id": "heading", "label": "Heading" },
     { "type": "collection", "id": "collection", "label": "Collection (unused)" },
     { "type": "text", "id": "cta_label", "label": "CTA label", "default": "Shop all" },

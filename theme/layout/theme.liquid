@@ -27,16 +27,21 @@
 
       assign meta_desc = page_description
       if meta_desc == blank and template contains 'product' and product.description != blank
-        assign meta_desc = product.description | strip_html | truncate: 160
+        assign meta_desc = product.description | strip_html | strip_newlines | replace: '&amp;', '&' | replace: '&#39;', "'" | replace: '&quot;', '"' | replace: '&nbsp;', ' ' | truncate: 160
       endif
       if meta_desc == blank and template contains 'collection' and collection.description != blank
-        assign meta_desc = collection.description | strip_html | truncate: 160
+        assign meta_desc = collection.description | strip_html | strip_newlines | replace: '&amp;', '&' | replace: '&#39;', "'" | replace: '&quot;', '"' | replace: '&nbsp;', ' ' | truncate: 160
       endif
       if meta_desc == blank
         assign meta_desc = brand_default_desc
       endif
+      comment
+        Normalize HTML entities from any source (page_description is often auto-generated
+        with &amp; still encoded, which the final | escape would double to &amp;amp;).
+      endcomment
+      assign meta_desc = meta_desc | strip_html | replace: '&amp;', '&' | replace: '&amp;', '&' | replace: '&amp;', '&' | replace: '&#39;', "'" | replace: '&quot;', '"' | replace: '&nbsp;', ' '
 
-      assign meta_title = page_title | default: shop.name
+      assign meta_title = page_title | default: shop.name | replace: '&amp;', '&' | replace: '&amp;', '&' | replace: '&amp;', '&' | replace: '&#39;', "'"
     -%}
 
     <meta name="description" content="{{ meta_desc | escape }}">
@@ -99,6 +104,12 @@
     {%- endif -%}
 
     <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+    {%- comment -%} Preload the LCP hero image (homepage first slide) — responsive per the <picture> 820px breakpoint. {%- endcomment -%}
+    {%- if template == 'index' -%}
+      <link rel="preload" as="image" href="{{ 'hero-2.jpg' | asset_url }}" media="(min-width: 821px)" fetchpriority="high">
+      <link rel="preload" as="image" href="{{ 'hero-2-mobile.jpg' | asset_url }}" media="(max-width: 820px)" fetchpriority="high">
+    {%- endif -%}
     {{ content_for_header }}
 
     {%- liquid
@@ -126,6 +137,8 @@
 
     {{ 'base.css' | asset_url | stylesheet_tag }}
     <script src="{{ 'theme.js' | asset_url }}" defer></script>
+
+    {% render 'structured-data' %}
   </head>
 
   <body class="template-{{ template | replace: '.', '-' }}">

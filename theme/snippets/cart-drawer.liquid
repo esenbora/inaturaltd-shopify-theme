@@ -13,8 +13,13 @@
             <div class="cart-line__img"><img src="{{ item.image | image_url: width: 200 }}" alt="{{ item.product.title }}" width="200" height="200"></div>
             <div>
               <div class="cart-line__title">{{ item.product.title }}</div>
-              <div class="cart-line__variant">{{ item.variant.title | replace: 'Default Title', '' }} {% if item.variant.title contains 'Default' %}{% else %} · {% endif %}Qty {{ item.quantity }}</div>
-              <div style="margin-top: 6px;"><a href="#" data-cart-remove data-line-key="{{ item.key }}" style="font-size: var(--fs-xs); color: var(--muted); text-decoration: underline;">Remove</a></div>
+              {%- unless item.variant.title contains 'Default' -%}<div class="cart-line__variant">{{ item.variant.title }}</div>{%- endunless -%}
+              <div class="qty cart-drawer__qty" data-drawer-qty data-line-key="{{ item.key }}">
+                <button type="button" data-drawer-qty-dec aria-label="Decrease quantity">&minus;</button>
+                <input type="number" value="{{ item.quantity }}" min="0" inputmode="numeric" data-drawer-qty-input aria-label="Quantity for {{ item.product.title | escape }}">
+                <button type="button" data-drawer-qty-inc aria-label="Increase quantity">+</button>
+              </div>
+              <a href="#" data-cart-remove data-line-key="{{ item.key }}" class="cart-drawer__remove">Remove</a>
             </div>
             <div class="cart-line__price">{{ item.final_line_price | money }}</div>
           </div>
@@ -30,7 +35,14 @@
     {% if cart.item_count > 0 %}
       <div class="cart-drawer__foot">
         <div class="cart-totals"><span>Subtotal</span><span>{{ cart.total_price | money }}</span></div>
-        <p style="font-size: var(--fs-xs); color: var(--primary-dark); margin: 0;">{% if cart.total_price >= 2000 %}✓ Free UK shipping unlocked{% else %}Spend {{ 2000 | minus: cart.total_price | money }} more for free UK shipping{% endif %}</p>
+        <div class="ship-progress">
+          {%- if cart.total_price >= 2000 -%}
+            <p class="ship-progress__msg ship-progress__msg--ok">✓ Free UK shipping unlocked</p>
+          {%- else -%}
+            <p class="ship-progress__msg">Add <strong>{{ 2000 | minus: cart.total_price | money }}</strong> more for free UK shipping</p>
+          {%- endif -%}
+          <div class="ship-progress__bar"><span style="width: {% if cart.total_price >= 2000 %}100{% else %}{{ cart.total_price | times: 100 | divided_by: 2000 }}{% endif %}%;"></span></div>
+        </div>
         <a href="/checkout" class="btn btn-primary btn-block btn-lg">Checkout · {{ cart.total_price | money }}</a>
         <a href="{{ routes.cart_url }}" class="btn btn-ghost btn-block">View bag</a>
       </div>
