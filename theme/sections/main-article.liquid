@@ -47,7 +47,7 @@
   "headline": {{ article.title | json }},
   "datePublished": {{ article.published_at | date: '%Y-%m-%d' | json }},
   "dateModified": {{ article.updated_at | date: '%Y-%m-%d' | json }},
-  "author": { "@type": "Organization", "name": {{ shop.name | json }} },
+  "author": { "@type": "Person", "name": {{ article.author | default: shop.name | json }} },
   "publisher": {
     "@type": "Organization",
     "name": {{ shop.name | json }},
