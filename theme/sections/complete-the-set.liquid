@@ -1,0 +1,59 @@
+{%- comment -%}
+  Complete the set — bundle-aware PDP cross-sell. Reads snippets/bundle-map.liquid for the
+  current product's curated set, renders the other members as product cards, and offers a
+  one-tap "add the others to basket" via the multi-item /cart/add.js path already in theme.js.
+  Renders nothing when the product is not part of a set (related-products.liquid then shows).
+{%- endcomment -%}
+{%- capture bmap -%}{% render 'bundle-map', product: product %}{%- endcapture -%}
+{%- assign bmap = bmap | strip -%}
+{%- if bmap != blank -%}
+  {%- assign parts = bmap | split: '||' -%}
+  {%- assign set_title = parts[0] -%}
+  {%- assign set_handles = parts[1] | split: ',' -%}
+  {%- assign add_ids = '' -%}
+  {%- assign shown = 0 -%}
+  {%- capture cards -%}
+    {%- for h in set_handles -%}
+      {%- assign mp = all_products[h] -%}
+      {%- if mp == blank or mp.handle == blank -%}{%- continue -%}{%- endif -%}
+      {%- if product != blank and mp.id == product.id -%}{%- continue -%}{%- endif -%}
+      {% render 'product-card', product: mp %}
+      {%- assign shown = shown | plus: 1 -%}
+      {%- if mp.available -%}
+        {%- assign vid = mp.selected_or_first_available_variant.id -%}
+        {%- if vid -%}
+          {%- if add_ids == '' -%}{%- assign add_ids = vid -%}{%- else -%}{%- assign add_ids = add_ids | append: ',' | append: vid -%}{%- endif -%}
+        {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endcapture -%}
+  {%- if shown > 0 -%}
+    {%- assign add_list = add_ids | split: ',' -%}
+    <section class="section complete-set">
+      <div class="wrap">
+        <header class="section-head section-head--center text-center mx-auto">
+          <span class="eyebrow">{{ section.settings.eyebrow | default: 'Complete the set' }}</span>
+          <h2 class="h2">{{ set_title }}</h2>
+          {%- if section.settings.subtext != blank -%}<p class="section-sub">{{ section.settings.subtext }}</p>{%- endif -%}
+        </header>
+        <div class="grid product-grid">{{ cards }}</div>
+        {%- if add_list.size > 0 -%}
+          <div class="complete-set__cta text-center">
+            <button type="button" class="btn btn-primary" data-add-set data-variant-ids="{{ add_list | join: ',' }}" data-label="Add the other {{ add_list.size }} to basket">Add the other {{ add_list.size }} to basket</button>
+          </div>
+        {%- endif -%}
+      </div>
+    </section>
+  {%- endif -%}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Complete the set",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Complete the set" },
+    { "type": "text", "id": "subtext", "label": "Subtext", "default": "Everything that pairs with this, ready in one tap." }
+  ],
+  "presets": [{ "name": "Complete the set" }]
+}
+{% endschema %}

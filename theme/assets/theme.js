@@ -192,6 +192,45 @@
     });
   });
 
+  // "Complete the set" — add every remaining set member in one /cart/add.js call.
+  // Multi-item add is atomic: if any line is sold out the whole request 422s and
+  // nothing is added, so we surface that clearly rather than silently no-op.
+  document.querySelectorAll('[data-add-set]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const ids = (btn.dataset.variantIds || '').split(',').map((s) => s.trim()).filter(Boolean);
+      if (!ids.length) { setDrawer(true); return; }
+      btn.disabled = true;
+      const originalText = btn.textContent;
+      btn.textContent = 'Adding…';
+      try {
+        const r = await fetch('/cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'same-origin',
+          body: JSON.stringify({ items: ids.map((id) => ({ id: id, quantity: 1 })) }),
+        });
+        if (!r.ok) {
+          let soldOut = false;
+          try {
+            const e = await r.json();
+            const desc = ((e && (e.description || e.message)) || '').toLowerCase();
+            soldOut = r.status === 422 || desc.indexOf('sold out') > -1 || desc.indexOf('out of stock') > -1 || desc.indexOf('stock') > -1 || desc.indexOf('unavailable') > -1;
+          } catch (_) {}
+          const fail = new Error('add failed'); fail.soldOut = soldOut; throw fail;
+        }
+        const cart = await fetchCart();
+        updateCount(cart.item_count);
+        await refreshDrawer();
+        btn.textContent = 'Added ✓';
+        setTimeout(() => setDrawer(true), 200);
+        setTimeout(() => { btn.textContent = btn.dataset.label || originalText; btn.disabled = false; }, 1600);
+      } catch (err) {
+        btn.textContent = (err && err.soldOut) ? 'Some items unavailable' : 'Please try again';
+        setTimeout(() => { btn.textContent = btn.dataset.label || originalText; btn.disabled = false; }, 2200);
+      }
+    });
+  });
+
   // Also wire any existing remove links on initial page-load drawer state
   document.querySelectorAll('[data-cart-remove]').forEach((a) => a.addEventListener('click', removeFromCart));
   bindDrawerQty();

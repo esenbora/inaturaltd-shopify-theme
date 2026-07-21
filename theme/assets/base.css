@@ -1206,3 +1206,8 @@ a.cart-line__title:hover { color: var(--primary-dark); }
   .promo-popup__title { font-size: var(--fs-xl); }
   .promo-popup__trust { flex-direction: column; gap: var(--space-1); }
 }
+
+/* Complete the set — bundle-aware PDP cross-sell */
+.section-sub { margin-top: var(--space-2); color: var(--muted, #6b6f6a); font-size: var(--fs-sm); max-width: 46ch; margin-left: auto; margin-right: auto; }
+.complete-set__cta { margin-top: var(--space-6); }
+.complete-set__cta .btn { min-width: 16rem; }

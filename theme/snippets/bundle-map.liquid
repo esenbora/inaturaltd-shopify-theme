@@ -1,0 +1,42 @@
+{%- comment -%}
+  Curated set map for the "Complete the set" cross-sell.
+  Given a product, outputs "Set title||handle1,handle2,..." for the set that product
+  belongs to, or nothing if it is not part of a set. Single source of truth: both
+  complete-the-set.liquid (shows the set) and related-products.liquid (generic fallback,
+  suppressed when a set exists) render this and branch on whether output is blank.
+  Handles verified live against the store (26/26 active + published). Sets are curated
+  groupings with one-tap add, not discounted bundle SKUs (no price data exists for that).
+{%- endcomment -%}
+{%- liquid
+  assign set_title = ''
+  assign set_handles = ''
+  case product.handle
+    when 'incia-natural-sunscreen-for-face-spf50' or 'incia-natural-sunscreen-lotion-for-all-family' or 'incia-natural-sunscreen-for-baby-and-child-spf50'
+      assign set_title = 'Family Sun Protection Set'
+      assign set_handles = 'incia-natural-sunscreen-for-face-spf50,incia-natural-sunscreen-lotion-for-all-family,incia-natural-sunscreen-for-baby-and-child-spf50'
+    when 'incia-natural-baby-oil' or 'incia-natural-baby-kids-shampoo-without-sulfates-and-parabens' or 'incia-preventive-and-natural-diaper-rash-gel'
+      assign set_title = 'Baby Essentials Set'
+      assign set_handles = 'incia-natural-baby-oil,incia-natural-baby-kids-shampoo-without-sulfates-and-parabens,incia-natural-liquid-laundry-liquid-soap,incia-preventive-and-natural-diaper-rash-gel'
+    when 'incia-nipple-cream' or 'incia-stretch-mark-gel-cream-75ml'
+      assign set_title = 'New Mum Care Set'
+      assign set_handles = 'incia-nipple-cream,incia-stretch-mark-gel-cream-75ml,incia-natural-baby-oil'
+    when 'incia-sos-stick' or 'incia-cream-for-dry-skin' or 'incia-cream-for-dry-skin-and-eczema'
+      assign set_title = 'Sensitive Skin Rescue Set'
+      assign set_handles = 'incia-sos-stick,incia-cream-for-dry-skin,incia-cream-for-dry-skin-and-eczema'
+    when 'incia-lip-balm-coconut' or 'incia-lip-balm-orange' or 'incia-lip-balm-cinnamon' or 'incia-lip-balm-bergamot-lemon' or 'incia-kids-lip-balm-lemon' or 'incia-kids-lip-balm-orange' or 'incia-kids-lip-balm-strawberry'
+      assign set_title = 'Lip Care Collection'
+      assign set_handles = 'incia-lip-balm-coconut,incia-lip-balm-orange,incia-lip-balm-cinnamon,incia-lip-balm-bergamot-lemon,incia-kids-lip-balm-lemon,incia-kids-lip-balm-orange,incia-kids-lip-balm-strawberry'
+    when 'incia-natural-herbal-shampoo' or 'incia-natural-hair-serum' or 'incia-natural-easy-combing-spray'
+      assign set_title = 'Hair Care Set'
+      assign set_handles = 'incia-natural-herbal-shampoo,incia-natural-hair-serum,incia-natural-easy-combing-spray'
+    when 'incia-natural-dishwashing-soap' or 'incia-natural-foaming-hand-soap-for-kids' or 'incia-natural-liquid-laundry-liquid-soap'
+      assign set_title = 'Natural Home Essentials'
+      assign set_handles = 'incia-natural-dishwashing-soap,incia-natural-liquid-laundry-liquid-soap,incia-natural-foaming-hand-soap-for-kids'
+    when 'incia-natural-deodorant-for-dark-armpits' or 'incia-natural-remedy-for-insect-bites'
+      assign set_title = 'Summer Essentials'
+      assign set_handles = 'incia-natural-sunscreen-for-face-spf50,incia-natural-deodorant-for-dark-armpits,incia-lip-balm-coconut,incia-natural-remedy-for-insect-bites'
+  endcase
+  if set_title != blank
+    echo set_title | append: '||' | append: set_handles
+  endif
+-%}

@@ -1,3 +1,7 @@
+{%- comment -%} Suppressed when the product has a curated set: complete-the-set.liquid shows that instead, so we never stack two carousels. Generic fallback for everything else. {%- endcomment -%}
+{%- capture in_set -%}{% render 'bundle-map', product: product %}{%- endcapture -%}
+{%- assign in_set = in_set | strip -%}
+{%- unless product != blank and in_set != blank -%}
 <section class="section">
   <div class="wrap">
     <header class="section-head section-head--center text-center mx-auto">
@@ -18,6 +22,7 @@
     </div>
   </div>
 </section>
+{%- endunless -%}
 
 {% schema %}
 {
