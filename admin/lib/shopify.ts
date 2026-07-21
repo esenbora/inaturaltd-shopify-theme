@@ -6,9 +6,16 @@
  *   - Auth header "X-Shopify-Access-Token"
  *   - Resolve blog id by handle, then operate on /blogs/{id}/articles.json
  *
- * Fallback: when SHOPIFY_ADMIN_TOKEN is empty/undefined the network is never
+ * Auth: the access token is resolved at runtime via `getAccessToken()`, which
+ * supports two credential modes:
+ *   1. A static SHOPIFY_ADMIN_TOKEN (legacy) — used verbatim when present.
+ *   2. SHOPIFY_CLIENT_ID + SHOPIFY_CLIENT_SECRET — exchanged for a short-lived
+ *      token via the OAuth `client_credentials` grant, then cached in-module
+ *      until ~2 minutes before it expires.
+ *
+ * Fallback: when NONE of those credentials are configured the network is never
  * touched — realistic INature mock data is returned instead so the whole UI is
- * navigable before a token exists.
+ * navigable before credentials exist.
  */
 import type { Article, ArticleInput } from "@/lib/types";
 
@@ -22,6 +29,8 @@ const DEFAULT_BLOG_HANDLE = "news";
 interface ShopifyEnv {
   readonly shop: string;
   readonly token: string;
+  readonly clientId: string;
+  readonly clientSecret: string;
   readonly blogHandle: string;
 }
 
@@ -29,13 +38,122 @@ function readEnv(): ShopifyEnv {
   return {
     shop: (process.env.SHOPIFY_SHOP ?? "").trim(),
     token: (process.env.SHOPIFY_ADMIN_TOKEN ?? "").trim(),
+    clientId: (process.env.SHOPIFY_CLIENT_ID ?? "").trim(),
+    clientSecret: (process.env.SHOPIFY_CLIENT_SECRET ?? "").trim(),
     blogHandle: (process.env.SHOPIFY_BLOG_HANDLE ?? DEFAULT_BLOG_HANDLE).trim() || DEFAULT_BLOG_HANDLE,
   };
 }
 
-/** True when no admin token is configured — the client runs in mock mode. */
+/** True when the store can authenticate via client_credentials (id + secret). */
+function hasClientCredentials(env: ShopifyEnv): boolean {
+  return env.clientId.length > 0 && env.clientSecret.length > 0;
+}
+
+/**
+ * True when no usable credentials are configured — the client runs in mock
+ * mode. Mock mode applies ONLY when there is neither a static token nor a
+ * client_credentials pair.
+ */
 function isMockMode(env: ShopifyEnv): boolean {
-  return env.token.length === 0;
+  return env.token.length === 0 && !hasClientCredentials(env);
+}
+
+// ---------------------------------------------------------------------------
+// Access token resolution (static token OR OAuth client_credentials)
+// ---------------------------------------------------------------------------
+
+interface RawTokenResponse {
+  readonly access_token?: unknown;
+  readonly scope?: unknown;
+  readonly expires_in?: unknown;
+}
+
+interface CachedToken {
+  readonly value: string;
+  /** Epoch ms after which the cached token must be refetched. */
+  readonly expiresAt: number;
+}
+
+/** Module-level cache for client_credentials tokens (null until first fetch). */
+let tokenCache: CachedToken | null = null;
+
+/** Reset the in-memory token cache (test seam; not used by the UI). */
+export function clearTokenCache(): void {
+  tokenCache = null;
+}
+
+/**
+ * Exchange SHOPIFY_CLIENT_ID / SHOPIFY_CLIENT_SECRET for a short-lived Admin
+ * access token via the OAuth `client_credentials` grant, then cache it.
+ *
+ * This does NOT reuse `request()` — the token endpoint is unversioned, expects
+ * a urlencoded body, and must not carry an X-Shopify-Access-Token header.
+ */
+async function fetchClientCredentialsToken(env: ShopifyEnv): Promise<string> {
+  const url = `https://${env.shop}/admin/oauth/access_token`;
+  const body = new URLSearchParams({
+    grant_type: "client_credentials",
+    client_id: env.clientId,
+    client_secret: env.clientSecret,
+  });
+
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: body.toString(),
+      cache: "no-store",
+    });
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : String(error);
+    throw new Error(`Shopify token request failed: ${detail}`);
+  }
+
+  if (!response.ok) {
+    const message = await extractErrorMessage(response);
+    throw new Error(`Shopify token ${response.status}: ${message}`);
+  }
+
+  const data = (await response.json()) as RawTokenResponse;
+  const accessToken = data.access_token;
+  if (typeof accessToken !== "string" || accessToken.length === 0) {
+    throw new Error("Shopify token response missing a valid access_token");
+  }
+
+  // Default to a conservative 1h lifetime if the field is absent/invalid.
+  const expiresInSeconds =
+    typeof data.expires_in === "number" && data.expires_in > 0
+      ? data.expires_in
+      : 3600;
+  // Refetch ~2 min early to avoid using a token that expires mid-request.
+  const expiresAt = Date.now() + Math.max(expiresInSeconds - 120, 0) * 1000;
+
+  tokenCache = { value: accessToken, expiresAt };
+  return accessToken;
+}
+
+/**
+ * Resolve the Admin access token to use for the X-Shopify-Access-Token header.
+ *
+ * Order of precedence:
+ *   1. Static SHOPIFY_ADMIN_TOKEN (legacy) — returned verbatim.
+ *   2. Cached client_credentials token, if still valid.
+ *   3. A fresh client_credentials token (fetched + cached).
+ *   4. `null` — no credentials at all (mock mode).
+ */
+export async function getAccessToken(): Promise<string | null> {
+  const env = readEnv();
+
+  if (env.token.length > 0) return env.token;
+
+  if (!hasClientCredentials(env)) return null;
+
+  if (tokenCache !== null && Date.now() < tokenCache.expiresAt) {
+    return tokenCache.value;
+  }
+
+  return fetchClientCredentialsToken(env);
 }
 
 // ---------------------------------------------------------------------------
@@ -140,12 +258,19 @@ async function request(
   path: string,
   body?: Record<string, unknown>,
 ): Promise<unknown> {
+  const token = await getAccessToken();
+  if (token === null) {
+    // Guard: request() is only reached in real mode, so a null token here is a
+    // misconfiguration rather than the normal mock path.
+    throw new Error("Shopify access token unavailable — check credentials");
+  }
+
   const url = `https://${env.shop}/admin/api/${API_VERSION}${path}`;
   const response = await fetch(url, {
     method,
     headers: {
       "Content-Type": "application/json",
-      "X-Shopify-Access-Token": env.token,
+      "X-Shopify-Access-Token": token,
     },
     body: body ? JSON.stringify(body) : undefined,
     cache: "no-store",
@@ -261,7 +386,9 @@ function mockFromInput(id: string, input: ArticleInput): Article {
 }
 
 function warnMock(): void {
-  console.warn("[shopify] no SHOPIFY_ADMIN_TOKEN — using mock data");
+  console.warn(
+    "[shopify] no credentials (SHOPIFY_ADMIN_TOKEN or SHOPIFY_CLIENT_ID/SECRET) — using mock data",
+  );
 }
 
 // ---------------------------------------------------------------------------
