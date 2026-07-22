@@ -68,4 +68,28 @@
     ]
   }
   </script>
+{%- elsif template contains 'page' and page.handle == 'faq' -%}
+  {%- comment -%} FAQPage — mirrors the visible Q/A in snippets/faq-accordion.liquid. KEEP IN SYNC with that file when either changes. Plain-text answers (links stripped) for clean answer-engine parsing. {%- endcomment -%}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": {{ "Who is INCIA, and what does INature do?" | json }}, "acceptedAnswer": { "@type": "Answer", "text": {{ "INCIA is a Turkish natural personal care brand known for its clean, skin-friendly formulations. INature is the official UK distributor of INCIA, bringing certified, 100% natural products to families across the UK." | json }} } },
+      { "@type": "Question", "name": {{ "What is the meaning behind the name INature?" | json }}, "acceptedAnswer": { "@type": "Answer", "text": {{ "INature is a declaration of belonging. The letter I is a personal space for you to define your own relationship with the world: I am Nature, I love Nature, I protect Nature." | json }} } },
+      { "@type": "Question", "name": {{ "When and where was INature founded?" | json }}, "acceptedAnswer": { "@type": "Answer", "text": {{ "INature was founded in December 2023 in Bristol, UK, by Seyda and Ferhat, after they saw how hard it was for friends and new families in the UK to find safe, natural baby and personal care." | json }} } },
+      { "@type": "Question", "name": {{ "How did INature start?" | json }}, "acceptedAnswer": { "@type": "Answer", "text": {{ "Founded by Seyda and Ferhat, INature was born from their trust in INCIA's natural, eco-friendly products. After seeing friends in the UK struggle to find truly safe, natural care for their newborns, they decided to bridge the gap. Today, as part of the global HemNature network and partnered with major retailers like Etos in the Netherlands, INature makes INCIA's 100% natural formulas easily accessible to families across the UK." | json }} } },
+      { "@type": "Question", "name": {{ "Are your products really 100% natural?" | json }}, "acceptedAnswer": { "@type": "Answer", "text": {{ "Yes. Every INCIA formula is 100% natural in origin: plant-derived actives, mineral filters and botanical oils, free from SLS/SLES, parabens, mineral oils, silicones and synthetic fragrances. And it's certified, not just claimed: ETKO Cosmos Natural, Ecocert, BRCGS, GMP and more." | json }} } },
+      { "@type": "Question", "name": {{ "Are they safe for babies, pregnancy and sensitive skin?" | json }}, "acceptedAnswer": { "@type": "Answer", "text": {{ "Our range is dermatologically tested and developed with sensitive skin in mind, including formulas suitable for babies, children and during pregnancy. If you have a specific condition or concern, we always recommend checking the ingredient list and patch-testing first." | json }} } },
+      { "@type": "Question", "name": {{ "What certifications do your products carry?" | json }}, "acceptedAnswer": { "@type": "Answer", "text": {{ "Depending on the product, our range carries ETKO Cosmos Natural, Ecocert, The Vegan Society, cruelty-free (Leaping Bunny), BRCGS, GMP and Zero Waste certifications. These are independently audited and renewed, so you can trust what's on the label." | json }} } },
+      { "@type": "Question", "name": {{ "Are your products cruelty-free and vegan?" | json }}, "acceptedAnswer": { "@type": "Answer", "text": {{ "Always. Every product we stock is 100% cruelty-free, never tested on animals, and our range is Vegan Society approved with no animal-derived ingredients." | json }} } },
+      { "@type": "Question", "name": {{ "How sustainable is INCIA?" | json }}, "acceptedAnswer": { "@type": "Answer", "text": {{ "Sustainability runs through everything we do. INCIA holds Zero Waste certification for low-impact, resource-recovering production, and we choose recyclable packaging wherever possible. Clean ingredients, kinder to your skin and to the planet." | json }} } },
+      { "@type": "Question", "name": {{ "Where are your products made?" | json }}, "acceptedAnswer": { "@type": "Answer", "text": {{ "INCIA formulas are made in Türkiye under certified, audited conditions (ETKO Cosmos, BRCGS, GMP), then dispatched to you from the UK by INature, the official UK distributor." | json }} } },
+      { "@type": "Question", "name": {{ "How much is delivery, and how long does it take?" | json }}, "acceptedAnswer": { "@type": "Answer", "text": {{ "Free UK shipping on orders over £20, a flat £3 below that. We dispatch from the UK: orders placed before 23:00 are sent the same day (excluding weekends and holidays), and you'll get a track and trace email. See our Shipping and Returns page for full details." | json }} } },
+      { "@type": "Question", "name": {{ "Do you offer a free gift or discount?" | json }}, "acceptedAnswer": { "@type": "Answer", "text": {{ "Spend £20 or more and you can add a free Lip Balm to your basket. New customers can also enjoy 15% off their first order." | json }} } },
+      { "@type": "Question", "name": {{ "Can I return an item?" | json }}, "acceptedAnswer": { "@type": "Answer", "text": {{ "Yes. You have 14 days to change your mind, provided items are unused and in their original, unopened packaging. Full details are on our Shipping and Returns page." | json }} } },
+      { "@type": "Question", "name": {{ "Still have a question?" | json }}, "acceptedAnswer": { "@type": "Answer", "text": {{ "We're here Monday to Sunday, 8am to 8pm. Email info@inatureltd.com or message us on Instagram @inatureuk." | json }} } }
+    ]
+  }
+  </script>
 {%- endif -%}
