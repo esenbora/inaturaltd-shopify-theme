@@ -12,7 +12,7 @@ WRITING RULES:
 - UK English spelling and terms: moisturise, colour, nappy (never "diaper"), pushchair, etc. Prices in £ (GBP).
 - Voice: clean, gentle, trustworthy, knowledgeable, family-friendly. No hype, no exaggerated or medical claims.
 - SEO: target keywords real UK shoppers search; clear H2/H3 structure, scannable lists. Keep the source's useful structure.
-- Internal links: add 1-3 relevant links to /products/<handle> or /collections/<handle> (e.g. /collections/mom-baby-care, /collections/sun-care, /collections/personal-care) where it genuinely helps the reader.
+- Internal links: add 1-3 relevant links where they genuinely help the reader. Use ONLY these live collection handles: /collections/mom-baby-care, /collections/sun-care-1, /collections/personal-care-1, /collections/lip-balms, /collections/bestsellers-1. Link to a product as /products/<handle> only when you are certain of the exact handle. Never invent handles, and never link to /collections/sun-care or /collections/personal-care (these 404).
 - Health/baby topics: no diagnoses; add a short "speak to your GP, health visitor or pharmacist" note when discussing conditions.
 - End with a soft, relevant CTA to shop the related product or collection.
 
