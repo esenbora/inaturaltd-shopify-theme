@@ -42,15 +42,20 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Publish blog articles
+      - name: Generate blog article drafts
         run: npm start
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           OPENROUTER_MODEL: ${{ secrets.OPENROUTER_MODEL }}
-          FAL_KEY: ${{ secrets.FAL_KEY }}
           SHOPIFY_SHOP: ${{ secrets.SHOPIFY_SHOP }}
+          # Shopify auth: a static token OR client_credentials (client_id + secret).
+          # client_credentials tokens are ~24h, so the cron mints a fresh one each run.
           SHOPIFY_ADMIN_TOKEN: ${{ secrets.SHOPIFY_ADMIN_TOKEN }}
+          SHOPIFY_CLIENT_ID: ${{ secrets.SHOPIFY_CLIENT_ID }}
+          SHOPIFY_CLIENT_SECRET: ${{ secrets.SHOPIFY_CLIENT_SECRET }}
           SHOPIFY_BLOG_HANDLE: ${{ secrets.SHOPIFY_BLOG_HANDLE }}
+          # Draft-first: leave AUTO_PUBLISH unset so articles land hidden for editorial review.
+          # Set AUTO_PUBLISH=true only to publish live automatically.
           BATCH: ${{ vars.BATCH || '2' }}
 
       - name: Ensure ledger exists

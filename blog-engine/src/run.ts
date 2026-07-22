@@ -8,6 +8,7 @@ import {
   type ScrapeOptions,
 } from "./scraper.js";
 import { ShopifyAdapter } from "./shopify-adapter.js";
+import { resolveShopifyToken } from "./shopify-token.js";
 import { setTimeout as sleep } from "node:timers/promises";
 
 const DEFAULT_BATCH = 2;
@@ -53,7 +54,10 @@ async function main(): Promise<void> {
   }
 
   const shopifyShop = readEnv("SHOPIFY_SHOP") ?? "inature-uk";
-  const shopifyToken = readEnv("SHOPIFY_ADMIN_TOKEN") ?? "";
+  // Static SHOPIFY_ADMIN_TOKEN if set, else a fresh client_credentials token from
+  // SHOPIFY_CLIENT_ID + SHOPIFY_CLIENT_SECRET (client_credentials tokens are ~24h, so the
+  // weekly cron mints a new one each run). Null (mock) only matters under DRY_RUN.
+  const shopifyToken = (await resolveShopifyToken(shopifyShop)) ?? "";
   const shopifyBlogHandle = readEnv("SHOPIFY_BLOG_HANDLE") ?? "news";
   const shopifyBlogId = readEnv("SHOPIFY_BLOG_ID");
   const openrouterModel = readEnv("OPENROUTER_MODEL") ?? "anthropic/claude-3.5-sonnet";
@@ -63,9 +67,12 @@ async function main(): Promise<void> {
     "PUBLISH_DELAY_MS",
     DEFAULT_PUBLISH_DELAY_MS
   );
+  const useSourceCover = readBooleanEnv("USE_SOURCE_COVER", false);
 
   if (!dryRun && !shopifyToken) {
-    throw new Error("SHOPIFY_ADMIN_TOKEN is required unless DRY_RUN=true");
+    throw new Error(
+      "A Shopify token is required unless DRY_RUN=true: set SHOPIFY_ADMIN_TOKEN, or SHOPIFY_CLIENT_ID + SHOPIFY_CLIENT_SECRET"
+    );
   }
 
   let ledger = scrapeResult.ledger;
@@ -79,7 +86,11 @@ async function main(): Promise<void> {
         accessToken: shopifyToken,
         blogHandle: shopifyBlogHandle,
         dryRun,
-        coverImageUrl: post.cover_image_url,
+        // Cover image is an editorial step: the reviewer attaches a real INCIA product/brand
+        // photo in the Shopify admin before publishing the draft (no AI images, and we do not
+        // hotlink the Hemnature source image). Set USE_SOURCE_COVER=true to seed the draft with
+        // the source image as a placeholder instead.
+        coverImageUrl: useSourceCover ? post.cover_image_url : null,
       };
       if (shopifyBlogId) shopifyConfig.blogId = shopifyBlogId;
 
