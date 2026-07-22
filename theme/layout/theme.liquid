@@ -40,6 +40,10 @@
         with &amp; still encoded, which the final | escape would double to &amp;amp;).
       endcomment
       assign meta_desc = meta_desc | strip_html | replace: '&amp;', '&' | replace: '&amp;', '&' | replace: '&amp;', '&' | replace: '&#39;', "'" | replace: '&quot;', '"' | replace: '&nbsp;', ' '
+      comment
+        SERP backstop: word-safe cap (~150 chars) so an over-long admin page_description does not cut mid-word.
+      endcomment
+      assign meta_desc = meta_desc | strip | truncatewords: 26, '…'
 
       assign meta_title = page_title | default: shop.name | replace: '&amp;', '&' | replace: '&amp;', '&' | replace: '&amp;', '&' | replace: '&#39;', "'"
     -%}
@@ -61,6 +65,8 @@
       <meta property="og:image:height" content="1200">
     {%- elsif settings.social_share_image -%}
       <meta property="og:image" content="{{ settings.social_share_image | image_url: width: 1200 }}">
+    {%- else -%}
+      <meta property="og:image" content="{{ 'hero-2.jpg' | asset_url | prepend: 'https:' }}">
     {%- endif -%}
 
     <meta name="twitter:card" content="summary_large_image">
@@ -70,38 +76,11 @@
       <meta name="twitter:image" content="{{ product.featured_image | image_url: width: 1200 }}">
     {%- elsif settings.social_share_image -%}
       <meta name="twitter:image" content="{{ settings.social_share_image | image_url: width: 1200 }}">
+    {%- else -%}
+      <meta name="twitter:image" content="{{ 'hero-2.jpg' | asset_url | prepend: 'https:' }}">
     {%- endif -%}
 
-    {%- if template == 'index' -%}
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "INature",
-      "alternateName": "INature UK",
-      "url": "{{ shop.url }}",
-      "logo": "{{ shop.url }}{{ 'logo.png' | asset_url }}",
-      "sameAs": [
-        "https://www.instagram.com/inatureltd",
-        "https://www.tiktok.com/@inatureltd"
-      ],
-      "description": "Official UK distributor of INCIA, 100% natural skincare, ETKO Cosmos certified, dispatched from the UK."
-    }
-    </script>
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": {{ shop.name | json }},
-      "url": "{{ shop.url }}",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "{{ shop.url }}/search?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
-    }
-    </script>
-    {%- endif -%}
+    {%- comment -%} Organization + WebSite JSON-LD is emitted sitewide by snippets/structured-data.liquid (rendered below). No inline duplicate here (it caused a doubled Organization on the homepage plus a broken shop.url+asset_url logo). {%- endcomment -%}
 
     <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
     <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>

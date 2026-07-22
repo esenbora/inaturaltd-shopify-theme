@@ -40,6 +40,12 @@
   </div>
 </article>
 
+{%- liquid
+  assign pub_logo = 'brand-leaf.png' | asset_url
+  unless pub_logo contains 'https:'
+    assign pub_logo = pub_logo | prepend: 'https:'
+  endunless
+-%}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -51,7 +57,7 @@
   "publisher": {
     "@type": "Organization",
     "name": {{ shop.name | json }},
-    "logo": { "@type": "ImageObject", "url": "{{ shop.url }}{{ 'brand-leaf.png' | asset_url }}" }
+    "logo": { "@type": "ImageObject", "url": {{ pub_logo | json }} }
   },
   {%- if article.image %}"image": "{{ article.image | image_url: width: 1200 | prepend: 'https:' }}",{% endif %}
   "mainEntityOfPage": { "@type": "WebPage", "@id": "{{ shop.url }}{{ article.url }}" },
