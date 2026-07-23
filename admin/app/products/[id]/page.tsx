@@ -62,10 +62,8 @@ export default async function EditProductPage({ params }: Params) {
       </section>
 
       <section>
-        <h2 className="u-serif mb-3 text-lg font-semibold text-ink">
-          Description
-        </h2>
-        <ProductForm product={product} />
+        <h2 className="u-serif mb-3 text-lg font-semibold text-ink">Details</h2>
+        <ProductForm product={product} mode="edit" />
       </section>
     </main>
   );

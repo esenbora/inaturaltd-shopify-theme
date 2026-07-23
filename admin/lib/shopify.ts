@@ -21,6 +21,7 @@ import type {
   Article,
   ArticleInput,
   Product,
+  ProductCreateInput,
   ProductImage,
   ProductUpdateInput,
 } from "@/lib/types";
@@ -511,14 +512,30 @@ interface RawProductImage {
   readonly position?: number;
 }
 
+interface RawVariant {
+  readonly id: number;
+  readonly price?: string;
+}
+
 interface RawProduct {
   readonly id: number;
   readonly title?: string;
   readonly handle?: string;
   readonly status?: string;
   readonly body_html?: string | null;
+  readonly product_type?: string;
+  readonly tags?: string;
+  readonly variants?: RawVariant[];
   readonly image?: RawProductImage | null;
   readonly images?: RawProductImage[];
+}
+
+/** A raw Shopify metafield (subset used for SEO title/description tags). */
+interface RawMetafield {
+  readonly id: number;
+  readonly namespace?: string;
+  readonly key?: string;
+  readonly value?: string;
 }
 
 /** Map a raw Shopify product image into the normalised `ProductImage` type. */
@@ -531,21 +548,49 @@ function toProductImage(raw: RawProductImage): ProductImage {
   };
 }
 
-/** Map a raw Shopify product into the normalised `Product` UI type. */
-function toProduct(raw: RawProduct): Product {
+/**
+ * SEO metafields resolved out-of-band (from a separate metafields fetch or from
+ * create input), merged onto the mapped product by `toProduct`.
+ */
+interface ProductMeta {
+  readonly metaTitle: string;
+  readonly metaDescription: string;
+}
+
+/**
+ * Map a raw Shopify product into the normalised `Product` UI type.
+ *
+ * `product_type`, `tags`, and the first variant's price/id come inline from the
+ * REST product JSON (both `/products.json` and `/products/{id}.json` include
+ * them). SEO metafields are NOT part of that JSON, so `metaTitle` /
+ * `metaDescription` default to "" here — callers that have them (getProduct,
+ * createProduct) pass `meta` to fill them in.
+ */
+function toProduct(raw: RawProduct, meta?: ProductMeta): Product {
   const images = (raw.images ?? []).map(toProductImage);
+  const firstVariant = raw.variants?.[0];
   return {
     id: String(raw.id),
     title: raw.title ?? "",
     handle: raw.handle ?? "",
     status: raw.status ?? "",
     bodyHtml: raw.body_html ?? "",
+    productType: raw.product_type ?? "",
+    tags: parseTags(raw.tags),
+    price: firstVariant?.price ?? "",
+    variantId: firstVariant !== undefined ? String(firstVariant.id) : "",
+    metaTitle: meta?.metaTitle ?? "",
+    metaDescription: meta?.metaDescription ?? "",
     featuredImage: raw.image?.src ?? null,
     images,
   };
 }
 
-/** Build the Shopify write payload (`{ product: {...} }`) from patch input. */
+/**
+ * Build the product-level Shopify write payload (`product: {...}`) from patch
+ * input. Only maps the columns that live on the product resource itself —
+ * price (variant) and SEO metafields are written via separate requests.
+ */
 function toProductWritePayload(
   id: string,
   input: ProductUpdateInput,
@@ -554,6 +599,11 @@ function toProductWritePayload(
     id: Number(id),
     ...(input.title !== undefined ? { title: input.title } : {}),
     ...(input.bodyHtml !== undefined ? { body_html: input.bodyHtml } : {}),
+    ...(input.productType !== undefined
+      ? { product_type: input.productType }
+      : {}),
+    ...(input.tags !== undefined ? { tags: input.tags.join(", ") } : {}),
+    ...(input.status !== undefined ? { status: input.status } : {}),
   };
 }
 
@@ -569,6 +619,13 @@ const MOCK_PRODUCTS: Product[] = [
     status: "active",
     bodyHtml:
       "<p>A lightweight, plant-based serum pairing Damask rose with hyaluronic acid for deep, calm hydration.</p>",
+    productType: "Serum",
+    tags: ["hydration", "rose", "hyaluronic-acid"],
+    price: "24.00",
+    variantId: "4001",
+    metaTitle: "Rose & Hyaluronic Acid Serum | INature UK",
+    metaDescription:
+      "A plant-based Damask rose and hyaluronic acid serum for deep, calm hydration. Pure Turkish skincare, naturally British.",
     featuredImage:
       "https://images.unsplash.com/photo-1620916566398-39f1143ab7be",
     images: [
@@ -593,6 +650,13 @@ const MOCK_PRODUCTS: Product[] = [
     status: "active",
     bodyHtml:
       "<p>Targeted, on-the-go relief for stressed skin — a pocket-sized balm stick with soothing botanicals.</p>",
+    productType: "Balm",
+    tags: ["sos", "on-the-go", "soothing"],
+    price: "14.50",
+    variantId: "4002",
+    metaTitle: "INCIA SOS Stick | INature UK",
+    metaDescription:
+      "A pocket-sized balm stick for targeted, on-the-go relief for stressed skin, with soothing botanicals.",
     featuredImage:
       "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b",
     images: [
@@ -611,6 +675,12 @@ const MOCK_PRODUCTS: Product[] = [
     status: "draft",
     bodyHtml:
       "<p>A fragrance-conscious daily cleanser that lifts impurities without stripping sensitive, eczema-prone skin.</p>",
+    productType: "Cleanser",
+    tags: ["sensitive-skin", "cleanser", "fragrance-conscious"],
+    price: "16.00",
+    variantId: "4003",
+    metaTitle: "",
+    metaDescription: "",
     featuredImage: null,
     images: [],
   },
@@ -620,22 +690,130 @@ function findMockProduct(id: string): Product | undefined {
   return MOCK_PRODUCTS.find((product) => product.id === id);
 }
 
-/** Merge a patch input over an existing (or synthesized) mock product. */
-function mockProductFromInput(id: string, input: ProductUpdateInput): Product {
-  const existing = findMockProduct(id) ?? {
+/** A fully-populated blank product used to seed mock synthesis. */
+function emptyMockProduct(id: string): Product {
+  return {
     id,
     title: "Untitled product",
     handle: `product-${id}`,
     status: "draft",
     bodyHtml: "",
+    productType: "",
+    tags: [],
+    price: "",
+    variantId: "",
+    metaTitle: "",
+    metaDescription: "",
     featuredImage: null,
-    images: [] as ProductImage[],
+    images: [],
   };
+}
+
+/** Merge a patch input over an existing (or synthesized) mock product. */
+function mockProductFromInput(id: string, input: ProductUpdateInput): Product {
+  const existing = findMockProduct(id) ?? emptyMockProduct(id);
   return {
     ...existing,
     ...(input.title !== undefined ? { title: input.title } : {}),
     ...(input.bodyHtml !== undefined ? { bodyHtml: input.bodyHtml } : {}),
+    ...(input.productType !== undefined
+      ? { productType: input.productType }
+      : {}),
+    ...(input.tags !== undefined ? { tags: input.tags } : {}),
+    ...(input.status !== undefined ? { status: input.status } : {}),
+    ...(input.price !== undefined ? { price: input.price } : {}),
+    ...(input.metaTitle !== undefined ? { metaTitle: input.metaTitle } : {}),
+    ...(input.metaDescription !== undefined
+      ? { metaDescription: input.metaDescription }
+      : {}),
   };
+}
+
+/** Synthesize a mock `Product` from create input (fake id, echoes the input). */
+function mockProductFromCreate(id: string, input: ProductCreateInput): Product {
+  const base = emptyMockProduct(id);
+  const slug = input.title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  return {
+    ...base,
+    title: input.title,
+    handle: slug.length > 0 ? slug : base.handle,
+    status: input.status ?? "draft",
+    bodyHtml: input.bodyHtml ?? "",
+    productType: input.productType ?? "",
+    tags: input.tags ?? [],
+    price: input.price ?? "",
+    metaTitle: input.metaTitle ?? "",
+    metaDescription: input.metaDescription ?? "",
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Products — SEO metafields (global.title_tag / global.description_tag)
+// ---------------------------------------------------------------------------
+
+const META_NAMESPACE = "global";
+const META_TITLE_KEY = "title_tag";
+const META_DESCRIPTION_KEY = "description_tag";
+
+/**
+ * Fetch a product's SEO metafields and resolve title_tag / description_tag.
+ * Returns "" for any tag that is absent. Never throws for the read itself
+ * beyond the shared `request` error handling.
+ */
+async function fetchProductMeta(
+  env: ShopifyEnv,
+  id: string,
+): Promise<ProductMeta> {
+  const data = (await request(
+    env,
+    "GET",
+    `/products/${id}/metafields.json?namespace=${META_NAMESPACE}`,
+  )) as { metafields?: RawMetafield[] };
+  const metafields = data.metafields ?? [];
+  const title = metafields.find((m) => m.key === META_TITLE_KEY);
+  const description = metafields.find((m) => m.key === META_DESCRIPTION_KEY);
+  return {
+    metaTitle: title?.value ?? "",
+    metaDescription: description?.value ?? "",
+  };
+}
+
+/**
+ * Upsert one global SEO metafield on a product: PUT by id when it already
+ * exists, otherwise POST a new one. Callers pre-fetch the existing metafields
+ * to avoid a round-trip per key.
+ */
+async function upsertProductMetafield(
+  env: ShopifyEnv,
+  productId: string,
+  existing: RawMetafield[],
+  key: string,
+  value: string,
+): Promise<void> {
+  const match = existing.find(
+    (m) => m.namespace === META_NAMESPACE && m.key === key,
+  );
+  const metafield: Record<string, unknown> = {
+    namespace: META_NAMESPACE,
+    key,
+    value,
+    type: "single_line_text_field",
+  };
+  if (match !== undefined) {
+    // On update send only { id, value }: namespace/key are immutable and
+    // asserting `type` risks a 422 if the stored metafield uses a different
+    // text type (e.g. Shopify's SEO editor storing a multi_line description).
+    await request(env, "PUT", `/metafields/${match.id}.json`, {
+      metafield: { id: match.id, value },
+    });
+  } else {
+    await request(env, "POST", `/products/${productId}/metafields.json`, {
+      metafield,
+    });
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -652,7 +830,7 @@ export async function listProducts(): Promise<Product[]> {
   const data = (await request(env, "GET", "/products.json?limit=250")) as {
     products?: RawProduct[];
   };
-  return (data.products ?? []).map(toProduct);
+  return (data.products ?? []).map((raw) => toProduct(raw));
 }
 
 export async function getProduct(id: string): Promise<Product | null> {
@@ -662,28 +840,77 @@ export async function getProduct(id: string): Promise<Product | null> {
     const existing = findMockProduct(id);
     if (existing) return existing;
     // Synthesize a plausible product so detail/edit views are navigable.
-    return {
-      id,
-      title: "Untitled product",
-      handle: `product-${id}`,
-      status: "draft",
-      bodyHtml: "",
-      featuredImage: null,
-      images: [],
-    };
+    return emptyMockProduct(id);
   }
 
   try {
     const data = (await request(env, "GET", `/products/${id}.json`)) as {
       product?: RawProduct;
     };
-    return data.product ? toProduct(data.product) : null;
+    if (!data.product) return null;
+    const meta = await fetchProductMeta(env, id);
+    return toProduct(data.product, meta);
   } catch (error) {
     if (error instanceof Error && error.message.startsWith("Shopify 404")) {
       return null;
     }
     throw error;
   }
+}
+
+export async function createProduct(
+  input: ProductCreateInput,
+): Promise<Product> {
+  const env = readEnv();
+  if (isMockMode(env)) {
+    warnMock();
+    return mockProductFromCreate(String(Date.now()), input);
+  }
+
+  // Build the create payload. Only include fields the caller provided; `status`
+  // defaults to "draft" so new products never publish accidentally.
+  const metafields = [] as Array<Record<string, unknown>>;
+  if (input.metaTitle !== undefined) {
+    metafields.push({
+      namespace: META_NAMESPACE,
+      key: META_TITLE_KEY,
+      value: input.metaTitle,
+      type: "single_line_text_field",
+    });
+  }
+  if (input.metaDescription !== undefined) {
+    metafields.push({
+      namespace: META_NAMESPACE,
+      key: META_DESCRIPTION_KEY,
+      value: input.metaDescription,
+      type: "single_line_text_field",
+    });
+  }
+
+  const product: Record<string, unknown> = {
+    title: input.title,
+    status: input.status ?? "draft",
+    ...(input.bodyHtml !== undefined ? { body_html: input.bodyHtml } : {}),
+    ...(input.productType !== undefined
+      ? { product_type: input.productType }
+      : {}),
+    ...(input.tags !== undefined ? { tags: input.tags.join(", ") } : {}),
+    ...(input.price !== undefined ? { variants: [{ price: input.price }] } : {}),
+    ...(metafields.length > 0 ? { metafields } : {}),
+  };
+
+  const data = (await request(env, "POST", "/products.json", {
+    product,
+  })) as { product: RawProduct };
+
+  // Re-read so variants + metafields are fully populated in the returned shape.
+  const created = await getProduct(String(data.product.id));
+  if (created) return created;
+  // Fallback: map the create response and layer on the input's meta values.
+  return toProduct(data.product, {
+    metaTitle: input.metaTitle ?? "",
+    metaDescription: input.metaDescription ?? "",
+  });
 }
 
 export async function updateProduct(
@@ -696,10 +923,67 @@ export async function updateProduct(
     return mockProductFromInput(id, input);
   }
 
-  const data = (await request(env, "PUT", `/products/${id}.json`, {
-    product: toProductWritePayload(id, input),
-  })) as { product: RawProduct };
-  return toProduct(data.product);
+  // 1. Product-level columns (title, body, product_type, tags, status).
+  //    Skip the PUT entirely when only price/meta changed.
+  const hasProductLevel =
+    input.title !== undefined ||
+    input.bodyHtml !== undefined ||
+    input.productType !== undefined ||
+    input.tags !== undefined ||
+    input.status !== undefined;
+  if (hasProductLevel) {
+    await request(env, "PUT", `/products/${id}.json`, {
+      product: toProductWritePayload(id, input),
+    });
+  }
+
+  // 2. Price — lives on the first variant, whose id isn't in the input. Fetch
+  //    the product to discover it, then PUT the variant.
+  if (input.price !== undefined) {
+    const data = (await request(env, "GET", `/products/${id}.json`)) as {
+      product?: RawProduct;
+    };
+    const variantId = data.product?.variants?.[0]?.id;
+    if (variantId !== undefined) {
+      await request(env, "PUT", `/variants/${variantId}.json`, {
+        variant: { id: variantId, price: input.price },
+      });
+    }
+  }
+
+  // 3. SEO metafields — upsert only the keys the caller provided.
+  if (input.metaTitle !== undefined || input.metaDescription !== undefined) {
+    const metaData = (await request(
+      env,
+      "GET",
+      `/products/${id}/metafields.json?namespace=${META_NAMESPACE}`,
+    )) as { metafields?: RawMetafield[] };
+    const existing = metaData.metafields ?? [];
+    if (input.metaTitle !== undefined) {
+      await upsertProductMetafield(
+        env,
+        id,
+        existing,
+        META_TITLE_KEY,
+        input.metaTitle,
+      );
+    }
+    if (input.metaDescription !== undefined) {
+      await upsertProductMetafield(
+        env,
+        id,
+        existing,
+        META_DESCRIPTION_KEY,
+        input.metaDescription,
+      );
+    }
+  }
+
+  // Re-read so the returned product reflects variant price + metafields, which
+  // the individual write responses don't include.
+  const updated = await getProduct(id);
+  if (updated) return updated;
+  throw new Error(`Shopify 404: product ${id} not found after update`);
 }
 
 export async function addProductImage(

@@ -82,12 +82,17 @@ export default async function ProductsPage() {
 
   return (
     <main className="mx-auto w-full max-w-5xl px-6 py-10">
-      <div className="mb-8">
-        <h1 className="u-serif text-2xl font-semibold text-ink">Products</h1>
-        <p className="mt-1 text-sm text-muted">
-          Edit product descriptions and manage photos. {products.length} product
-          {products.length === 1 ? "" : "s"}.
-        </p>
+      <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="u-serif text-2xl font-semibold text-ink">Products</h1>
+          <p className="mt-1 text-sm text-muted">
+            Edit descriptions, photos and SEO, or add a product. {products.length}{" "}
+            product{products.length === 1 ? "" : "s"}.
+          </p>
+        </div>
+        <Link href="/products/new" className="btn btn-primary">
+          New product
+        </Link>
       </div>
       {products.length === 0 ? (
         <div className="card border-dashed px-6 py-16 text-center text-sm text-muted">

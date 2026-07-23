@@ -66,17 +66,53 @@ export interface Product {
   handle: string;
   status: string;
   bodyHtml: string;
+  /** Shopify `product_type` (custom category label), "" when unset. */
+  productType: string;
+  /** Split from Shopify's comma-joined tags string; trimmed, empties dropped. */
+  tags: string[];
+  /** The first variant's price as a decimal string (e.g. "12.99"), "" when none. */
+  price: string;
+  /** The first variant's id, stringified — required to write price updates. */
+  variantId: string;
+  /** SEO title tag (Shopify metafield global.title_tag), "" when unset/unloaded. */
+  metaTitle: string;
+  /** SEO meta description (Shopify metafield global.description_tag), "" when unset/unloaded. */
+  metaDescription: string;
   /** The product's featured image src, or null when it has no images. */
   featuredImage: string | null;
   images: ProductImage[];
 }
 
 /**
- * Input payload for updating a product. Both fields are optional so callers can
- * patch title and body independently; `lib/shopify.ts` only writes the fields
- * that are present (`bodyHtml` -> Shopify `body_html`).
+ * Input payload for updating a product. Every field is optional so callers can
+ * patch fields independently; `lib/shopify.ts` only writes the fields that are
+ * present (`bodyHtml` -> Shopify `body_html`, `tags` -> comma string, `price`
+ * -> first variant price, `metaTitle`/`metaDescription` -> global metafields).
  */
 export interface ProductUpdateInput {
   title?: string;
   bodyHtml?: string;
+  productType?: string;
+  tags?: string[];
+  status?: string;
+  price?: string;
+  metaTitle?: string;
+  metaDescription?: string;
+}
+
+/**
+ * Input payload for creating a product. Only `title` is required; every other
+ * field is optional. `lib/shopify.ts` converts it to Shopify's create payload
+ * (tags array -> comma string, `price` -> first variant, meta fields ->
+ * global metafields; `status` defaults to "draft" when omitted).
+ */
+export interface ProductCreateInput {
+  title: string;
+  bodyHtml?: string;
+  productType?: string;
+  tags?: string[];
+  status?: string;
+  price?: string;
+  metaTitle?: string;
+  metaDescription?: string;
 }
