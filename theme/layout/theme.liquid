@@ -11,7 +11,7 @@
 
     <title>
       {%- if template == 'index' -%}
-        {{ shop.name }}, {{ settings.brand_tagline }}
+        INCIA Natural Skincare, Shipped from the UK | {{ shop.name }}
       {%- elsif page_title -%}
         {{ page_title }} | {{ shop.name }}
       {%- else -%}
@@ -26,6 +26,9 @@
       endif
 
       assign meta_desc = page_description
+      if meta_desc == blank and template == 'index'
+        assign meta_desc = 'Shop INCIA natural skincare in the UK: mineral SPF50, baby and mum care, natural deodorant, lip balms and more. 100% natural, dispatched from the UK.'
+      endif
       if meta_desc == blank and template contains 'product' and product.description != blank
         assign meta_desc = product.description | strip_html | strip_newlines | replace: '&amp;', '&' | replace: '&#39;', "'" | replace: '&quot;', '"' | replace: '&nbsp;', ' ' | truncate: 160
       endif
