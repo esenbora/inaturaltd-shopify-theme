@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { getProduct } from "@/lib/shopify";
 import { ProductForm } from "@/components/product-form";
 import { ProductImageManager } from "@/components/product-image-manager";
+import { DeleteButton } from "@/components/delete-button";
 
 // Always fetch fresh so edits made elsewhere are reflected.
 export const dynamic = "force-dynamic";
@@ -64,6 +65,14 @@ export default async function EditProductPage({ params }: Params) {
       <section>
         <h2 className="u-serif mb-3 text-lg font-semibold text-ink">Details</h2>
         <ProductForm product={product} mode="edit" />
+      </section>
+
+      <section className="mt-12 border-t border-line pt-6">
+        <h2 className="text-sm font-semibold text-terracotta-dark">Danger zone</h2>
+        <p className="mb-3 mt-1 text-xs text-muted">
+          Permanently delete this product from Shopify. This cannot be undone.
+        </p>
+        <DeleteButton resource="products" id={product.id} label={product.title} />
       </section>
     </main>
   );

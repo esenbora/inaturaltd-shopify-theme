@@ -1015,6 +1015,16 @@ export async function addProductImage(
   return toProductImage(data.image);
 }
 
+export async function deleteProduct(id: string): Promise<void> {
+  const env = readEnv();
+  if (isMockMode(env)) {
+    warnMock();
+    return;
+  }
+
+  await request(env, "DELETE", `/products/${id}.json`);
+}
+
 export async function deleteProductImage(
   productId: string,
   imageId: string,
