@@ -17,7 +17,13 @@
  * touched — realistic INature mock data is returned instead so the whole UI is
  * navigable before credentials exist.
  */
-import type { Article, ArticleInput } from "@/lib/types";
+import type {
+  Article,
+  ArticleInput,
+  Product,
+  ProductImage,
+  ProductUpdateInput,
+} from "@/lib/types";
 
 const API_VERSION = "2024-10";
 const DEFAULT_BLOG_HANDLE = "news";
@@ -492,4 +498,271 @@ export async function deleteArticle(id: string): Promise<void> {
 
   const blogId = await resolveBlogId(env);
   await request(env, "DELETE", `/blogs/${blogId}/articles/${id}.json`);
+}
+
+// ---------------------------------------------------------------------------
+// Products — raw Shopify shapes + mappers (pure)
+// ---------------------------------------------------------------------------
+
+interface RawProductImage {
+  readonly id: number;
+  readonly src?: string;
+  readonly alt?: string | null;
+  readonly position?: number;
+}
+
+interface RawProduct {
+  readonly id: number;
+  readonly title?: string;
+  readonly handle?: string;
+  readonly status?: string;
+  readonly body_html?: string | null;
+  readonly image?: RawProductImage | null;
+  readonly images?: RawProductImage[];
+}
+
+/** Map a raw Shopify product image into the normalised `ProductImage` type. */
+function toProductImage(raw: RawProductImage): ProductImage {
+  return {
+    id: String(raw.id),
+    src: raw.src ?? "",
+    alt: raw.alt ?? null,
+    position: raw.position ?? 0,
+  };
+}
+
+/** Map a raw Shopify product into the normalised `Product` UI type. */
+function toProduct(raw: RawProduct): Product {
+  const images = (raw.images ?? []).map(toProductImage);
+  return {
+    id: String(raw.id),
+    title: raw.title ?? "",
+    handle: raw.handle ?? "",
+    status: raw.status ?? "",
+    bodyHtml: raw.body_html ?? "",
+    featuredImage: raw.image?.src ?? null,
+    images,
+  };
+}
+
+/** Build the Shopify write payload (`{ product: {...} }`) from patch input. */
+function toProductWritePayload(
+  id: string,
+  input: ProductUpdateInput,
+): Record<string, unknown> {
+  return {
+    id: Number(id),
+    ...(input.title !== undefined ? { title: input.title } : {}),
+    ...(input.bodyHtml !== undefined ? { body_html: input.bodyHtml } : {}),
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Products — mock data (used when no admin token is set)
+// ---------------------------------------------------------------------------
+
+const MOCK_PRODUCTS: Product[] = [
+  {
+    id: "2001",
+    title: "Rose & Hyaluronic Acid Serum",
+    handle: "rose-hyaluronic-acid-serum",
+    status: "active",
+    bodyHtml:
+      "<p>A lightweight, plant-based serum pairing Damask rose with hyaluronic acid for deep, calm hydration.</p>",
+    featuredImage:
+      "https://images.unsplash.com/photo-1620916566398-39f1143ab7be",
+    images: [
+      {
+        id: "3001",
+        src: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be",
+        alt: "Rose & Hyaluronic Acid Serum bottle",
+        position: 1,
+      },
+      {
+        id: "3002",
+        src: "https://images.unsplash.com/photo-1556228720-195a672e8a03",
+        alt: "Serum texture swatch",
+        position: 2,
+      },
+    ],
+  },
+  {
+    id: "2002",
+    title: "INCIA SOS Stick",
+    handle: "incia-sos-stick",
+    status: "active",
+    bodyHtml:
+      "<p>Targeted, on-the-go relief for stressed skin — a pocket-sized balm stick with soothing botanicals.</p>",
+    featuredImage:
+      "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b",
+    images: [
+      {
+        id: "3003",
+        src: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b",
+        alt: "INCIA SOS Stick",
+        position: 1,
+      },
+    ],
+  },
+  {
+    id: "2003",
+    title: "Gentle Cleansing Gel",
+    handle: "gentle-cleansing-gel",
+    status: "draft",
+    bodyHtml:
+      "<p>A fragrance-conscious daily cleanser that lifts impurities without stripping sensitive, eczema-prone skin.</p>",
+    featuredImage: null,
+    images: [],
+  },
+];
+
+function findMockProduct(id: string): Product | undefined {
+  return MOCK_PRODUCTS.find((product) => product.id === id);
+}
+
+/** Merge a patch input over an existing (or synthesized) mock product. */
+function mockProductFromInput(id: string, input: ProductUpdateInput): Product {
+  const existing = findMockProduct(id) ?? {
+    id,
+    title: "Untitled product",
+    handle: `product-${id}`,
+    status: "draft",
+    bodyHtml: "",
+    featuredImage: null,
+    images: [] as ProductImage[],
+  };
+  return {
+    ...existing,
+    ...(input.title !== undefined ? { title: input.title } : {}),
+    ...(input.bodyHtml !== undefined ? { bodyHtml: input.bodyHtml } : {}),
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Products — public API
+// ---------------------------------------------------------------------------
+
+export async function listProducts(): Promise<Product[]> {
+  const env = readEnv();
+  if (isMockMode(env)) {
+    warnMock();
+    return MOCK_PRODUCTS;
+  }
+
+  const data = (await request(env, "GET", "/products.json?limit=250")) as {
+    products?: RawProduct[];
+  };
+  return (data.products ?? []).map(toProduct);
+}
+
+export async function getProduct(id: string): Promise<Product | null> {
+  const env = readEnv();
+  if (isMockMode(env)) {
+    warnMock();
+    const existing = findMockProduct(id);
+    if (existing) return existing;
+    // Synthesize a plausible product so detail/edit views are navigable.
+    return {
+      id,
+      title: "Untitled product",
+      handle: `product-${id}`,
+      status: "draft",
+      bodyHtml: "",
+      featuredImage: null,
+      images: [],
+    };
+  }
+
+  try {
+    const data = (await request(env, "GET", `/products/${id}.json`)) as {
+      product?: RawProduct;
+    };
+    return data.product ? toProduct(data.product) : null;
+  } catch (error) {
+    if (error instanceof Error && error.message.startsWith("Shopify 404")) {
+      return null;
+    }
+    throw error;
+  }
+}
+
+export async function updateProduct(
+  id: string,
+  input: ProductUpdateInput,
+): Promise<Product> {
+  const env = readEnv();
+  if (isMockMode(env)) {
+    warnMock();
+    return mockProductFromInput(id, input);
+  }
+
+  const data = (await request(env, "PUT", `/products/${id}.json`, {
+    product: toProductWritePayload(id, input),
+  })) as { product: RawProduct };
+  return toProduct(data.product);
+}
+
+export async function addProductImage(
+  productId: string,
+  opts: { attachment?: string; src?: string; alt?: string },
+): Promise<ProductImage> {
+  const env = readEnv();
+  if (isMockMode(env)) {
+    warnMock();
+    return {
+      id: String(Date.now()),
+      src: opts.src ?? "",
+      alt: opts.alt ?? null,
+      position: 0,
+    };
+  }
+
+  const image: Record<string, unknown> = {
+    ...(opts.attachment !== undefined ? { attachment: opts.attachment } : {}),
+    ...(opts.src !== undefined ? { src: opts.src } : {}),
+    ...(opts.alt !== undefined ? { alt: opts.alt } : {}),
+  };
+  const data = (await request(
+    env,
+    "POST",
+    `/products/${productId}/images.json`,
+    { image },
+  )) as { image: RawProductImage };
+  return toProductImage(data.image);
+}
+
+export async function deleteProductImage(
+  productId: string,
+  imageId: string,
+): Promise<void> {
+  const env = readEnv();
+  if (isMockMode(env)) {
+    warnMock();
+    return;
+  }
+
+  await request(
+    env,
+    "DELETE",
+    `/products/${productId}/images/${imageId}.json`,
+  );
+}
+
+export async function reorderProductImages(
+  productId: string,
+  imageIds: string[],
+): Promise<void> {
+  const env = readEnv();
+  if (isMockMode(env)) {
+    warnMock();
+    return;
+  }
+
+  const images = imageIds.map((imageId, index) => ({
+    id: Number(imageId),
+    position: index + 1,
+  }));
+  await request(env, "PUT", `/products/${productId}.json`, {
+    product: { id: Number(productId), images },
+  });
 }

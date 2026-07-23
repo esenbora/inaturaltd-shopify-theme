@@ -45,22 +45,21 @@ export default function LoginPage() {
     <main className="flex min-h-full flex-1 items-center justify-center px-6 py-16">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
-            INature Admin
-          </h1>
-          <p className="mt-1 text-sm text-zinc-500">
+          <div className="mb-3 flex items-baseline justify-center gap-2">
+            <span className="u-serif text-2xl font-semibold text-ink">
+              INature
+            </span>
+            <span className="rounded-full bg-sage/15 px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider text-sage-dark">
+              Admin
+            </span>
+          </div>
+          <p className="text-sm text-muted">
             Enter the team password to continue.
           </p>
         </div>
 
-        <form
-          onSubmit={handleSubmit}
-          className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm"
-        >
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium text-zinc-700"
-          >
+        <form onSubmit={handleSubmit} className="card p-6">
+          <label htmlFor="password" className="label">
             Team password
           </label>
           <input
@@ -75,15 +74,11 @@ export default function LoginPage() {
             disabled={submitting}
             aria-invalid={error !== null}
             aria-describedby={error !== null ? "password-error" : undefined}
-            className="mt-1.5 block w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 shadow-sm outline-none transition-colors placeholder:text-zinc-400 focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 disabled:opacity-60"
+            className="input"
           />
 
           {error !== null ? (
-            <p
-              id="password-error"
-              role="alert"
-              className="mt-3 text-sm text-red-600"
-            >
+            <p id="password-error" role="alert" className="mt-3 text-sm text-terracotta-dark">
               {error}
             </p>
           ) : null}
@@ -91,7 +86,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={submitting}
-            className="mt-5 inline-flex w-full items-center justify-center rounded-md bg-zinc-900 px-3.5 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-zinc-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-900 disabled:cursor-not-allowed disabled:opacity-60"
+            className="btn btn-primary mt-5 w-full"
           >
             {submitting ? "Signing in…" : "Sign in"}
           </button>

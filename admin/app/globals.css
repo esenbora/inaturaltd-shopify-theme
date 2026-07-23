@@ -1,40 +1,154 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/*
+ * INature admin design system. Mirrors the storefront theme tokens:
+ * cream background, ink text, sage primary, terracotta accent,
+ * Fraunces (headings) + Inter (body).
+ */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-cream: #f8f4ed;
+  --color-card: #ffffff;
+  --color-ink: #2a2d2a;
+  --color-muted: #6b6f6a;
+  --color-line: #e7e0d4;
+  --color-sage: #7b9f7e;
+  --color-sage-dark: #5e7e61;
+  --color-terracotta: #c97b5c;
+  --color-terracotta-dark: #b26849;
+  --color-sand: #efe8db;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-fraunces), ui-serif, Georgia, serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  height: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Reusable component classes so pages stay readable and consistent. */
+@layer components {
+  .u-serif {
+    font-family: var(--font-serif);
+    letter-spacing: -0.01em;
+  }
+
+  .card {
+    background: var(--color-card);
+    border: 1px solid var(--color-line);
+    border-radius: 0.875rem;
+    box-shadow: 0 1px 2px rgba(42, 45, 42, 0.04);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    border-radius: 0.625rem;
+    padding: 0.55rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1;
+    transition: background-color 0.15s ease, color 0.15s ease,
+      border-color 0.15s ease, opacity 0.15s ease;
+    cursor: pointer;
+  }
+  .btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+  .btn-primary {
+    background: var(--color-sage);
+    color: #fff;
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: var(--color-sage-dark);
+  }
+  .btn-accent {
+    background: var(--color-terracotta);
+    color: #fff;
+  }
+  .btn-accent:hover:not(:disabled) {
+    background: var(--color-terracotta-dark);
+  }
+  .btn-outline {
+    background: transparent;
+    color: var(--color-ink);
+    border: 1px solid var(--color-line);
+  }
+  .btn-outline:hover:not(:disabled) {
+    background: var(--color-sand);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--color-muted);
+  }
+  .btn-ghost:hover:not(:disabled) {
+    color: var(--color-ink);
+  }
+
+  .input {
+    display: block;
+    width: 100%;
+    border-radius: 0.625rem;
+    border: 1px solid var(--color-line);
+    background: #fff;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.9375rem;
+    color: var(--color-ink);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .input::placeholder {
+    color: #a9a49a;
+  }
+  .input:focus {
+    outline: none;
+    border-color: var(--color-sage);
+    box-shadow: 0 0 0 3px rgba(123, 159, 126, 0.18);
+  }
+
+  .label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-ink);
+    margin-bottom: 0.35rem;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 0.15rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  .badge-visible {
+    background: rgba(123, 159, 126, 0.16);
+    color: var(--color-sage-dark);
+  }
+  .badge-hidden {
+    background: var(--color-sand);
+    color: var(--color-muted);
+  }
 }
 
 /*
- * Rich-text editor content styling.
- * The TipTap editor renders raw article HTML; Tailwind v4 has no typography
- * plugin here, so headings/lists/links are styled explicitly and scoped to
- * the `.rte-content` (ProseMirror) surface.
+ * Rich-text editor surface. TipTap renders raw article/product HTML; Tailwind v4
+ * has no typography plugin here, so headings/lists/links are styled explicitly
+ * and scoped to `.rte-content` (ProseMirror).
  */
 .rte-content {
   font-size: 0.9375rem;
-  line-height: 1.65;
-  color: #27272a;
+  line-height: 1.7;
+  color: var(--color-ink);
 }
 .rte-content:focus {
   outline: none;
@@ -43,12 +157,14 @@ body {
   margin-top: 0.75em;
 }
 .rte-content h2 {
+  font-family: var(--font-serif);
   font-size: 1.375rem;
   font-weight: 600;
   line-height: 1.3;
   margin-top: 1.25em;
 }
 .rte-content h3 {
+  font-family: var(--font-serif);
   font-size: 1.125rem;
   font-weight: 600;
   line-height: 1.35;
@@ -74,26 +190,26 @@ body {
   margin: 0;
 }
 .rte-content a {
-  color: #2563eb;
+  color: var(--color-terracotta-dark);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 .rte-content blockquote {
-  border-left: 3px solid #d4d4d8;
+  border-left: 3px solid var(--color-line);
   padding-left: 1rem;
-  color: #52525b;
+  color: var(--color-muted);
   font-style: italic;
 }
 .rte-content code {
-  background: #f4f4f5;
+  background: var(--color-sand);
   border-radius: 0.25rem;
   padding: 0.1em 0.35em;
   font-size: 0.85em;
 }
 .rte-content:empty::before,
 .rte-content p.is-editor-empty:first-child::before {
-  content: "Start writing the article…";
-  color: #a1a1aa;
+  content: "Start writing…";
+  color: #a9a49a;
   pointer-events: none;
   float: left;
   height: 0;

@@ -28,10 +28,10 @@ export default async function EditArticlePage({ params }: Params) {
   return (
     <main className="mx-auto w-full max-w-3xl px-6 py-10">
       <div className="mb-8">
-        <p className="text-xs font-medium uppercase tracking-wide text-zinc-400">
+        <p className="text-xs font-medium uppercase tracking-wide text-terracotta">
           Edit article
         </p>
-        <h1 className="mt-1 text-2xl font-semibold tracking-tight text-zinc-900">
+        <h1 className="u-serif mt-1 text-2xl font-semibold text-ink">
           {article.title || "Untitled article"}
         </h1>
       </div>

@@ -40,3 +40,43 @@ export interface ArticleInput {
   /** Optional SEO meta description (Shopify metafield global.description_tag). */
   metaDescription?: string;
 }
+
+/**
+ * A single product image. Mapped from Shopify's raw product image JSON in
+ * `lib/shopify.ts` (numeric `id` -> `string`, `alt` defaulted to null).
+ */
+export interface ProductImage {
+  /** Shopify image id, stringified for stable use in URLs/keys. */
+  id: string;
+  src: string;
+  alt: string | null;
+  /** 1-based ordering position within the product's image list. */
+  position: number;
+}
+
+/**
+ * The normalised product shape the UI consumes. Mapped from the raw Shopify
+ * Admin REST product JSON in `lib/shopify.ts` (`body_html` -> `bodyHtml`,
+ * `image` -> `featuredImage`, numeric `id` -> `string`).
+ */
+export interface Product {
+  /** Shopify product id, stringified for stable use in URLs/keys. */
+  id: string;
+  title: string;
+  handle: string;
+  status: string;
+  bodyHtml: string;
+  /** The product's featured image src, or null when it has no images. */
+  featuredImage: string | null;
+  images: ProductImage[];
+}
+
+/**
+ * Input payload for updating a product. Both fields are optional so callers can
+ * patch title and body independently; `lib/shopify.ts` only writes the fields
+ * that are present (`bodyHtml` -> Shopify `body_html`).
+ */
+export interface ProductUpdateInput {
+  title?: string;
+  bodyHtml?: string;
+}

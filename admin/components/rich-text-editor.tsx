@@ -47,8 +47,8 @@ function ToolbarButton({
   const base =
     "inline-flex h-8 min-w-8 items-center justify-center rounded-md px-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-40";
   const state = active
-    ? "bg-zinc-900 text-white"
-    : "text-zinc-700 hover:bg-zinc-200";
+    ? "bg-ink text-white"
+    : "text-muted hover:bg-sand";
   return (
     <button
       type="button"
@@ -87,7 +87,7 @@ function Toolbar({ editor }: { editor: Editor }) {
   }, [editor]);
 
   return (
-    <div className="flex flex-wrap items-center gap-1 border-b border-zinc-200 bg-zinc-50 px-2 py-1.5">
+    <div className="flex flex-wrap items-center gap-1 border-b border-line bg-sand/50 px-2 py-1.5">
       <ToolbarButton
         label="Bold"
         active={editor.isActive("bold")}
@@ -103,7 +103,7 @@ function Toolbar({ editor }: { editor: Editor }) {
         <span className="italic">I</span>
       </ToolbarButton>
 
-      <span className="mx-1 h-5 w-px bg-zinc-300" aria-hidden="true" />
+      <span className="mx-1 h-5 w-px bg-line" aria-hidden="true" />
 
       <ToolbarButton
         label="Heading 2"
@@ -124,7 +124,7 @@ function Toolbar({ editor }: { editor: Editor }) {
         H3
       </ToolbarButton>
 
-      <span className="mx-1 h-5 w-px bg-zinc-300" aria-hidden="true" />
+      <span className="mx-1 h-5 w-px bg-line" aria-hidden="true" />
 
       <ToolbarButton
         label="Bullet list"
@@ -141,7 +141,7 @@ function Toolbar({ editor }: { editor: Editor }) {
         1. List
       </ToolbarButton>
 
-      <span className="mx-1 h-5 w-px bg-zinc-300" aria-hidden="true" />
+      <span className="mx-1 h-5 w-px bg-line" aria-hidden="true" />
 
       <ToolbarButton
         label="Add link"
@@ -215,10 +215,10 @@ export default function RichTextEditor({
   }, []);
 
   return (
-    <div className="overflow-hidden rounded-md border border-zinc-300 bg-white shadow-sm">
-      <div className="flex items-center justify-between border-b border-zinc-200 bg-zinc-50 px-2 py-1.5">
+    <div className="overflow-hidden rounded-xl border border-line bg-card shadow-sm">
+      <div className="flex items-center justify-between border-b border-line bg-sand/50 px-2 py-1.5">
         <div
-          className="inline-flex rounded-md bg-zinc-200 p-0.5 text-xs font-medium"
+          className="inline-flex rounded-md bg-sand p-0.5 text-xs font-medium"
           role="tablist"
           aria-label="Editor mode"
         >
@@ -229,8 +229,8 @@ export default function RichTextEditor({
             onClick={() => switchMode("wysiwyg")}
             className={`rounded px-2.5 py-1 transition-colors ${
               mode === "wysiwyg"
-                ? "bg-white text-zinc-900 shadow-sm"
-                : "text-zinc-600 hover:text-zinc-900"
+                ? "bg-card text-ink shadow-sm"
+                : "text-muted hover:text-ink"
             }`}
           >
             Editor
@@ -242,8 +242,8 @@ export default function RichTextEditor({
             onClick={() => switchMode("html")}
             className={`rounded px-2.5 py-1 transition-colors ${
               mode === "html"
-                ? "bg-white text-zinc-900 shadow-sm"
-                : "text-zinc-600 hover:text-zinc-900"
+                ? "bg-card text-ink shadow-sm"
+                : "text-muted hover:text-ink"
             }`}
           >
             HTML
@@ -258,7 +258,7 @@ export default function RichTextEditor({
             <EditorContent editor={editor} />
           </>
         ) : (
-          <div className="px-4 py-10 text-center text-sm text-zinc-400">
+          <div className="px-4 py-10 text-center text-sm text-muted">
             Loading editor…
           </div>
         )
@@ -267,7 +267,7 @@ export default function RichTextEditor({
           value={value}
           onChange={(event) => onChange(event.target.value)}
           spellCheck={false}
-          className="block min-h-[16rem] w-full resize-y bg-white px-4 py-3 font-mono text-xs leading-relaxed text-zinc-800 focus:outline-none"
+          className="block min-h-[16rem] w-full resize-y bg-card px-4 py-3 font-mono text-xs leading-relaxed text-ink focus:outline-none"
           placeholder="<p>Raw HTML — paste or edit large content here.</p>"
         />
       )}

@@ -90,10 +90,7 @@ function FieldLabel({
   children: React.ReactNode;
 }) {
   return (
-    <label
-      htmlFor={htmlFor}
-      className="mb-1.5 block text-sm font-medium text-zinc-800"
-    >
+    <label htmlFor={htmlFor} className="label">
       {children}
     </label>
   );
@@ -104,7 +101,7 @@ function CharCounter({ current, max }: { current: number; max: number }) {
   return (
     <span
       className={`ml-2 text-xs font-normal tabular-nums ${
-        over ? "text-red-600" : "text-zinc-400"
+        over ? "text-terracotta-dark" : "text-muted"
       }`}
     >
       {current}/{max}
@@ -112,8 +109,7 @@ function CharCounter({ current, max }: { current: number; max: number }) {
   );
 }
 
-const INPUT_CLASS =
-  "block w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 shadow-sm placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500";
+const INPUT_CLASS = "input";
 
 // ---------------------------------------------------------------------------
 // Form
@@ -250,10 +246,8 @@ export default function ArticleForm({ initial, mode }: ArticleFormProps) {
       </div>
 
       {/* SEO */}
-      <fieldset className="space-y-4 rounded-lg border border-zinc-200 bg-zinc-50/50 p-4">
-        <legend className="px-1 text-sm font-semibold text-zinc-700">
-          SEO
-        </legend>
+      <fieldset className="card space-y-4 bg-sand/40 p-4">
+        <legend className="px-1 text-sm font-semibold text-ink">SEO</legend>
         <div>
           <FieldLabel htmlFor="metaTitle">
             Meta title
@@ -297,10 +291,10 @@ export default function ArticleForm({ initial, mode }: ArticleFormProps) {
       </fieldset>
 
       {/* Visibility toggle */}
-      <div className="flex items-center justify-between rounded-lg border border-zinc-200 bg-white px-4 py-3">
+      <div className="card flex items-center justify-between px-4 py-3">
         <div>
-          <p className="text-sm font-medium text-zinc-800">Visibility</p>
-          <p className="text-xs text-zinc-500">
+          <p className="text-sm font-medium text-ink">Visibility</p>
+          <p className="text-xs text-muted">
             {state.visible
               ? "Published — live on the storefront."
               : "Draft — hidden from the storefront."}
@@ -314,7 +308,7 @@ export default function ArticleForm({ initial, mode }: ArticleFormProps) {
           onClick={() => update("visible", !state.visible)}
           disabled={submitting}
           className={`relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors disabled:opacity-50 ${
-            state.visible ? "bg-emerald-600" : "bg-zinc-300"
+            state.visible ? "bg-sage" : "bg-line"
           }`}
         >
           <span
@@ -329,19 +323,15 @@ export default function ArticleForm({ initial, mode }: ArticleFormProps) {
       {error !== null && (
         <div
           role="alert"
-          className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+          className="rounded-lg border border-terracotta/30 bg-terracotta/5 px-4 py-3 text-sm text-terracotta-dark"
         >
           {error}
         </div>
       )}
 
       {/* Actions */}
-      <div className="flex flex-wrap items-center gap-3 border-t border-zinc-200 pt-6">
-        <button
-          type="submit"
-          disabled={submitting}
-          className="inline-flex items-center rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-zinc-700 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-900"
-        >
+      <div className="flex flex-wrap items-center gap-3 border-t border-line pt-6">
+        <button type="submit" disabled={submitting} className="btn btn-outline">
           {submitting ? "Saving…" : "Save"}
         </button>
 
@@ -350,7 +340,7 @@ export default function ArticleForm({ initial, mode }: ArticleFormProps) {
             type="button"
             disabled={submitting}
             onClick={() => void submit(true)}
-            className="inline-flex items-center rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
+            className="btn btn-primary"
           >
             {submitting ? "Publishing…" : "Save & Publish"}
           </button>
@@ -360,7 +350,7 @@ export default function ArticleForm({ initial, mode }: ArticleFormProps) {
           type="button"
           disabled={submitting}
           onClick={() => router.push("/articles")}
-          className="inline-flex items-center rounded-md px-4 py-2 text-sm font-medium text-zinc-600 transition-colors hover:text-zinc-900 disabled:opacity-60"
+          className="btn btn-ghost"
         >
           Cancel
         </button>
