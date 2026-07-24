@@ -445,7 +445,7 @@ export async function fetchGscSummary(
     postJson(url, token, {
       ...baseRange,
       dimensions: ["query"],
-      rowLimit: 10,
+      rowLimit: 50,
     }),
     postJson(url, token, {
       ...baseRange,

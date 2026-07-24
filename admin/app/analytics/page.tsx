@@ -125,7 +125,7 @@ export default async function AnalyticsPage() {
               </p>
               <table className="min-w-full divide-y divide-line text-sm">
                 <tbody className="divide-y divide-line">
-                  {gsc.topQueries.map((q) => (
+                  {gsc.topQueries.slice(0, 10).map((q) => (
                     <tr key={q.query}>
                       <td className="px-4 py-2 text-ink">{q.query}</td>
                       <td className="px-4 py-2 text-right tabular-nums text-muted">
