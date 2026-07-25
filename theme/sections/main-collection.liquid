@@ -18,6 +18,10 @@
           <p class="{{ intro_class }}" style="max-width: 64ch;">Our best-selling natural skincare, chosen by UK families. 100% natural, certified INCIA formulas, from mineral SPF50 to natural deodorant and baby-safe essentials.</p>
         {%- when 'must-haves-1' -%}
           <p class="{{ intro_class }}" style="max-width: 64ch;">The natural skincare essentials UK families reach for daily. Certified, 100% natural INCIA formulas for face, body and baby.</p>
+        {%- when 'face-care' -%}
+          <p class="{{ intro_class }}" style="max-width: 64ch;">Natural face care for everyday skin. A gentle foaming cleanser, mineral SPF50 light enough to wear under makeup, lash and brow serum, and nourishing lip balms. 100% natural, certified INCIA formulas.</p>
+        {%- when 'hair-care' -%}
+          <p class="{{ intro_class }}" style="max-width: 64ch;">Sulphate-free hair care for the whole family. Natural herbal shampoo, hair serum and an easy combing spray that makes tangles quicker, plus a gentle shampoo for babies and children.</p>
         {%- when 'home-care-1' -%}
           <p class="{{ intro_class }}" style="max-width: 64ch;">Natural, gentle home care. Plant-based, fragrance-free household essentials that are kind to sensitive skin and to the planet.</p>
         {%- when 'sale' -%}
@@ -39,7 +43,11 @@
         <a href="/collections/mom-baby-care" class="pill {% if current_handle == 'mom-baby-care' %}pill-soft{% endif %}">Mom &amp; Baby</a>
         <a href="/collections/personal-care-1" class="pill {% if current_handle == 'personal-care-1' %}pill-soft{% endif %}">Personal Care</a>
         <a href="/collections/sun-care-1" class="pill {% if current_handle == 'sun-care-1' %}pill-soft{% endif %}">Sun Care</a>
+        <a href="/collections/face-care" class="pill {% if current_handle == 'face-care' %}pill-soft{% endif %}">Face Care</a>
+        <a href="/collections/hair-care" class="pill {% if current_handle == 'hair-care' %}pill-soft{% endif %}">Hair Care</a>
         <a href="/collections/lip-balms" class="pill {% if current_handle == 'lip-balms' %}pill-soft{% endif %}">Lip Balms</a>
+        <a href="/collections/home-care-1" class="pill {% if current_handle == 'home-care-1' %}pill-soft{% endif %}">Home Care</a>
+        <a href="/collections/must-haves-1" class="pill {% if current_handle == 'must-haves-1' %}pill-soft{% endif %}">Must Haves</a>
         <a href="/collections/sale" class="pill {% if current_handle == 'sale' %}pill-soft{% endif %}">Sale</a>
       </div>
       <form method="get" class="cluster" style="--gap: var(--space-2);">
