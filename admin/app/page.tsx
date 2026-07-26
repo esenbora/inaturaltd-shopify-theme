@@ -11,6 +11,17 @@ const SECTIONS = [
     title: "Products",
     description: "Edit product descriptions and manage product photos.",
   },
+  {
+    href: "/sales",
+    title: "Sales",
+    description:
+      "Orders, revenue, where they come from, and baskets left behind.",
+  },
+  {
+    href: "/analytics",
+    title: "Analytics",
+    description: "Search rankings and traffic from Search Console and GA4.",
+  },
 ] as const;
 
 export default function Home() {

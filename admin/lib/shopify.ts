@@ -33,7 +33,7 @@ const DEFAULT_BLOG_HANDLE = "news";
 // Environment
 // ---------------------------------------------------------------------------
 
-interface ShopifyEnv {
+export interface ShopifyEnv {
   readonly shop: string;
   readonly token: string;
   readonly clientId: string;
@@ -41,7 +41,7 @@ interface ShopifyEnv {
   readonly blogHandle: string;
 }
 
-function readEnv(): ShopifyEnv {
+export function readEnv(): ShopifyEnv {
   return {
     shop: (process.env.SHOPIFY_SHOP ?? "").trim(),
     token: (process.env.SHOPIFY_ADMIN_TOKEN ?? "").trim(),
@@ -61,7 +61,7 @@ function hasClientCredentials(env: ShopifyEnv): boolean {
  * mode. Mock mode applies ONLY when there is neither a static token nor a
  * client_credentials pair.
  */
-function isMockMode(env: ShopifyEnv): boolean {
+export function isMockMode(env: ShopifyEnv): boolean {
   return env.token.length === 0 && !hasClientCredentials(env);
 }
 
@@ -248,7 +248,7 @@ function toWritePayload(input: ArticleInput): Record<string, unknown> {
 // HTTP
 // ---------------------------------------------------------------------------
 
-type Method = "GET" | "POST" | "PUT" | "DELETE";
+export type Method = "GET" | "POST" | "PUT" | "DELETE";
 
 async function extractErrorMessage(response: Response): Promise<string> {
   try {
@@ -259,7 +259,7 @@ async function extractErrorMessage(response: Response): Promise<string> {
   }
 }
 
-async function request(
+export async function request(
   env: ShopifyEnv,
   method: Method,
   path: string,
@@ -392,7 +392,7 @@ function mockFromInput(id: string, input: ArticleInput): Article {
   };
 }
 
-function warnMock(): void {
+export function warnMock(): void {
   console.warn(
     "[shopify] no credentials (SHOPIFY_ADMIN_TOKEN or SHOPIFY_CLIENT_ID/SECRET) — using mock data",
   );
