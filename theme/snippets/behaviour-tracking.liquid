@@ -1,0 +1,22 @@
+{%- comment -%}
+  Behaviour tracking (Microsoft Clarity): session recordings + heatmaps, free and
+  unlimited. Lets us watch how real shoppers move through the store and see exactly
+  where they drop out, which aggregate GA4 numbers cannot show.
+
+  Enable by pasting the Clarity project id into Theme settings > Analytics.
+  Renders nothing when the id is empty, so the storefront is unaffected until set.
+
+  Deliberately NOT loaded on checkout (Shopify owns those pages) and skipped in the
+  theme editor so preview sessions do not pollute the recordings.
+{%- endcomment -%}
+{%- assign clarity_id = settings.clarity_project_id | strip -%}
+{%- if clarity_id != blank and request.design_mode != true -%}
+  <script>
+    (function (c, l, a, r, i, t, y) {
+      c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); };
+      t = l.createElement(r); t.async = 1;
+      t.src = 'https://www.clarity.ms/tag/' + i;
+      y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+    })(window, document, 'clarity', 'script', {{ clarity_id | json }});
+  </script>
+{%- endif -%}

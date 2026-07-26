@@ -37,14 +37,54 @@
   {
     "name": "Colors",
     "settings": [
-      { "type": "color", "id": "color_bg", "label": "Background", "default": "#F8F4ED" },
-      { "type": "color", "id": "color_surface", "label": "Surface", "default": "#FFFFFF" },
-      { "type": "color", "id": "color_ink", "label": "Ink", "default": "#2A2D2A" },
-      { "type": "color", "id": "color_muted", "label": "Muted text", "default": "#5C625B" },
-      { "type": "color", "id": "color_primary", "label": "Primary (sage)", "default": "#7B9F7E" },
-      { "type": "color", "id": "color_primary_dark", "label": "Primary dark", "default": "#5A7C5D" },
-      { "type": "color", "id": "color_accent", "label": "Accent (terracotta)", "default": "#C97B5C" },
-      { "type": "color", "id": "color_border", "label": "Border", "default": "#E6DED1" }
+      {
+        "type": "color",
+        "id": "color_bg",
+        "label": "Background",
+        "default": "#F8F4ED"
+      },
+      {
+        "type": "color",
+        "id": "color_surface",
+        "label": "Surface",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "color_ink",
+        "label": "Ink",
+        "default": "#2A2D2A"
+      },
+      {
+        "type": "color",
+        "id": "color_muted",
+        "label": "Muted text",
+        "default": "#5C625B"
+      },
+      {
+        "type": "color",
+        "id": "color_primary",
+        "label": "Primary (sage)",
+        "default": "#7B9F7E"
+      },
+      {
+        "type": "color",
+        "id": "color_primary_dark",
+        "label": "Primary dark",
+        "default": "#5A7C5D"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Accent (terracotta)",
+        "default": "#C97B5C"
+      },
+      {
+        "type": "color",
+        "id": "color_border",
+        "label": "Border",
+        "default": "#E6DED1"
+      }
     ]
   },
   {
@@ -92,10 +132,41 @@
   {
     "name": "Social",
     "settings": [
-      { "type": "url", "id": "social_instagram", "label": "Instagram" },
-      { "type": "url", "id": "social_tiktok", "label": "TikTok" },
-      { "type": "url", "id": "social_facebook", "label": "Facebook" },
-      { "type": "url", "id": "social_youtube", "label": "YouTube" }
+      {
+        "type": "url",
+        "id": "social_instagram",
+        "label": "Instagram"
+      },
+      {
+        "type": "url",
+        "id": "social_tiktok",
+        "label": "TikTok"
+      },
+      {
+        "type": "url",
+        "id": "social_facebook",
+        "label": "Facebook"
+      },
+      {
+        "type": "url",
+        "id": "social_youtube",
+        "label": "YouTube"
+      }
+    ]
+  },
+  {
+    "name": "Analytics",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Microsoft Clarity records real shopper sessions and builds heatmaps, free and unlimited. Create a free project at clarity.microsoft.com, then paste its project ID here. Leave empty to turn tracking off."
+      },
+      {
+        "type": "text",
+        "id": "clarity_project_id",
+        "label": "Clarity project ID",
+        "info": "Found in Clarity under Settings > Overview > Project ID."
+      }
     ]
   }
 ]
