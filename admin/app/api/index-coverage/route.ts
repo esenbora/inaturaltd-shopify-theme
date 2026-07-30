@@ -9,9 +9,17 @@ export const runtime = "nodejs";
 // API quota, so a full sitemap sweep takes tens of seconds.
 export const maxDuration = 60;
 
-export async function GET(): Promise<NextResponse> {
+export async function GET(request: Request): Promise<NextResponse> {
   try {
-    const coverage = await getIndexCoverage();
+    const params = new URL(request.url).searchParams;
+    const rawLimit = Number(params.get("limit"));
+    const rawOffset = Number(params.get("offset"));
+    const coverage = await getIndexCoverage({
+      ...(Number.isFinite(rawLimit) && rawLimit > 0 ? { limit: rawLimit } : {}),
+      ...(Number.isFinite(rawOffset) && rawOffset > 0
+        ? { offset: rawOffset }
+        : {}),
+    });
     return NextResponse.json(coverage);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";

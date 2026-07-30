@@ -630,7 +630,9 @@ function emptySummary(configured: boolean, errors: readonly string[]): IndexCove
  * run-level notes (accepted scope, skipped child sitemaps, cap truncation) land
  * in `errors`.
  */
-export async function getIndexCoverage(): Promise<IndexCoverageSummary> {
+export async function getIndexCoverage(
+  options: { limit?: number; offset?: number } = {},
+): Promise<IndexCoverageSummary> {
   if (!isAnalyticsConfigured()) {
     return emptySummary(false, []);
   }
@@ -645,10 +647,24 @@ export async function getIndexCoverage(): Promise<IndexCoverageSummary> {
     return emptySummary(true, errors);
   }
 
-  const targets = crawl.urls.slice(0, MAX_URLS_PER_RUN);
-  if (crawl.urls.length > targets.length) {
+  // A full sweep can exceed the platform's request timeout, so callers may walk
+  // the sitemap in windows via ?limit= and ?offset=.
+  const offset = Math.max(0, Math.trunc(options.offset ?? 0));
+  const limit = Math.min(
+    MAX_URLS_PER_RUN,
+    Math.max(1, Math.trunc(options.limit ?? MAX_URLS_PER_RUN)),
+  );
+
+  const targets = crawl.urls.slice(offset, offset + limit);
+  if (targets.length === 0) {
     errors.push(
-      `Quota cap: inspected the first ${targets.length} of ${crawl.urls.length} sitemap URLs this run`,
+      `Offset ${offset} is past the end of the sitemap (${crawl.urls.length} URLs)`,
+    );
+    return emptySummary(true, errors);
+  }
+  if (crawl.urls.length > offset + targets.length) {
+    errors.push(
+      `Window: inspected URLs ${offset + 1} to ${offset + targets.length} of ${crawl.urls.length}`,
     );
   }
 
