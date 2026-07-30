@@ -576,12 +576,15 @@ export async function fetchGa4Summary(
  * returns a partial result — a failing side becomes `null` with its error
  * recorded under `errors`, so one failure never sinks the whole response.
  */
-export async function getAnalyticsSummary(): Promise<AnalyticsSummary> {
+export async function getAnalyticsSummary(
+  days: number = DEFAULT_RANGE_DAYS,
+): Promise<AnalyticsSummary> {
   if (!isAnalyticsConfigured()) {
     return { configured: false };
   }
 
-  const rangeDays = DEFAULT_RANGE_DAYS;
+  // Clamp so a hand-edited query string cannot ask Google for a silly window.
+  const rangeDays = Math.min(365, Math.max(1, Math.trunc(days)));
 
   const [gscResult, ga4Result] = await Promise.allSettled([
     fetchGscSummary(rangeDays),

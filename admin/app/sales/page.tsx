@@ -1,4 +1,5 @@
 import { getSalesSummary } from "@/lib/sales";
+import { RangeTabs, rangeLabel, resolveRange } from "@/components/range-tabs";
 
 export const metadata = {
   title: "Sales · INature Admin",
@@ -74,8 +75,14 @@ function Panel({
   );
 }
 
-export default async function SalesPage() {
-  const data = await getSalesSummary();
+type PageProps = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export default async function SalesPage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const range = resolveRange(params.range);
+  const data = await getSalesSummary(range);
 
   const {
     rangeDays,
@@ -101,9 +108,14 @@ export default async function SalesPage() {
   return (
     <main className="mx-auto w-full max-w-5xl px-6 py-10">
       <h1 className="u-serif text-2xl font-semibold text-ink">Sales</h1>
-      <p className="mb-6 text-sm text-muted">
-        Last {rangeDays} days, from Shopify order records.
+      <p className="mb-4 text-sm text-muted">
+        {rangeDays === 1
+          ? "Today so far"
+          : `${rangeLabel(rangeDays)}, the last ${rangeDays} days`}
+        , from Shopify order records.
       </p>
+
+      <RangeTabs basePath="/sales" active={rangeDays} />
 
       {errors && errors.length > 0 ? (
         <div className="mb-6 rounded-lg border border-terracotta/30 bg-terracotta/5 px-4 py-3 text-sm text-terracotta-dark">

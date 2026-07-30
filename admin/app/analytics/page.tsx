@@ -1,4 +1,5 @@
 import { getAnalyticsSummary } from "@/lib/google";
+import { RangeTabs, rangeLabel, resolveRange } from "@/components/range-tabs";
 
 export const metadata = {
   title: "Analytics · INature Admin",
@@ -76,8 +77,14 @@ function NotConfigured() {
   );
 }
 
-export default async function AnalyticsPage() {
-  const data = await getAnalyticsSummary();
+type PageProps = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export default async function AnalyticsPage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const range = resolveRange(params.range);
+  const data = await getAnalyticsSummary(range);
 
   if (!data.configured) {
     return (
@@ -94,13 +101,23 @@ export default async function AnalyticsPage() {
   }
 
   const { gsc, ga4, rangeDays, errors } = data;
+  const shown = rangeDays ?? range;
 
   return (
     <main className="mx-auto w-full max-w-5xl px-6 py-10">
       <h1 className="u-serif text-2xl font-semibold text-ink">Analytics</h1>
-      <p className="mb-6 text-sm text-muted">
-        Last {rangeDays ?? 28} days · inatureltd.co.uk
+      <p className="mb-4 text-sm text-muted">
+        {rangeLabel(shown)} · inatureltd.co.uk
       </p>
+
+      <RangeTabs basePath="/analytics" active={shown} />
+
+      {shown <= 7 ? (
+        <p className="mb-4 text-xs text-muted">
+          Search Console publishes with a two-day delay, so short ranges look
+          lower than they really are. Use 30 days or more to judge a trend.
+        </p>
+      ) : null}
 
       {errors && errors.length > 0 ? (
         <div className="mb-6 rounded-lg border border-terracotta/30 bg-terracotta/5 px-4 py-3 text-sm text-terracotta-dark">
