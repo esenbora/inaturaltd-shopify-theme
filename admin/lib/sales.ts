@@ -418,6 +418,24 @@ async function fetchOrders(
 }
 
 /**
+ * All-time order count. Used only to detect that Shopify is withholding older
+ * orders, so a long range is never presented as a complete history. Returns
+ * null when the count is unavailable, in which case no claim is made either way.
+ */
+async function fetchAllTimeOrderCount(): Promise<number | null> {
+  try {
+    const env = readEnv();
+    if (isMockMode(env)) return null;
+    const data = (await request(env, "GET", "/orders/count.json?status=any")) as {
+      count?: unknown;
+    };
+    return typeof data.count === "number" ? data.count : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Abandoned checkouts created within the window. `/checkouts.json` only ever
  * returns checkouts that were never completed, so no extra filtering is needed.
  */
@@ -598,6 +616,26 @@ export async function getSalesSummary(
     errors.push(
       `Shop currency: ${reasonOf(currencyResult.reason)} (assuming ${FALLBACK_CURRENCY})`,
     );
+  }
+
+  // The `read_orders` scope only exposes recent orders (Shopify withholds older
+  // history unless the app is granted `read_all_orders`). Without this check a
+  // "12 months" view would silently show a partial total as if it were complete,
+  // which is worse than showing nothing. Compare against the all-time count and
+  // say so plainly when history is being withheld.
+  const oldest = orders.reduce<string | null>((min, order) => {
+    const created = order.created_at ?? "";
+    if (created === "") return min;
+    return min === null || created < min ? created : min;
+  }, null);
+  const windowStart = isoDaysAgo(rangeDays);
+  if (oldest !== null && oldest.slice(0, 10) > windowStart) {
+    const total = await fetchAllTimeOrderCount();
+    if (total !== null && total > orders.length) {
+      errors.push(
+        `History limit: showing the ${orders.length} readable orders of ${total} all time. Older orders need the read_all_orders scope, so ranges beyond about two months are not complete.`,
+      );
+    }
   }
 
   return buildSummary(rangeDays, orders, checkouts, currency, errors);
