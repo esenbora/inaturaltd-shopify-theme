@@ -179,7 +179,7 @@
         if (field) field.removeAttribute('aria-invalid');
 
         if (value.length === 0) {
-          showError('Please add the name you would like embroidered.');
+          showError('Please add the name for personalisation.');
           return;
         }
         if (!/^[\p{L} '-]+$/u.test(value)) {
