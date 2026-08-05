@@ -151,15 +151,55 @@
         setDrawer(true);
         return;
       }
+      // Respect the quantity stepper. It used to be decorative: the stepper
+      // updated its own input while the request always sent 1, so a shopper who
+      // asked for three received one.
+      const qtyInput = document.querySelector('[data-qty] input');
+      const parsedQty = qtyInput ? parseInt(qtyInput.value, 10) : 1;
+      const quantity = Number.isFinite(parsedQty) && parsedQty > 0 ? parsedQty : 1;
+
+      // Personalisation, when the product asks for it. Validated here because a
+      // blank or unusable name only surfaces after the order is placed otherwise.
+      const personaliseWrap = document.querySelector('[data-personalise]');
+      const properties = {};
+      if (personaliseWrap) {
+        const field = personaliseWrap.querySelector('[data-personalisation]');
+        const errorEl = personaliseWrap.querySelector('[data-personalisation-error]');
+        const value = (field ? field.value : '').trim();
+        const showError = (message) => {
+          if (!errorEl) return;
+          errorEl.textContent = message;
+          errorEl.hidden = false;
+          if (field) {
+            field.setAttribute('aria-invalid', 'true');
+            field.focus();
+          }
+        };
+        if (errorEl) { errorEl.hidden = true; }
+        if (field) field.removeAttribute('aria-invalid');
+
+        if (value.length === 0) {
+          showError('Please add the name you would like embroidered.');
+          return;
+        }
+        if (!/^[\p{L} '-]+$/u.test(value)) {
+          showError('Please use letters, spaces, apostrophes or hyphens only.');
+          return;
+        }
+        properties[field.dataset.propertyName || 'Name'] = value;
+      }
+
       btn.disabled = true;
       const originalText = btn.textContent;
       btn.textContent = 'Adding…';
       try {
+        const line = { id: variantId, quantity: quantity };
+        if (Object.keys(properties).length > 0) line.properties = properties;
         const r = await fetch('/cart/add.js', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'same-origin',
-          body: JSON.stringify({ items: [{ id: variantId, quantity: 1 }] }),
+          body: JSON.stringify({ items: [line] }),
         });
         if (!r.ok) {
           // Distinguish "out of stock" from a generic failure so we can tell the customer clearly

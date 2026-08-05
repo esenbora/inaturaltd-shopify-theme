@@ -131,6 +131,36 @@
         {% endfor %}
       {% endif %}
 
+      {%- comment -%}
+        Personalisation. Shown for any product tagged "Personalised", so a future
+        personalised item works without a theme change. The value travels to the
+        order as a line item property, which is what the packer actually reads.
+      {%- endcomment -%}
+      {%- if product.tags contains 'Personalised' -%}
+        <div class="personalise" data-personalise>
+          <label class="personalise__label" for="personalisation-name">
+            Name to embroider
+            <span class="personalise__req">required</span>
+          </label>
+          <input
+            class="personalise__input"
+            id="personalisation-name"
+            type="text"
+            maxlength="12"
+            autocomplete="off"
+            placeholder="e.g. Amelia"
+            data-personalisation
+            data-property-name="Name"
+            aria-describedby="personalisation-help">
+          <p class="personalise__help" id="personalisation-help">
+            Up to 12 characters. Letters, spaces, apostrophes and hyphens only.
+            Please double check the spelling, personalised items are made to
+            order and cannot be returned unless faulty.
+          </p>
+          <p class="personalise__error" data-personalisation-error hidden></p>
+        </div>
+      {%- endif -%}
+
       <!-- Add to cart row -->
       <div class="qty-row">
         <div class="qty" data-qty>

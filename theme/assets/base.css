@@ -1211,3 +1211,29 @@ a.cart-line__title:hover { color: var(--primary-dark); }
 .section-sub { margin-top: var(--space-2); color: var(--muted, #6b6f6a); font-size: var(--fs-sm); max-width: 46ch; margin-left: auto; margin-right: auto; }
 .complete-set__cta { margin-top: var(--space-6); }
 .complete-set__cta .btn { min-width: 16rem; }
+
+/* Personalisation field (products tagged "Personalised") + cart line properties */
+.personalise { display: grid; gap: var(--space-2); }
+.personalise__label {
+  font-size: var(--fs-sm); font-weight: 600; color: var(--ink);
+  display: flex; align-items: center; gap: var(--space-2);
+}
+.personalise__req {
+  font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase;
+  font-weight: 700; color: var(--accent); border: 1px solid var(--accent);
+  border-radius: 3px; padding: 0.05rem 0.3rem;
+}
+.personalise__input {
+  width: 100%; border: 1px solid var(--line); border-radius: 10px;
+  background: #fff; padding: 0.7rem 0.85rem; font: inherit; color: var(--ink);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.personalise__input::placeholder { color: #a9a49a; }
+.personalise__input:focus {
+  outline: none; border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(123, 159, 126, 0.18);
+}
+.personalise__input[aria-invalid="true"] { border-color: var(--accent); }
+.personalise__help { font-size: var(--fs-sm); color: var(--muted); margin: 0; }
+.personalise__error { font-size: var(--fs-sm); color: var(--accent); margin: 0; font-weight: 600; }
+.cart-line__prop { font-size: var(--fs-sm); color: var(--muted); }
