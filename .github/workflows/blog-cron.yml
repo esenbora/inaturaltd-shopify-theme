@@ -1,8 +1,16 @@
-name: Blog Cron
+# The weekly schedule now runs on Railway (service "blog-cron"), where the
+# processed.json ledger sits on a persistent volume at /data instead of an
+# Actions cache entry that GitHub evicts after 7 days of no access. The cron
+# fired every 7 days, right on that boundary, so a late or skipped run could
+# lose the ledger and republish source posts as duplicate drafts.
+#
+# This workflow is kept as a manual fallback only. Running it needs the same
+# secrets as Railway, and it writes its ledger to the Actions cache, not the
+# volume, so the two hosts do not share state. Do not re-enable the schedule
+# while the Railway service is active.
+name: Blog Cron (manual fallback)
 
 on:
-  schedule:
-    - cron: "0 9 * * 1"
   workflow_dispatch:
 
 permissions:
