@@ -5,7 +5,7 @@
   "type": "module",
   "description": "INature UK Shopify blog automation engine for Hemnature source articles.",
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "scripts": {
     "postinstall": "node scripts/repair-blog-automation.mjs",
