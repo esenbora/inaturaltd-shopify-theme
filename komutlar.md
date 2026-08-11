@@ -7,34 +7,38 @@ terminalden çalıştıracaksan olduğu gibi kullan.
 
 ---
 
-## 1. Blog otomasyonunu açmak
+## 1. Blog otomasyonu: AÇILDI (11 Ağustos 2026)
 
-Şu an `DRY_RUN=true` ile duruyor: her hafta kaynak blogu tarıyor, ne yapacağını
-logluyor ama hiçbir şey üretmiyor. Bilerek böyle bırakıldı, çünkü anahtar olmadan
-`DRY_RUN` kapalıysa cron `OPENROUTER_API_KEY is required` diye patlar.
+Anahtar girildi, `DRY_RUN=false`, model `anthropic/claude-sonnet-5`. İlk gerçek
+koşu doğrulandı: 2 yazı üretildi ve Shopify'a **taslak** olarak düştü. İkinci koşu
+`Discovered 2; skipped 2; queued 0` verdi, yani ledger volume'de kalıcı ve mükerrer
+yazı üretilmiyor.
 
-### 1.1 Anahtarı gir
+Bir daha kurmaya gerek yok. Aşağıdakiler sadece referans.
 
-`<ANAHTAR>` yerine OpenRouter anahtarını yapıştır. Bu komutu bana chat'te yazma,
-buraya yazılan her şey oturum kaydında kalıcı duruyor.
+### Ayarları görmek
+
+```
+cd /Users/boraesen/Desktop/inaturaltd && railway variables --service blog-cron
+```
+
+### Anahtarı değiştirmek gerekirse
+
+Anahtarı chat'e yazma, kendi terminalinde çalıştır.
 
 ```
 railway variables --service blog-cron --set "OPENROUTER_API_KEY=<ANAHTAR>"
 ```
 
-### 1.2 Dry run'ı kapat
+### Modeli değiştirmek
+
+Geçerli slug listesi için OpenRouter model kataloğuna bak. Kodun varsayılanı
+`anthropic/claude-sonnet-5`; eski varsayılan katalogdan kalkmıştı ve her koşuyu
+patlatıyordu, o yüzden slug'ı tahmin etme, listeden doğrula.
 
 ```
-railway variables --service blog-cron --set "DRY_RUN=false"
+railway variables --service blog-cron --set "OPENROUTER_MODEL=<slug>"
 ```
-
-### 1.3 Girdiğini doğrula (değerler görünmez, sadece isimler)
-
-```
-railway variables --service blog-cron
-```
-
-Beklenen: listede `OPENROUTER_API_KEY` var ve `DRY_RUN` artık `false`.
 
 ---
 
@@ -43,10 +47,14 @@ Beklenen: listede `OPENROUTER_API_KEY` var ve `DRY_RUN` artık `false`.
 Cron Pazartesi 09:00 UTC'de çalışıyor. Beklemek istemezsen takvimi birkaç dakika
 sonraya alıp gerçek bir koşu tetikleyebilirsin.
 
-### 2.1 Cron'u 5 dakika sonraya al
+### 2.1 Cron'u öne al VE REDEPLOY ET
+
+**Redeploy şart.** Railway cron takvimini deploy anında kaydediyor. Sadece
+takvimi değiştirmek çalışan servisi etkilemiyor, eski takvimle devam ediyor.
+Tek komutta ikisi:
 
 ```
-cd /Users/boraesen/Desktop/inaturaltd && python3 scripts/railway-service-config.py set blog-cron "cronSchedule=$(date -u -v+5M '+%M %H') * * *"
+cd /Users/boraesen/Desktop/inaturaltd && python3 scripts/railway-service-config.py set blog-cron "cronSchedule=$(date -u -v+7M '+%M %H') * * *" && railway redeploy --service blog-cron --yes
 ```
 
 ### 2.2 Beş dakika sonra logları oku
@@ -65,10 +73,12 @@ Starting Container
 
 `DRY_RUN=false` ise ayrıca Shopify'a taslak yazıldığını gösteren satırlar gelir.
 
-### 2.3 Gerçek takvimi geri koy (BUNU UNUTMA)
+### 2.3 Gerçek takvimi geri koy (BUNU UNUTMA, REDEPLOY DAHİL)
+
+Redeploy etmezsen test takvimi çalışmaya devam eder, her gün tetiklenir.
 
 ```
-cd /Users/boraesen/Desktop/inaturaltd && python3 scripts/railway-service-config.py set blog-cron "cronSchedule=0 9 * * 1"
+cd /Users/boraesen/Desktop/inaturaltd && python3 scripts/railway-service-config.py set blog-cron "cronSchedule=0 9 * * 1" && railway redeploy --service blog-cron --yes
 ```
 
 ### 2.4 Taslakları Shopify'da gör
