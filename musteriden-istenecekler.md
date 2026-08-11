@@ -57,6 +57,25 @@ kapalıysa sıfırdan kurarız. Bilmeden kurarsak müşteri aynı konuda iki mai
 Bu bilgi neden önemli: şu anda 10 tane yarım kalmış sepet var, toplam £324.95, ve
 onların hepsinin e-posta adresi elimizde. Hiçbirine hatırlatma maili gitmiyor.
 
+**4b. Shopify uygulamasına indirim izni**
+
+Terk edilen sepet mailinin sonuncusunda kullanılacak %20'lik kodu (BASKET20)
+oluşturmam gerekiyor ama uygulamanın indirim yetkisi yok. Şu adımlar:
+
+Shopify Admin > Settings > Apps and sales channels > Develop apps
+> (bizim uygulamayı seç) > Configuration > Admin API integration > Edit
+> arama kutusuna "discount" yaz > **write_discounts** işaretle > Save
+
+Kaydettikten sonra Shopify üstte "Update" ya da "Install" diye bir uyarı
+çıkaracak, ona da onay ver. O onayı vermezsen izin aktif olmaz.
+
+Alternatif: sen kendin oluşturabilirsin, 30 saniye sürer.
+Discounts > Create discount > Amount off order:
+kod BASKET20, %20, "Limit to one use per customer" işaretli, bitiş tarihi
+oluşturduktan 48 saat sonrası, diğer indirimlerle birleştirme kapalı.
+
+Hangisi kolayına gelirse.
+
 **5. Arşivdeki 6 ürün**
 
 Kategorileri düzenlerken arşivde 6 ürün bulduk. Bunlar tekrar satışa açılacak mı,

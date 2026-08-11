@@ -9,7 +9,7 @@ terminalden çalıştıracaksan olduğu gibi kullan.
 
 ## 1. Blog otomasyonu: AÇILDI (11 Ağustos 2026)
 
-Anahtar girildi, `DRY_RUN=false`, model `anthropic/claude-sonnet-5`. İlk gerçek
+Anahtar girildi, `DRY_RUN=false`, model `openai/gpt-5.1`. İlk gerçek
 koşu doğrulandı: 2 yazı üretildi ve Shopify'a **taslak** olarak düştü. İkinci koşu
 `Discovered 2; skipped 2; queued 0` verdi, yani ledger volume'de kalıcı ve mükerrer
 yazı üretilmiyor.
@@ -32,9 +32,16 @@ railway variables --service blog-cron --set "OPENROUTER_API_KEY=<ANAHTAR>"
 
 ### Modeli değiştirmek
 
-Geçerli slug listesi için OpenRouter model kataloğuna bak. Kodun varsayılanı
-`anthropic/claude-sonnet-5`; eski varsayılan katalogdan kalkmıştı ve her koşuyu
-patlatıyordu, o yüzden slug'ı tahmin etme, listeden doğrula.
+Aktif model: `openai/gpt-5.1`. Koddaki fallback bilerek farklı sağlayıcıda
+bırakıldı (`anthropic/claude-sonnet-5`), env silinirse ya da OpenAI slug'ı
+kalkarsa koşu tamamen durmasın diye.
+
+Slug'ı tahmin etme. Eski varsayılan (`claude-3.5-sonnet`) katalogdan kalkmıştı ve
+her koşuyu patlatıyordu. Değiştirmeden önce listede olduğunu doğrula:
+
+```
+railway run --service blog-cron python3 -c "import urllib.request,json,os; r=json.load(urllib.request.urlopen(urllib.request.Request('https://openrouter.ai/api/v1/models',headers={'Authorization':'Bearer '+os.environ['OPENROUTER_API_KEY']}))); print([m['id'] for m in r['data'] if m['id'].startswith('openai/')])"
+```
 
 ```
 railway variables --service blog-cron --set "OPENROUTER_MODEL=<slug>"
