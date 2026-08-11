@@ -47,11 +47,28 @@
   // Quantity selector
   document.querySelectorAll('[data-qty]').forEach((wrap) => {
     const input = wrap.querySelector('input');
+    // Per-order cap, set from the product's metafield. The note only appears
+    // once the shopper actually reaches it, otherwise the stepper looks broken
+    // for no visible reason.
+    const max = parseInt(input?.dataset.max || '0', 10) || Infinity;
+    const note = document.querySelector('[data-qty-limit]');
+    const showNote = (atLimit) => { if (note) note.hidden = !atLimit; };
+
     wrap.querySelector('[data-qty-dec]')?.addEventListener('click', () => {
       input.value = Math.max(1, parseInt(input.value || '1', 10) - 1);
+      showNote(false);
     });
     wrap.querySelector('[data-qty-inc]')?.addEventListener('click', () => {
-      input.value = parseInt(input.value || '1', 10) + 1;
+      const next = parseInt(input.value || '1', 10) + 1;
+      input.value = Math.min(max, next);
+      showNote(next > max);
+    });
+    // Typing straight into the field bypasses the buttons, so clamp there too.
+    input?.addEventListener('change', () => {
+      const typed = parseInt(input.value || '1', 10);
+      const safe = Number.isFinite(typed) && typed > 0 ? typed : 1;
+      input.value = Math.min(max, safe);
+      showNote(safe > max);
     });
   });
 
@@ -116,7 +133,10 @@
       const key = wrap.dataset.lineKey;
       const input = wrap.querySelector('[data-drawer-qty-input]');
       wrap.querySelector('[data-drawer-qty-dec]')?.addEventListener('click', () => changeDrawerLine(key, Math.max(0, parseInt(input.value || '1', 10) - 1)));
-      wrap.querySelector('[data-drawer-qty-inc]')?.addEventListener('click', () => changeDrawerLine(key, parseInt(input.value || '1', 10) + 1));
+      // Cap increases at the product's per-order limit, same number the product
+      // page enforces. Without this the basket is a way round the cap.
+      const dMax = parseInt(wrap.dataset.max || '0', 10) || Infinity;
+      wrap.querySelector('[data-drawer-qty-inc]')?.addEventListener('click', () => changeDrawerLine(key, Math.min(dMax, parseInt(input.value || '1', 10) + 1)));
       input?.addEventListener('change', () => changeDrawerLine(key, Math.max(0, parseInt(input.value || '0', 10))));
     });
   }
@@ -141,6 +161,14 @@
     }
   }
 
+  // Personalisation fields inside a product card sit within the card's link, so
+  // a click or a space keypress would otherwise navigate away mid-typing.
+  document.querySelectorAll('.product-card [data-personalisation]').forEach((field) => {
+    ['click', 'mousedown', 'keydown', 'keyup'].forEach((evt) => {
+      field.addEventListener(evt, (e) => e.stopPropagation());
+    });
+  });
+
   // Real add-to-cart
   document.querySelectorAll('[data-add-to-cart]').forEach((btn) => {
     btn.addEventListener('click', async (e) => {
@@ -156,11 +184,50 @@
       // asked for three received one.
       const qtyInput = document.querySelector('[data-qty] input');
       const parsedQty = qtyInput ? parseInt(qtyInput.value, 10) : 1;
-      const quantity = Number.isFinite(parsedQty) && parsedQty > 0 ? parsedQty : 1;
+      let quantity = Number.isFinite(parsedQty) && parsedQty > 0 ? parsedQty : 1;
+
+      // Per-order cap. The stepper already clamps, but the basket may already
+      // hold some of this variant, so the real check is existing + requested.
+      // Without this a shopper could add three, then three again.
+      const maxPerOrder = parseInt(btn.dataset.max || '0', 10) || Infinity;
+      if (maxPerOrder !== Infinity) {
+        let alreadyInCart = 0;
+        try {
+          const cart = await (await fetch('/cart.js', { credentials: 'same-origin' })).json();
+          alreadyInCart = (cart.items || [])
+            .filter((i) => String(i.id) === String(variantId))
+            .reduce((sum, i) => sum + i.quantity, 0);
+        } catch (_) {
+          // Cart unreadable: fall through on the stepper's clamp alone rather
+          // than blocking a legitimate add.
+        }
+        const room = maxPerOrder - alreadyInCart;
+        if (room <= 0) {
+          const note = document.querySelector('[data-qty-limit]');
+          if (note) note.hidden = false;
+          // Same pattern the sold-out path uses: say it on the button, then
+          // put the label back rather than leaving the shopper stuck.
+          const label = btn.dataset.label || btn.textContent;
+          btn.textContent = `Max ${maxPerOrder} in your bag`;
+          setTimeout(() => { btn.textContent = label; }, 2400);
+          return;
+        }
+        if (quantity > room) {
+          quantity = room;
+          const note = document.querySelector('[data-qty-limit]');
+          if (note) note.hidden = false;
+        }
+      }
 
       // Personalisation, when the product asks for it. Validated here because a
       // blank or unusable name only surfaces after the order is placed otherwise.
-      const personaliseWrap = document.querySelector('[data-personalise]');
+      // Scope to the clicked card, otherwise every quick add on a collection
+      // page would read the first card's field. On the product page there is no
+      // card ancestor, so this falls back to the page-level block.
+      const ownCard = btn.closest('.product-card');
+      const personaliseWrap = ownCard
+        ? ownCard.querySelector('[data-personalise]')
+        : document.querySelector('[data-personalise]');
       const properties = {};
       if (personaliseWrap) {
         const field = personaliseWrap.querySelector('[data-personalisation]');
@@ -295,7 +362,8 @@
       const key = wrap.dataset.lineKey;
       const input = wrap.querySelector('[data-cart-qty-input]');
       wrap.querySelector('[data-cart-qty-dec]')?.addEventListener('click', () => changeLine(key, Math.max(0, parseInt(input.value || '1', 10) - 1)));
-      wrap.querySelector('[data-cart-qty-inc]')?.addEventListener('click', () => changeLine(key, parseInt(input.value || '1', 10) + 1));
+      const cMax = parseInt(wrap.dataset.max || '0', 10) || Infinity;
+      wrap.querySelector('[data-cart-qty-inc]')?.addEventListener('click', () => changeLine(key, Math.min(cMax, parseInt(input.value || '1', 10) + 1)));
       input?.addEventListener('change', () => changeLine(key, Math.max(0, parseInt(input.value || '0', 10))));
     });
     cartPage.querySelectorAll('[data-cart-line-remove]').forEach((btn) => btn.addEventListener('click', (e) => { e.preventDefault(); changeLine(btn.dataset.lineKey, 0); }));

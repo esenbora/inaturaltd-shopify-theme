@@ -10,7 +10,25 @@
   assign review_count = product.metafields.reviews.count.value
   assign breadcrumb_collection = product.collections.first
   assign p_vendor = product.vendor | default: 'INature UK'
-  assign p_short = product.description | strip_html | truncate: 280
+  comment
+    Build the blurb from whole sentences. `truncate: 280` cut mid-word, so the
+    line under the price read as though the copy had been left unfinished:
+    "so what we wash t", "the skin's natural bala".
+  endcomment
+  assign p_plain = product.description | strip_html | strip
+  assign p_short = ''
+  assign p_pieces = p_plain | split: '. '
+  for piece in p_pieces
+    assign candidate = p_short | append: piece | append: '. '
+    if candidate.size > 320 and p_short != ''
+      break
+    endif
+    assign p_short = candidate
+  endfor
+  assign p_short = p_short | strip
+  if p_short == ''
+    assign p_short = p_plain | truncatewords: 45
+  endif
   assign sku_value = variant.sku | default: ''
   assign availability_schema = 'https://schema.org/OutOfStock'
   if variant.available
@@ -161,17 +179,37 @@
         </div>
       {%- endif -%}
 
+      {%- comment -%}
+        Per-order cap. Heavy items ship badly in bulk, so they are capped lower
+        than the rest. The number lives on the product so it can change without
+        a theme edit; 5 is the house default if the metafield is missing.
+      {%- endcomment -%}
+      {%- assign max_per_order = product.metafields.custom.max_per_order.value | default: 5 -%}
+
       <!-- Add to cart row -->
       <div class="qty-row">
         <div class="qty" data-qty>
           <button type="button" data-qty-dec aria-label="Decrease">−</button>
-          <input type="number" value="1" min="1" aria-label="Quantity">
+          <input type="number" value="1" min="1" max="{{ max_per_order }}" data-max="{{ max_per_order }}" aria-label="Quantity">
           <button type="button" data-qty-inc aria-label="Increase">+</button>
         </div>
-        <button class="btn btn-primary btn-lg btn-block" data-add-to-cart data-variant-id="{{ variant.id }}" data-label="Add to bag · {{ variant.price | money }}"{% if variant.available == false %} disabled{% endif %}>
+        <button class="btn btn-primary btn-lg btn-block" data-add-to-cart data-variant-id="{{ variant.id }}" data-max="{{ max_per_order }}" data-label="Add to bag · {{ variant.price | money }}"{% if variant.available == false %} disabled{% endif %}>
           {% if variant.available %}Add to bag · {{ variant.price | money }}{% else %}Sold out{% endif %}
         </button>
       </div>
+
+      {%- comment -%}
+        Shown only once the shopper hits the cap, so it reads as an explanation
+        rather than a warning about something they have not done yet.
+      {%- endcomment -%}
+      <p class="qty-limit" data-qty-limit hidden>
+        {%- if max_per_order <= 3 -%}
+          Because of its shipping weight, this item is limited to {{ max_per_order }} per order.
+        {%- else -%}
+          This item is limited to {{ max_per_order }} per order.
+        {%- endif -%}
+        Need more? Email <a href="mailto:info@inatureltd.com">info@inatureltd.com</a> and we will sort it out.
+      </p>
 
       <a href="#" style="text-align: center; font-size: var(--fs-sm); color: var(--muted); text-decoration: underline;">Buy with shop pay →</a>
 

@@ -16,11 +16,18 @@
                     <div class="cart-line__prop">{{ prop.first }}: <strong>{{ prop.last }}</strong></div>
                   {%- endunless -%}
                 {%- endfor -%}
-                <div class="qty cart-line__qty" data-cart-qty data-line-key="{{ item.key }}">
+                {%- assign line_max = item.product.metafields.custom.max_per_order.value | default: 5 -%}
+                <div class="qty cart-line__qty" data-cart-qty data-line-key="{{ item.key }}" data-max="{{ line_max }}">
                   <button type="button" data-cart-qty-dec aria-label="Decrease quantity">&minus;</button>
-                  <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" inputmode="numeric" data-cart-qty-input aria-label="Quantity for {{ item.product.title | escape }}">
+                  <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" max="{{ line_max }}" inputmode="numeric" data-cart-qty-input aria-label="Quantity for {{ item.product.title | escape }}">
                   <button type="button" data-cart-qty-inc aria-label="Increase quantity">+</button>
                 </div>
+                {%- if item.quantity >= line_max -%}
+                  <p class="cart-line__limit">
+                    {%- if line_max <= 3 -%}Shipping weight limits this to {{ line_max }} per order.
+                    {%- else -%}Limited to {{ line_max }} per order.{%- endif -%}
+                  </p>
+                {%- endif -%}
                 <button type="button" class="cart-line__remove" data-cart-line-remove data-line-key="{{ item.key }}">Remove</button>
               </div>
               <div class="cart-line__price">{{ item.final_line_price | money }}</div>

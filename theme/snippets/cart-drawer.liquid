@@ -20,9 +20,10 @@
                   <div class="cart-line__prop">{{ prop.first }}: <strong>{{ prop.last }}</strong></div>
                 {%- endunless -%}
               {%- endfor -%}
-              <div class="qty cart-drawer__qty" data-drawer-qty data-line-key="{{ item.key }}">
+              {%- assign line_max = item.product.metafields.custom.max_per_order.value | default: 5 -%}
+              <div class="qty cart-drawer__qty" data-drawer-qty data-line-key="{{ item.key }}" data-max="{{ line_max }}">
                 <button type="button" data-drawer-qty-dec aria-label="Decrease quantity">&minus;</button>
-                <input type="number" value="{{ item.quantity }}" min="0" inputmode="numeric" data-drawer-qty-input aria-label="Quantity for {{ item.product.title | escape }}">
+                <input type="number" value="{{ item.quantity }}" min="0" max="{{ line_max }}" inputmode="numeric" data-drawer-qty-input aria-label="Quantity for {{ item.product.title | escape }}">
                 <button type="button" data-drawer-qty-inc aria-label="Increase quantity">+</button>
               </div>
               <a href="#" data-cart-remove data-line-key="{{ item.key }}" class="cart-drawer__remove">Remove</a>

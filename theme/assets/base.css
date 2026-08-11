@@ -1237,3 +1237,33 @@ a.cart-line__title:hover { color: var(--primary-dark); }
 .personalise__help { font-size: var(--fs-sm); color: var(--muted); margin: 0; }
 .personalise__error { font-size: var(--fs-sm); color: var(--accent); margin: 0; font-weight: 600; }
 .cart-line__prop { font-size: var(--fs-sm); color: var(--muted); }
+
+/* Per-order quantity cap notices */
+.qty-limit {
+  font-size: var(--fs-sm); color: var(--muted); margin: 0;
+  background: #FBF7EA; border: 1px solid #EFE4C4;
+  border-radius: 6px; padding: 0.55rem 0.75rem;
+}
+.qty-limit a { color: var(--accent); }
+.cart-line__limit {
+  font-size: var(--fs-xs); color: var(--muted);
+  margin: 0.25rem 0 0; max-width: 34ch;
+}
+
+/* Personalisation field inside a product card's quick-add */
+.card-personalise { display: grid; gap: 0.3rem; margin-bottom: 0.4rem; }
+.card-personalise__input {
+  width: 100%; border: 1px solid var(--line); border-radius: 8px;
+  background: #fff; padding: 0.45rem 0.6rem;
+  font: inherit; font-size: var(--fs-sm); color: var(--ink);
+}
+.card-personalise__input::placeholder { color: #a9a49a; }
+.card-personalise__input:focus {
+  outline: none; border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(123, 159, 126, 0.18);
+}
+.card-personalise__input[aria-invalid="true"] { border-color: var(--accent); }
+.card-personalise__error {
+  font-size: var(--fs-xs); color: var(--accent);
+  margin: 0; font-weight: 600; line-height: 1.3;
+}

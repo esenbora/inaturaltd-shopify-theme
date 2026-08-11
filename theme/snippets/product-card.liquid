@@ -35,13 +35,36 @@
       <div class="product-card__placeholder" aria-hidden="true">{% render 'icon', name: 'leaf' %}</div>
     {% endif %}
     <div class="product-card__quick">
+      {%- comment -%}
+        Personalised items need the name before they can be added, otherwise a
+        quick add lands an unnamed keepsake in the basket. Same attribute names
+        as the product page so one JS path validates both. The field sits inside
+        the card's link, so its events stop there (see theme.js).
+      {%- endcomment -%}
+      {%- if p.tags contains 'Personalised' -%}
+        <div class="card-personalise" data-personalise>
+          <input
+            class="card-personalise__input"
+            type="text"
+            maxlength="12"
+            autocomplete="off"
+            placeholder="Name for the bear"
+            data-personalisation
+            data-property-name="Name"
+            aria-label="Name to personalise {{ p.title | escape }}">
+          <p class="card-personalise__error" data-personalisation-error hidden></p>
+        </div>
+      {%- endif -%}
       <button class="btn btn-primary btn-block btn-sm"
         data-add-to-cart
         data-variant-id="{{ p.variants.first.id }}"
-        data-label="Quick add"
+        data-max="{{ p.metafields.custom.max_per_order.value | default: 5 }}"
+        data-label="{% if p.tags contains 'Personalised' %}Add with name{% else %}Quick add{% endif %}"
         type="button"
         {% if p.variants.first.available == false %}disabled aria-disabled="true"{% endif %}>
-        {% if p.variants.first.available %}Quick add{% else %}Sold out{% endif %}
+        {%- if p.variants.first.available -%}
+          {% if p.tags contains 'Personalised' %}Add with name{% else %}Quick add{% endif %}
+        {%- else -%}Sold out{%- endif -%}
       </button>
     </div>
   </a>
