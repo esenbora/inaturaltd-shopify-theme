@@ -60,7 +60,10 @@ async function main(): Promise<void> {
   const shopifyToken = (await resolveShopifyToken(shopifyShop)) ?? "";
   const shopifyBlogHandle = readEnv("SHOPIFY_BLOG_HANDLE") ?? "news";
   const shopifyBlogId = readEnv("SHOPIFY_BLOG_ID");
-  const openrouterModel = readEnv("OPENROUTER_MODEL") ?? "anthropic/claude-3.5-sonnet";
+  // Keep this pointing at a model OpenRouter still serves. The previous default,
+  // anthropic/claude-3.5-sonnet, has been retired from their catalogue, so an
+  // unset OPENROUTER_MODEL would have failed every run.
+  const openrouterModel = readEnv("OPENROUTER_MODEL") ?? "anthropic/claude-sonnet-5";
   const falKey = readEnv("FAL_KEY") ?? "not-used-with-images-disabled";
   const minWords = readPositiveIntegerEnv("MIN_WORDS", DEFAULT_MIN_WORDS);
   const publishDelayMs = readPositiveIntegerEnv(
