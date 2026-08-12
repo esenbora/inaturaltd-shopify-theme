@@ -244,6 +244,10 @@ export class ShopifyAdapter implements StorageAdapter {
 function articlePayload(post: BlogPostContent, coverImageUrl: string | null): Record<string, unknown> {
   const payload: Record<string, unknown> = {
     title: post.title,
+    // Without this Shopify bylines the article "Shopify API", after the client
+    // that created it. That name then rides into the article's JSON-LD author
+    // field, so it is a public byline, not just an admin-list detail.
+    author: (process.env.ARTICLE_AUTHOR ?? "INATURE Team").trim(),
     body_html: post.content,
     summary_html: post.excerpt,
     tags: post.tags.map(cleanTag).filter(Boolean).join(","),

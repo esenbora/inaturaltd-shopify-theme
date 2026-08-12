@@ -53,7 +53,17 @@
   "headline": {{ article.title | json }},
   "datePublished": {{ article.published_at | date: '%Y-%m-%d' | json }},
   "dateModified": {{ article.updated_at | date: '%Y-%m-%d' | json }},
-  "author": { "@type": "Person", "name": {{ article.author | default: shop.name | json }} },
+  {%- comment -%}
+    A byline like "INATURE Team" is not a person, and marking it as one is a
+    false claim in the markup. Named bylines stay Person, which is what carries
+    the E-E-A-T signal; collective ones become Organization.
+  {%- endcomment -%}
+  {%- assign article_author = article.author | default: shop.name -%}
+  {%- assign author_type = 'Person' -%}
+  {%- if article_author contains 'Team' or article_author contains 'team' or article_author == shop.name -%}
+    {%- assign author_type = 'Organization' -%}
+  {%- endif -%}
+  "author": { "@type": "{{ author_type }}", "name": {{ article_author | json }} },
   "publisher": {
     "@type": "Organization",
     "name": {{ shop.name | json }},
