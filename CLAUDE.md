@@ -19,10 +19,26 @@ When asked to "work on the site," clarify which piece — they have nothing in c
 The theme is pure Shopify Liquid; it does **not** render in a plain browser. Use Shopify CLI from inside `theme/`:
 ```bash
 cd theme
-shopify theme dev --store inatureltd.myshopify.com   # local dev server + hot reload
-shopify theme push --unpublished                      # upload as unpublished theme
+shopify theme dev --store inature-uk.myshopify.com   # local dev server + hot reload
+shopify theme push --unpublished                     # upload as unpublished theme
+shopify theme check                                  # static Liquid lint
 ```
-There is no lint/test/build step for the theme. Verification is visual via `theme dev`. The store is `inatureltd.myshopify.com`.
+
+**The store goes by three names — using the wrong one costs an hour.** There is no
+`inatureltd.myshopify.com`; that name appeared in this file for months and is wrong.
+
+| Name | What it is | Where it works |
+|---|---|---|
+| `inature-uk` | Store handle | Admin URL: `admin.shopify.com/store/inature-uk` |
+| `inature-uk.myshopify.com` | Handle domain | `shopify theme dev/push` accept it |
+| `vs9adb-1q.myshopify.com` | Permanent domain | `shopify store auth` demands this one and rejects the handle |
+
+`theme dev` and `store auth` genuinely disagree about which they take, so try the
+other before assuming a permissions problem. "You are not authorized to use the
+CLI to develop in the provided store" is what a wrong domain looks like.
+
+`theme check` is the only mechanical check the theme has; verification is
+otherwise visual via `theme dev`.
 
 ### blog-engine (Node/TypeScript)
 ```bash
@@ -56,7 +72,7 @@ The brand design system is defined as theme settings in `theme/config/settings_s
 `theme.liquid` is the HTML shell and also owns SEO/meta-tags (title, description, OG tags, robots noindex for cart/search/account). Page composition is data-driven via `templates/*.json` (section order, e.g. `index.json` for the homepage) referencing `sections/*.liquid`. Shared UI lives in `snippets/*.liquid` (`product-card`, `cart-drawer`, `price`, `icon`). Client behavior (drawer, qty steppers, swatches, gallery, mobile sticky add-to-cart) is in the single `theme/assets/theme.js`.
 
 ### blog-engine: pipeline + idempotency
-`src/run.ts` orchestrates: `scraper.ts` (discover new posts from a Hemnature source blog/sitemap) → `blog-automation` package `BlogGenerator` with `prompt.ts` (LLM rewrite to UK English via OpenRouter) → `shopify-adapter.ts` (publish as a Shopify Blog Article via Admin API). **Idempotency** is enforced by `processed.json` (a ledger of published source URLs/hashes); a post is marked processed **only after** the Shopify create succeeds, and `DRY_RUN` never writes it. The weekly cron runs on **Railway** (project `inature-admin`, service `blog-cron`), which keeps `processed.json` on a persistent volume at `/data` via `PROCESSED_LEDGER_PATH`. It used to run on GitHub Actions with the ledger in an Actions cache; GitHub evicts cache entries after 7 days of no access and the cron fired every 7 days, so a late run could lose the ledger and republish source posts as duplicate drafts. `.github/workflows/blog-cron.yml` is now a manual-only fallback and its schedule is disabled; do not re-enable it while the Railway service is active, and note the two hosts do not share ledger state.
+`src/run.ts` orchestrates: `scraper.ts` (discover new posts from a Hemnature source blog/sitemap) → `blog-automation` package `BlogGenerator` with `prompt.ts` (LLM rewrite to UK English via OpenRouter) → `shopify-adapter.ts` (create a Shopify Blog Article via Admin API). **Generated articles are created hidden, not published** (`AUTO_PUBLISH=false`), and Shopify keeps hidden articles out of `blog.articles` entirely, so a draft is invisible on the storefront until a human publishes it in Admin → Content → Blog posts. This is deliberate — clause 1.3 of the service agreement puts the publish decision with the client — but it means drafts pile up silently and the blog looks stalled from outside. It has already been reported as a bug once. The admin panel's Blog articles page filters by visibility and shows the backlog count. **Idempotency** is enforced by `processed.json` (a ledger of published source URLs/hashes); a post is marked processed **only after** the Shopify create succeeds, and `DRY_RUN` never writes it. The weekly cron runs on **Railway** (project `inature-admin`, service `blog-cron`), which keeps `processed.json` on a persistent volume at `/data` via `PROCESSED_LEDGER_PATH`. It used to run on GitHub Actions with the ledger in an Actions cache; GitHub evicts cache entries after 7 days of no access and the cron fired every 7 days, so a late run could lose the ledger and republish source posts as duplicate drafts. `.github/workflows/blog-cron.yml` is now a manual-only fallback and its schedule is disabled; do not re-enable it while the Railway service is active, and note the two hosts do not share ledger state.
 
 ### blog-engine: upstream dependency quirk
 `blog-automation` is installed from a pinned GitHub commit (not npm). That commit points at `dist/` but ships no built files, so `scripts/repair-blog-automation.mjs` runs on `postinstall` to build upstream into `node_modules/blog-automation/dist`. If `npm install` succeeds but `npm start` fails with missing `blog-automation` exports, suspect this repair step. Remove it once upstream publishes built artifacts.
