@@ -95,10 +95,35 @@
           {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
         {% endif %}
       </div>
+
+      {%- comment -%}
+        Players sit in the DOM from the start and stay hidden; theme.js reveals the
+        one whose thumb was clicked. Building them on click would cost a reload.
+      {%- endcomment -%}
+      {%- for media in product.media -%}
+        {%- case media.media_type -%}
+          {%- when 'video' -%}
+            <div class="pdp__main pdp__main--player" data-gallery-media="{{ media.id }}" hidden>
+              {{ media | video_tag: controls: true, playsinline: true, preload: 'metadata', image_size: '1200x' }}
+            </div>
+          {%- when 'external_video' -%}
+            <div class="pdp__main pdp__main--player" data-gallery-media="{{ media.id }}" hidden>
+              {{ media | external_video_tag: loading: 'lazy' }}
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+
       <div class="pdp__thumbs">
-        {% for media in image_media limit: 6 %}
-          <div class="pdp__thumb{% if forloop.first %} is-active{% endif %}" data-gallery-thumb data-full="{{ media | image_url: width: 1200 }}">
-            <img src="{{ media | image_url: width: 400 }}" alt="{{ media.alt | escape }}" width="200" height="250">
+        {% for media in product.media limit: 12 %}
+          <div class="pdp__thumb{% if featured and media.id == featured.id %} is-active{% endif %}"
+               data-gallery-thumb
+               data-media-type="{{ media.media_type }}"
+               data-media-id="{{ media.id }}"
+               data-full="{{ media.preview_image | image_url: width: 1200 }}">
+            <img src="{{ media.preview_image | image_url: width: 400 }}" alt="{{ media.alt | escape }}" width="200" height="250">
+            {%- unless media.media_type == 'image' -%}
+              <span class="pdp__thumb-play" aria-hidden="true">{% render 'icon', name: 'play' %}</span>
+            {%- endunless -%}
           </div>
         {% endfor %}
       </div>

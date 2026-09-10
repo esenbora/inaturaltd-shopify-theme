@@ -82,15 +82,41 @@
     });
   });
 
-  // Product gallery thumb switching
+  // Product gallery thumb switching (image, Shopify video, external video)
   document.querySelectorAll('[data-gallery]').forEach((gallery) => {
-    const main = gallery.querySelector('[data-gallery-main] img');
+    const main = gallery.querySelector('[data-gallery-main]');
+    const mainImg = main ? main.querySelector('img') : null;
+    const players = gallery.querySelectorAll('[data-gallery-media]');
     const thumbs = gallery.querySelectorAll('[data-gallery-thumb]');
+
+    function hidePlayers() {
+      players.forEach((player) => {
+        player.hidden = true;
+        const video = player.querySelector('video');
+        if (video) video.pause();
+        // Reassigning src is the only reliable way to stop an embedded player.
+        const frame = player.querySelector('iframe');
+        if (frame) frame.src = frame.src;
+      });
+    }
+
     thumbs.forEach((thumb) => {
       thumb.addEventListener('click', () => {
         thumbs.forEach((t) => t.classList.remove('is-active'));
         thumb.classList.add('is-active');
-        if (main) main.src = thumb.dataset.full || thumb.querySelector('img').src;
+        hidePlayers();
+
+        const type = thumb.dataset.mediaType;
+        if (type && type !== 'image') {
+          const player = gallery.querySelector('[data-gallery-media="' + thumb.dataset.mediaId + '"]');
+          if (player) {
+            if (main) main.hidden = true;
+            player.hidden = false;
+            return;
+          }
+        }
+        if (main) main.hidden = false;
+        if (mainImg) mainImg.src = thumb.dataset.full || thumb.querySelector('img').src;
       });
     });
   });

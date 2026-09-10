@@ -740,6 +740,19 @@ body {
 .pdp__thumb.is-active { border-color: var(--primary-dark); }
 .pdp__thumb img { width: 100%; height: 100%; object-fit: contain; padding: 6%; }
 
+/* Video media. .pdp__main sets display:flex, which beats the UA [hidden] rule,
+   so the hidden state has to be declared explicitly or every player stays visible. */
+.pdp__main[hidden] { display: none; }
+.pdp__main--player { padding: 0; background: #000; }
+.pdp__main--player video,
+.pdp__main--player iframe { width: 100%; height: 100%; border: 0; object-fit: contain; }
+.pdp__thumb { position: relative; }
+.pdp__thumb-play {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  background: rgba(0, 0, 0, .28); color: #fff; pointer-events: none;
+}
+.pdp__thumb-play svg { width: 38%; height: 38%; }
+
 .pdp__info { display: grid; gap: var(--space-5); align-content: start; }
 .pdp__vendor { font-size: var(--fs-xs); color: var(--muted); letter-spacing: .14em; text-transform: uppercase; }
 .pdp__title { font-family: var(--font-heading); font-size: var(--fs-3xl); font-weight: 400; line-height: 1.05; letter-spacing: -.015em; }
