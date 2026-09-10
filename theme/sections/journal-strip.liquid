@@ -14,7 +14,8 @@
       {% if jblog.articles.size > 0 %}
         {%- assign shown = 0 -%}
         {% for article in jblog.articles %}
-          {%- if article.content == blank or shown >= 3 -%}{%- continue -%}{%- endif -%}
+          {%- comment -%} Same guard fix as main-blog: title, not content. {%- endcomment -%}
+          {%- if article.title == blank or shown >= 3 -%}{%- continue -%}{%- endif -%}
           {%- assign shown = shown | plus: 1 -%}
           <article class="stack" style="--gap: var(--space-3);">
             {%- liquid

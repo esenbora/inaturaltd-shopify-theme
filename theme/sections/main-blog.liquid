@@ -7,9 +7,17 @@
     </header>
 
     {%- paginate blog.articles by 12 -%}
+      {%- assign shown = 0 -%}
       <div class="grid product-grid" style="margin-top: var(--space-7);">
         {%- for article in blog.articles -%}
-          {%- if article.content == blank -%}{%- continue -%}{%- endif -%}
+          {%- comment -%}
+            Guarding on article.content dropped every post whose body was not exposed
+            in the listing loop, and for/else could not catch it: Liquid fires else
+            only when the collection is empty, so a fully skipped loop rendered a
+            blank grid with no message at all. Guard on title, count what renders.
+          {%- endcomment -%}
+          {%- if article.title == blank -%}{%- continue -%}{%- endif -%}
+          {%- assign shown = shown | plus: 1 -%}
           <article class="product-card">
             {%- liquid
               assign ah = article.handle | split: '/' | last
@@ -40,9 +48,10 @@
               <a href="{{ article.url }}" class="btn btn-ghost" style="padding-inline: 0; margin-top: var(--space-2);">Read more {% render 'icon', name: 'arrow-right' %}</a>
             </div>
           </article>
-        {%- else -%}
-          <p class="muted text-center" style="grid-column: 1 / -1;">No posts yet, check back soon.</p>
         {%- endfor -%}
+        {%- if shown == 0 -%}
+          <p class="muted text-center" style="grid-column: 1 / -1;">No posts yet, check back soon.</p>
+        {%- endif -%}
       </div>
 
       {%- if paginate.pages > 1 -%}

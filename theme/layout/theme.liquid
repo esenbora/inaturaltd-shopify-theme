@@ -66,6 +66,9 @@
       <meta property="og:image" content="{{ product.featured_image | image_url: width: 1200 }}">
       <meta property="og:image:width" content="1200">
       <meta property="og:image:height" content="1200">
+    {%- elsif template contains 'article' and article.image -%}
+      {%- comment -%} A blog share should carry the post's own image, not the generic hero. {%- endcomment -%}
+      <meta property="og:image" content="{{ article.image | image_url: width: 1200 }}">
     {%- elsif settings.social_share_image -%}
       <meta property="og:image" content="{{ settings.social_share_image | image_url: width: 1200 }}">
     {%- else -%}
@@ -77,6 +80,8 @@
     <meta name="twitter:description" content="{{ meta_desc | escape }}">
     {%- if template contains 'product' and product.featured_image -%}
       <meta name="twitter:image" content="{{ product.featured_image | image_url: width: 1200 }}">
+    {%- elsif template contains 'article' and article.image -%}
+      <meta name="twitter:image" content="{{ article.image | image_url: width: 1200 }}">
     {%- elsif settings.social_share_image -%}
       <meta name="twitter:image" content="{{ settings.social_share_image | image_url: width: 1200 }}">
     {%- else -%}
