@@ -1,6 +1,11 @@
 import Link from "next/link";
 import { listArticles } from "@/lib/shopify";
 import type { Article } from "@/lib/types";
+import {
+  resolveVisibility,
+  VisibilityTabs,
+  type Visibility,
+} from "@/components/visibility-tabs";
 
 export const metadata = {
   title: "Blog articles · INature Admin",
@@ -58,6 +63,22 @@ function EmptyState() {
   );
 }
 
+/** Shown when the store has articles but the chosen filter matches none. */
+function NoMatchState({ filter }: { filter: Visibility }) {
+  const message =
+    filter === "hidden"
+      ? "Nothing waiting for review. Every article is published."
+      : "No published articles yet.";
+  return (
+    <div className="card border-dashed px-6 py-16 text-center">
+      <p className="text-sm font-semibold text-ink">{message}</p>
+      <Link href="/articles?visibility=all" className="btn mt-5">
+        Show all articles
+      </Link>
+    </div>
+  );
+}
+
 function ErrorState({ message }: { message: string }) {
   return (
     <div className="rounded-xl border border-terracotta/30 bg-terracotta/5 px-6 py-10 text-center">
@@ -107,7 +128,14 @@ function ArticlesTable({ articles }: { articles: Article[] }) {
   );
 }
 
-export default async function ArticlesPage() {
+interface PageProps {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}
+
+export default async function ArticlesPage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const filter = resolveVisibility(params.visibility);
+
   let articles: Article[];
   try {
     articles = await listArticles();
@@ -121,13 +149,36 @@ export default async function ArticlesPage() {
     );
   }
 
+  if (articles.length === 0) {
+    return (
+      <main className="mx-auto w-full max-w-5xl px-6 py-10">
+        <PageHeader />
+        <EmptyState />
+      </main>
+    );
+  }
+
+  const hidden = articles.filter((article) => !article.visible);
+  const counts = {
+    all: articles.length,
+    visible: articles.length - hidden.length,
+    hidden: hidden.length,
+  };
+  const shown =
+    filter === "all"
+      ? articles
+      : filter === "hidden"
+        ? hidden
+        : articles.filter((article) => article.visible);
+
   return (
     <main className="mx-auto w-full max-w-5xl px-6 py-10">
       <PageHeader />
-      {articles.length === 0 ? (
-        <EmptyState />
+      <VisibilityTabs basePath="/articles" active={filter} counts={counts} />
+      {shown.length === 0 ? (
+        <NoMatchState filter={filter} />
       ) : (
-        <ArticlesTable articles={articles} />
+        <ArticlesTable articles={shown} />
       )}
     </main>
   );
