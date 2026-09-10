@@ -19,6 +19,12 @@ export interface Article {
   visible: boolean;
   /** ISO timestamp string, or null when the article is a hidden/unpublished draft. */
   publishedAt: string | null;
+  /**
+   * ISO timestamp of creation. Distinct from `updatedAt` on purpose: editing an
+   * old post moves `updatedAt`, so only this one answers "when was this
+   * produced", which is what the blog automation health check reads.
+   */
+  createdAt: string;
   /** ISO timestamp string of the last update. */
   updatedAt: string;
 }

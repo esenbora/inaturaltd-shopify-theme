@@ -6,6 +6,11 @@ import {
   VisibilityTabs,
   type Visibility,
 } from "@/components/visibility-tabs";
+import {
+  assessBlogHealth,
+  blogHealthMessage,
+  type BlogHealth,
+} from "@/lib/blog-health";
 
 export const metadata = {
   title: "Blog articles · INature Admin",
@@ -59,6 +64,36 @@ function EmptyState() {
       <Link href="/articles/new" className="btn btn-primary mt-5">
         New article
       </Link>
+    </div>
+  );
+}
+
+/**
+ * Automation status line. A banner that is always green stops being read, so a
+ * healthy run states itself quietly and only a missed one takes colour.
+ */
+function HealthBanner({ health }: { health: BlogHealth }) {
+  const alarming = health.level === "late" || health.level === "stalled";
+  return (
+    <div
+      className={`mb-6 rounded-xl border px-4 py-3 text-sm ${
+        alarming
+          ? "border-terracotta/30 bg-terracotta/5 text-terracotta-dark"
+          : "border-line bg-card text-muted"
+      }`}
+      role={alarming ? "status" : undefined}
+    >
+      <span className={alarming ? "font-semibold" : "font-medium text-ink"}>
+        Blog automation
+      </span>
+      <span className="mx-2 opacity-40">·</span>
+      {blogHealthMessage(health)}
+      {health.createdLast30Days > 0 && (
+        <span className="opacity-70">
+          {" "}
+          {health.createdLast30Days} created in the last 30 days.
+        </span>
+      )}
     </div>
   );
 }
@@ -174,6 +209,7 @@ export default async function ArticlesPage({ searchParams }: PageProps) {
   return (
     <main className="mx-auto w-full max-w-5xl px-6 py-10">
       <PageHeader />
+      <HealthBanner health={assessBlogHealth(articles)} />
       <VisibilityTabs basePath="/articles" active={filter} counts={counts} />
       {shown.length === 0 ? (
         <NoMatchState filter={filter} />

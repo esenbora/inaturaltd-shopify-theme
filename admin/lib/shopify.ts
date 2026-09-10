@@ -209,6 +209,7 @@ function toArticle(raw: RawArticle): Article {
     tags: parseTags(raw.tags),
     visible: publishedAt !== null,
     publishedAt,
+    createdAt: raw.created_at ?? raw.updated_at ?? new Date().toISOString(),
     updatedAt: raw.updated_at ?? raw.created_at ?? new Date().toISOString(),
   };
 }
@@ -324,6 +325,7 @@ const MOCK_ARTICLES: Article[] = [
     tags: ["baby", "pregnancy", "natural"],
     visible: true,
     publishedAt: "2026-06-02T09:00:00Z",
+    createdAt: "2026-06-02T09:00:00Z",
     updatedAt: "2026-06-28T14:20:00Z",
   },
   {
@@ -338,6 +340,7 @@ const MOCK_ARTICLES: Article[] = [
     tags: ["how-to", "incia", "sos-stick"],
     visible: true,
     publishedAt: "2026-06-15T09:00:00Z",
+    createdAt: "2026-06-15T09:00:00Z",
     updatedAt: "2026-07-01T11:05:00Z",
   },
   {
@@ -352,6 +355,7 @@ const MOCK_ARTICLES: Article[] = [
     tags: ["eczema", "sensitive-skin", "natural"],
     visible: true,
     publishedAt: "2026-06-22T09:00:00Z",
+    createdAt: "2026-06-22T09:00:00Z",
     updatedAt: "2026-07-05T16:40:00Z",
   },
   {
@@ -365,6 +369,7 @@ const MOCK_ARTICLES: Article[] = [
     tags: ["seasonal", "draft"],
     visible: false,
     publishedAt: null,
+    createdAt: "2026-07-11T08:15:00Z",
     updatedAt: "2026-07-11T08:15:00Z",
   },
 ];
@@ -388,6 +393,7 @@ function mockFromInput(id: string, input: ArticleInput): Article {
     tags: input.tags,
     visible: input.visible,
     publishedAt: input.visible ? NOW : null,
+    createdAt: NOW,
     updatedAt: NOW,
   };
 }
@@ -435,6 +441,7 @@ export async function getArticle(id: string): Promise<Article | null> {
       tags: [],
       visible: false,
       publishedAt: null,
+      createdAt: NOW,
       updatedAt: NOW,
     };
   }
