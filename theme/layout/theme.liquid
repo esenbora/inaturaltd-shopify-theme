@@ -35,6 +35,19 @@
       if meta_desc == blank and template contains 'collection' and collection.description != blank
         assign meta_desc = collection.description | strip_html | strip_newlines | replace: '&amp;', '&' | replace: '&#39;', "'" | replace: '&quot;', '"' | replace: '&nbsp;', ' ' | truncate: 160
       endif
+      comment
+        The blog index has no admin description, so it fell through to the brand
+        default and shipped the same 122 characters as the homepage. Duplicate
+        descriptions across templates dilute relevance. FAQ does have an admin
+        value, which still wins above; its line here is only a backstop for the
+        day that value is cleared.
+      endcomment
+      if meta_desc == blank and template == 'blog'
+        assign meta_desc = 'Natural skincare guides from INature UK: ingredients explained, baby and sensitive-skin care, mineral SPF and honest advice on clean beauty.'
+      endif
+      if meta_desc == blank and template contains 'page' and page.handle == 'faq'
+        assign meta_desc = 'Answers on INCIA certifications, ingredients, baby and pregnancy safety, UK delivery, returns and discounts, from the official UK distributor.'
+      endif
       if meta_desc == blank
         assign meta_desc = brand_default_desc
       endif
