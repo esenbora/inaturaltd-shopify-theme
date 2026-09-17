@@ -44,11 +44,17 @@
   "@type": "Product",
   "name": {{ product.title | json }},
   "description": {{ product.description | strip_html | truncate: 5000 | json }},
+  {%- comment -%}
+    Görseller döngüden ÖNCE süzülür. Daha önce döngü product.media'nın tamamında
+    dönüp içeride media_type kontrolü yapıyordu; forloop.last tüm medyaya göre
+    hesaplandığı için son medya video olduğunda son görselin ardındaki virgül
+    silinmiyordu. Bu, ürünlere video eklendiği anda yedi üründe Product şemasının
+    tamamını geçersiz JSON'a çevirdi — fiyat, stok ve marka Google'a hiç ulaşmadı.
+  {%- endcomment -%}
+  {%- assign schema_images = product.media | where: 'media_type', 'image' -%}
   "image": [
-    {%- for media in product.media -%}
-      {%- if media.media_type == 'image' -%}
-        {{ media | image_url: width: 1200 | prepend: 'https:' | json }}{%- unless forloop.last -%},{%- endunless -%}
-      {%- endif -%}
+    {%- for media in schema_images -%}
+      {{ media | image_url: width: 1200 | prepend: 'https:' | json }}{%- unless forloop.last -%},{%- endunless -%}
     {%- endfor -%}
   ],
   "sku": {{ sku_value | json }},
