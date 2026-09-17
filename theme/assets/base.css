@@ -721,7 +721,11 @@ body {
 }
 .pdp__gallery { display: grid; gap: var(--space-3); position: sticky; top: 100px; align-self: start; }
 .pdp__main {
-  aspect-ratio: 1/1;
+  /* 4:5 matches the product photography, so stills fill the box instead of
+     being letterboxed, and it gives the 9:16 product videos noticeably more
+     width than a square box did. Images and video share one ratio, so
+     switching between them does not shift the layout. */
+  aspect-ratio: 4/5;
   max-height: 62vh;
   border-radius: var(--radius-md);
   overflow: hidden; background: #fff;
