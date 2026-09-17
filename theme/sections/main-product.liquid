@@ -73,6 +73,81 @@
 }
 </script>
 
+{%- comment -%}
+  VideoObject — Google'ın video zengin sonucu için. Dokuz ürün video taşıyor ama
+  şema olmadan Google sayfada video olduğunu bilmiyor.
+
+  `uploadDate` Google'da zorunlu, Liquid'in video nesnesinde ise tarih alanı yok
+  (alt, aspect_ratio, duration, id, media_type, position, preview_image, sources).
+  Bu yüzden gerçek Video.createdAt değeri Admin API'den okunup
+  scripts/set_video_upload_dates.py ile custom.video_upload_dates metafield'ına
+  yazılıyor; anahtar biçimi "m" + media.id.
+
+  Metafield yoksa ürünün yayın tarihine düşülür: Admin'den elle video eklenip
+  script henüz koşmadıysa blok geçerli kalsın diye. Tarih o durumda videodan
+  eski olur, bu yüzden yeni video sonrası script'i çalıştırmak gerekir.
+
+  external_video (YouTube/Vimeo) atlanıyor: mağazada hiç yok ve test edemediğimiz
+  embedUrl işaretlemesi, hiç işaretleme olmamasından kötüdür.
+{%- endcomment -%}
+{%- assign video_dates = product.metafields.custom.video_upload_dates.value -%}
+{%- for media in product.media -%}
+  {%- if media.media_type == 'video' -%}
+    {%- liquid
+      assign v_mp4 = media.sources | where: 'format', 'mp4' | sort: 'width' | last
+      comment
+        Kaynak URL'i protokolsüz (//cdn.shopify.com/...) gelir, JSON-LD mutlak URL ister.
+        Koşullu ekleme: Shopify biçimi sürüme göre değişirse https:https: üretmesin.
+      endcomment
+      assign v_url = v_mp4.url
+      if v_url != blank
+        unless v_url contains '://'
+          assign v_url = v_url | prepend: 'https:'
+        endunless
+      endif
+
+      assign v_thumb = media.preview_image | image_url: width: 1200
+      unless v_thumb contains '://'
+        assign v_thumb = v_thumb | prepend: 'https:'
+      endunless
+
+      assign v_key = media.id | prepend: 'm'
+      assign v_date = ''
+      if video_dates
+        assign v_date = video_dates[v_key]
+      endif
+      if v_date == blank
+        assign v_date = product.published_at | date: '%Y-%m-%dT%H:%M:%SZ'
+      endif
+
+      assign v_secs = media.duration | divided_by: 1000
+      assign v_mins = v_secs | divided_by: 60
+      assign v_rest = v_secs | modulo: 60
+
+      assign v_desc = media.alt | default: p_short
+    -%}
+    {%- comment -%} Google contentUrl veya embedUrl'den birini şart koşar; mp4 yoksa şema geçersiz olur, hiç basma. {%- endcomment -%}
+    {%- if v_url != blank -%}
+      <script type="application/ld+json">
+      {
+        "@context": "https://schema.org/",
+        "@type": "VideoObject",
+        "name": {{ product.title | json }},
+        "description": {{ v_desc | json }},
+        "thumbnailUrl": {{ v_thumb | json }},
+        "uploadDate": {{ v_date | json }},
+        {%- if v_secs > 0 %}
+        "duration": "PT{% if v_mins > 0 %}{{ v_mins }}M{% endif %}{{ v_rest }}S",
+        {%- endif %}
+        "contentUrl": {{ v_url | json }}{% if v_mp4.width > 0 %},
+        "width": {{ v_mp4.width | json }},
+        "height": {{ v_mp4.height | json }}{% endif %}
+      }
+      </script>
+    {%- endif -%}
+  {%- endif -%}
+{%- endfor -%}
+
 <section class="wrap">
   <nav aria-label="Breadcrumb" style="padding-block: var(--space-5); font-size: var(--fs-xs); color: var(--muted); letter-spacing: .08em; text-transform: uppercase;">
     <a href="{{ routes.root_url }}">Home</a> ·
