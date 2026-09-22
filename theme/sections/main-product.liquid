@@ -7,7 +7,12 @@
   endif
   assign discount_pct = variant.compare_at_price | minus: variant.price | times: 100.0 | divided_by: variant.compare_at_price | round: 0
   assign rating = product.metafields.reviews.rating.value
-  assign review_count = product.metafields.reviews.count.value
+  comment
+    Metafield'in adi reviews.rating_count; tema reviews.count okudugu icin
+    yorum sayisi hicbir urunde gorunmuyordu. Yildiz ve puan goruntulenip
+    sayinin hic cikmamasinin sebebi buydu.
+  endcomment
+  assign review_count = product.metafields.reviews.rating_count.value
   assign breadcrumb_collection = product.collections.first
   assign p_vendor = product.vendor | default: 'INature UK'
   comment
@@ -62,12 +67,30 @@
     "@type": "Brand",
     "name": {{ p_vendor | json }}
   },
+  {%- comment -%}
+    aggregateRating yalnizca gercek yorum verisi varken basilir. 13 uründe
+    reviews.rating metafield'i dolu ve sayfada zaten yildiz gosteriliyordu,
+    ancak arama motoruna hic bildirilmiyordu. Veri olmayan uründe blok hic
+    cikmaz: uydurma puan Google politikasina aykiridir ve manuel islem riski
+    tasir.
+  {%- endcomment -%}
+  {%- if rating != blank and review_count != blank and review_count > 0 -%}
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "{{ rating.rating }}",
+    "reviewCount": {{ review_count }},
+    "bestRating": "{{ rating.scale_max }}",
+    "worstRating": "{{ rating.scale_min }}"
+  },
+  {%- endif -%}
   "offers": {
     "@type": "Offer",
     "url": {{ shop.url | append: product.url | json }},
     "priceCurrency": {{ currency_code | json }},
     "price": "{{ price_amount }}",
     "availability": {{ availability_schema | json }},
+    {%- comment -%} Tarih olmayinca Google fiyati bayat sayip gostermeyebiliyor; bir yil ileri yuvarlanan tarih. {%- endcomment -%}
+    "priceValidUntil": "{{ 'now' | date: '%s' | plus: 31536000 | date: '%Y-%m-%d' }}",
     "itemCondition": "https://schema.org/NewCondition"
   }
 }

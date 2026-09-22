@@ -71,6 +71,15 @@
       assign meta_desc = meta_desc | strip | truncatewords: 26, '…'
 
       assign meta_title = page_title | default: shop.name | replace: '&amp;', '&' | replace: '&amp;', '&' | replace: '&amp;', '&' | replace: '&#39;', "'"
+      comment
+        Ana sayfada <title> "INCIA Natural Skincare, Shipped from the UK | INATURE"
+        yazarken og:title yalnizca "INATURE" idi: page_title ana sayfada magaza
+        adina dusuyor. Paylasim kartinda ve sosyal onizlemede markadan baska
+        hicbir sey gorunmuyordu. Baslik burada tek yerden turetilir.
+      endcomment
+      if template == 'index'
+        assign meta_title = 'INCIA Natural Skincare, Shipped from the UK'
+      endif
     -%}
 
     <meta name="description" content="{{ meta_desc | escape }}">

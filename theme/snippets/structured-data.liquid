@@ -70,6 +70,37 @@
     ]
   }
   </script>
+  {%- comment -%}
+    Koleksiyonlar yalnizca BreadcrumbList tasiyordu; sayfanin NE oldugu ve
+    hangi urunleri listeledigi hic bildirilmiyordu. CollectionPage sayfa turunu,
+    ItemList ise uyelerini tanimlar. Liste ilk sayfadaki urunlerle sinirli
+    tutulur: sayfalanmis sonrakiler ayri URL'lerdir ve kendi listelerini basar.
+  {%- endcomment -%}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": {{ collection.title | json }},
+    "url": {{ canonical_url | json }}
+    {%- if collection.description != blank -%},
+    "description": {{ collection.description | strip_html | strip_newlines | truncate: 300 | json }}
+    {%- endif -%},
+    "mainEntity": {
+      "@type": "ItemList",
+      "numberOfItems": {{ collection.products_count }},
+      "itemListElement": [
+        {%- for product in collection.products limit: 24 -%}
+        {
+          "@type": "ListItem",
+          "position": {{ forloop.index }},
+          "url": "{{ shop.url }}{{ product.url }}",
+          "name": {{ product.title | json }}
+        }{%- unless forloop.last -%},{%- endunless -%}
+        {%- endfor -%}
+      ]
+    }
+  }
+  </script>
 {%- elsif template contains 'page' and page.handle == 'faq' -%}
   {%- comment -%} FAQPage — mirrors the visible Q/A in snippets/faq-accordion.liquid. KEEP IN SYNC with that file when either changes. Plain-text answers (links stripped) for clean answer-engine parsing. {%- endcomment -%}
   <script type="application/ld+json">
