@@ -757,6 +757,45 @@ body {
 }
 .pdp__thumb-play svg { width: 38%; height: 38%; }
 
+/* Image zoom.
+   Mouse: the image scales in place and theme.js moves transform-origin to the
+   cursor, so the magnifier tracks it. Touch: no hover exists, so a tap opens
+   .img-viewer instead — on a phone the gallery box is far too small to read
+   a label or a texture from. */
+@media (hover: hover) and (pointer: fine) {
+  .pdp__main--zoomable { cursor: zoom-in; }
+}
+.pdp__main--zoomable img { transition: transform .15s ease-out; }
+.pdp__main.is-zoomed img { transform: scale(2.4); }
+.pdp__main--zoomable:focus-visible { outline: 2px solid var(--primary-dark); outline-offset: 2px; }
+
+.img-viewer {
+  /* Above .promo-popup (200) and .cart-drawer (100): the viewer is modal, and a
+     timed promo sliding over the enlarged image is exactly the wrong moment.
+     Shopify's own consent banner sits at 2000000 and is left on top on purpose. */
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(0, 0, 0, .92);
+  display: flex; align-items: center; justify-content: center;
+}
+.img-viewer[hidden] { display: none; }
+.img-viewer__stage {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; cursor: zoom-in; touch-action: none;
+}
+.img-viewer__stage img {
+  max-width: 100%; max-height: 100%;
+  object-fit: contain; user-select: none; -webkit-user-drag: none;
+  transition: transform .2s ease-out;
+}
+.img-viewer__close {
+  position: absolute; top: 12px; right: 12px; z-index: 1;
+  width: 44px; height: 44px; border: 0; border-radius: 50%;
+  background: rgba(255, 255, 255, .14); color: #fff;
+  font-size: 26px; line-height: 1; cursor: pointer;
+}
+.img-viewer__close:hover { background: rgba(255, 255, 255, .24); }
+
 .pdp__info { display: grid; gap: var(--space-5); align-content: start; }
 .pdp__vendor { font-size: var(--fs-xs); color: var(--muted); letter-spacing: .14em; text-transform: uppercase; }
 .pdp__title { font-family: var(--font-heading); font-size: var(--fs-3xl); font-weight: 400; line-height: 1.05; letter-spacing: -.015em; }

@@ -116,10 +116,173 @@
           }
         }
         if (main) main.hidden = false;
-        if (mainImg) mainImg.src = thumb.dataset.full || thumb.querySelector('img').src;
+        if (mainImg) {
+          mainImg.src = thumb.dataset.full || thumb.querySelector('img').src;
+          // Keep the zoom source in step with the visible image, or zooming the
+          // second photo would magnify the first one.
+          mainImg.dataset.zoomSrc = thumb.dataset.zoom || '';
+          mainImg.dataset.hiresLoaded = '';
+        }
       });
     });
+
+    if (main && mainImg) initZoom(main, mainImg);
   });
+
+  /* Product image zoom.
+     Two behaviours, because one does not fit both inputs: a mouse gets an
+     in-place magnifier that tracks the cursor, a touch screen gets a
+     fullscreen viewer (there is no hover on a phone, and the gallery box is
+     only ~4:5 of a small screen).
+     The 2400px copy is fetched on first use only, so nobody pays for it while
+     simply browsing. */
+  var ZOOM = 2.4;
+  var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+
+  function hiresSrc(img) {
+    return img.dataset.zoomSrc || img.currentSrc || img.src;
+  }
+
+  function loadHires(img) {
+    var src = img.dataset.zoomSrc;
+    if (!src || img.dataset.hiresLoaded === src) return;
+    var pre = new Image();
+    pre.onload = function () {
+      // Only swap once decoded, so the visible image never blinks to empty.
+      if (hiresSrc(img) === src) { img.src = src; img.dataset.hiresLoaded = src; }
+    };
+    pre.src = src;
+  }
+
+  function initZoom(main, img) {
+    main.classList.add('pdp__main--zoomable');
+    main.setAttribute('role', 'button');
+    main.setAttribute('tabindex', '0');
+    main.setAttribute('aria-label', 'Enlarge image');
+
+    main.addEventListener('pointerenter', function (e) {
+      if (!finePointer.matches || e.pointerType !== 'mouse') return;
+      loadHires(img);
+      img.style.transitionDuration = '';
+      main.classList.add('is-zoomed');
+    });
+
+    main.addEventListener('pointermove', function (e) {
+      if (!main.classList.contains('is-zoomed')) return;
+      var r = main.getBoundingClientRect();
+      var x = ((e.clientX - r.left) / r.width) * 100;
+      var y = ((e.clientY - r.top) / r.height) * 100;
+      // Kill the ease once the pointer is inside, otherwise the magnifier
+      // lags behind the cursor instead of tracking it.
+      img.style.transitionDuration = '0s';
+      img.style.transformOrigin = x + '% ' + y + '%';
+    });
+
+    main.addEventListener('pointerleave', function () {
+      img.style.transitionDuration = '';
+      img.style.transformOrigin = '';
+      main.classList.remove('is-zoomed');
+    });
+
+    main.addEventListener('click', function () {
+      if (finePointer.matches) return; // mouse users already have the magnifier
+      openViewer(img);
+    });
+
+    main.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      e.preventDefault();
+      openViewer(img);
+    });
+  }
+
+  var viewer = null;
+  var viewerOpener = null;
+
+  function openViewer(sourceImg) {
+    // Remember where focus came from so closing does not dump a keyboard user
+    // back at the top of the document.
+    viewerOpener = document.activeElement;
+    loadHires(sourceImg);
+    if (!viewer) viewer = buildViewer();
+    var img = viewer.querySelector('img');
+    img.src = hiresSrc(sourceImg);
+    img.alt = sourceImg.alt || '';
+    viewer.dataset.scale = '1';
+    img.style.transform = '';
+    document.body.style.overflow = 'hidden';
+    viewer.hidden = false;
+    viewer.querySelector('[data-viewer-close]').focus();
+  }
+
+  function closeViewer() {
+    if (!viewer) return;
+    viewer.hidden = true;
+    document.body.style.overflow = '';
+    if (viewerOpener && document.contains(viewerOpener)) viewerOpener.focus();
+    viewerOpener = null;
+  }
+
+  function buildViewer() {
+    var el = document.createElement('div');
+    el.className = 'img-viewer';
+    el.hidden = true;
+    el.setAttribute('role', 'dialog');
+    el.setAttribute('aria-modal', 'true');
+    el.setAttribute('aria-label', 'Product image');
+    el.innerHTML =
+      '<button class="img-viewer__close" data-viewer-close aria-label="Close">&times;</button>' +
+      '<div class="img-viewer__stage"><img alt=""></div>';
+    document.body.appendChild(el);
+
+    var stage = el.querySelector('.img-viewer__stage');
+    var img = el.querySelector('img');
+    var panning = false, startX = 0, startY = 0, tx = 0, ty = 0, moved = false;
+
+    function apply() {
+      var s = parseFloat(el.dataset.scale || '1');
+      img.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + s + ')';
+    }
+
+    el.querySelector('[data-viewer-close]').addEventListener('click', closeViewer);
+    el.addEventListener('click', function (e) {
+      if (e.target === el) closeViewer(); // backdrop
+    });
+
+    stage.addEventListener('click', function () {
+      if (moved) { moved = false; return; } // a pan is not a tap
+      var zoomed = parseFloat(el.dataset.scale || '1') > 1;
+      el.dataset.scale = zoomed ? '1' : String(ZOOM);
+      if (zoomed) { tx = 0; ty = 0; }
+      apply();
+    });
+
+    stage.addEventListener('pointerdown', function (e) {
+      // Clear unconditionally. If `moved` were ever left true, the click handler
+      // below would swallow the next tap and only the one after it would zoom.
+      moved = false;
+      if (parseFloat(el.dataset.scale || '1') <= 1) return;
+      panning = true;
+      startX = e.clientX - tx; startY = e.clientY - ty;
+      // Throws if the pointer is already gone; panning still works through the
+      // normal move/up events, so a failure here must not abort the handler.
+      try { stage.setPointerCapture(e.pointerId); } catch (err) { /* no capture, fine */ }
+    });
+    stage.addEventListener('pointermove', function (e) {
+      if (!panning) return;
+      tx = e.clientX - startX; ty = e.clientY - startY;
+      if (Math.abs(tx) > 3 || Math.abs(ty) > 3) moved = true;
+      apply();
+    });
+    ['pointerup', 'pointercancel'].forEach(function (evt) {
+      stage.addEventListener(evt, function () { panning = false; });
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !el.hidden) closeViewer();
+    });
+    return el;
+  }
 
   // Real Shopify Ajax cart
   async function fetchCart() {

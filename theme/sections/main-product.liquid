@@ -169,9 +169,16 @@
         {%- when 'incia-natural-deodorant-for-sensitive-skin' or 'incia-eyelash-serum-for-eyelashes-and-eyebrows' or 'incia-natural-deodorant-for-dark-armpits' -%}
           {%- assign featured = image_media[1] -%}
       {%- endcase -%}
+      {%- comment -%}
+        data-zoom-src taşır büyütülmüş kopyayı: 1200px kutuda keskin görünür ama
+        2,4 kat büyütülünce bulanıklaşır. theme.js bu kaynağı ilk yakınlaştırmada
+        yükler, yani normal ziyaretçi fazladan bayt indirmez.
+      {%- endcomment -%}
       <div class="pdp__main" data-gallery-main>
         {% if featured %}
-          <img src="{{ featured | image_url: width: 1200 }}" alt="{{ featured.alt | escape | default: product.title }}" width="600" height="750">
+          <img src="{{ featured | image_url: width: 1200 }}"
+               data-zoom-src="{{ featured | image_url: width: 2400 }}"
+               alt="{{ featured.alt | escape | default: product.title }}" width="600" height="750">
         {% else %}
           {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
         {% endif %}
@@ -200,7 +207,8 @@
                data-gallery-thumb
                data-media-type="{{ media.media_type }}"
                data-media-id="{{ media.id }}"
-               data-full="{{ media.preview_image | image_url: width: 1200 }}">
+               data-full="{{ media.preview_image | image_url: width: 1200 }}"
+               data-zoom="{{ media.preview_image | image_url: width: 2400 }}">
             <img src="{{ media.preview_image | image_url: width: 400 }}" alt="{{ media.alt | escape }}" width="200" height="250">
             {%- unless media.media_type == 'image' -%}
               <span class="pdp__thumb-play" aria-hidden="true">{% render 'icon', name: 'play' %}</span>
