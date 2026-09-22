@@ -1,63 +1,45 @@
 <section class="hero hero--banner">
   <div class="wrap">
     <div class="hero-banner" data-hero-carousel>
+      {%- comment -%}
+        Slaytlar tek bir listeden uretilir. Onceden her kare elle yazilmis bir
+        <picture> blogu, noktalar da ayri bir el listesiydi; slayt eklenince
+        nokta sayisini guncellemeyi unutmak kolaydi. Simdi ikisi de ayni
+        listeden geliyor, sayilari birbirinden sapamaz.
+
+        Mobil karsiligi her zaman "<dosya>-mobile.jpg": tema 820px altinda
+        gorseli uste alip metni altina yiyor ve urun odakli dar bir kirpim
+        bekliyor (bkz. base.css).
+
+        Gorsellerin tamami ayni yontemle uretildi: sahne yapay zeka, URUN ise
+        gercek studyo fotografindan kesilip yerlestirildi. Onceki set bastan
+        sona yapay zeka uretimiydi ve ambalaj metinleri halusinasyondu —
+        hero-2 "NON HANO MINERAL FILTER" / "AETRA HIGH PROTECTION" (gercegi
+        NON NANO / ULTRA HIGH), hero-4 "AVGEAND BIL" (AVOCADO OIL), hero-7
+        "CRECKCE NATURAL" (COSMOS NATURAL). SPF iddiasi tasiyan bir urunde bu
+        kozmetik bir kusur degildi.
+      {%- endcomment -%}
+      {%- liquid
+        assign slide_files = 'hero-autumn-group,hero-autumn,hero-2,hero-3,hero-4,hero-5,hero-6,hero-7' | split: ','
+        assign slide_alts = 'INCIA autumn range: herbal shampoo, repair care cream, foam soap, SOS stick and lip balm on stone with dried leaves|INCIA Intensive Repair Care Cream and SOS Stick on stone with autumn leaves|INCIA natural face sunscreen SPF50|INCIA natural baby and kids shampoo|INCIA intensive repair care cream|INCIA natural lip balm|INCIA foaming facial cleanser|INCIA natural herbal shampoo' | split: '|'
+      -%}
       <div class="hero-banner__slides">
-        {%- comment -%}
-          Sonbahar banner'i. Sahne uretildi, urunler GERCEK studyo fotografindan
-          yerlestirildi: diger hero gorselleri tamamen yapay zeka uretimi ve
-          ambalaj metinleri bozuk ("NON HANO MINERAL FILTER", "AETRA HIGH
-          PROTECTION"). Bu karede etiket birebir dogru.
-        {%- endcomment -%}
-        <div class="hero-banner__slide is-active">
-          <picture>
-            <source media="(max-width: 820px)" srcset="{{ 'hero-autumn-mobile.jpg' | asset_url }}">
-            <img class="hero-banner__img" src="{{ 'hero-autumn.jpg' | asset_url }}" alt="INCIA Intensive Repair Care Cream and SOS Stick on stone with autumn leaves" width="2000" height="848" fetchpriority="high">
-          </picture>
-        </div>
-        <div class="hero-banner__slide">
-          <picture>
-            <source media="(max-width: 820px)" srcset="{{ 'hero-2-mobile.jpg' | asset_url }}">
-            <img class="hero-banner__img" src="{{ 'hero-2.jpg' | asset_url }}" alt="INCIA natural face sunscreen SPF50" width="2000" height="848" loading="lazy">
-          </picture>
-        </div>
-        <div class="hero-banner__slide">
-          <picture>
-            <source media="(max-width: 820px)" srcset="{{ 'hero-3-mobile.jpg' | asset_url }}">
-            <img class="hero-banner__img" src="{{ 'hero-3.jpg' | asset_url }}" alt="INCIA natural baby & kids shampoo" width="2000" height="848" loading="lazy">
-          </picture>
-        </div>
-        <div class="hero-banner__slide">
-          <picture>
-            <source media="(max-width: 820px)" srcset="{{ 'hero-4-mobile.jpg' | asset_url }}">
-            <img class="hero-banner__img" src="{{ 'hero-4.jpg' | asset_url }}" alt="INCIA intensive repair care cream" width="2000" height="848" loading="lazy">
-          </picture>
-        </div>
-        <div class="hero-banner__slide">
-          <picture>
-            <source media="(max-width: 820px)" srcset="{{ 'hero-5-mobile.jpg' | asset_url }}">
-            <img class="hero-banner__img" src="{{ 'hero-5.jpg' | asset_url }}" alt="INCIA natural lip balm" width="2000" height="848" loading="lazy">
-          </picture>
-        </div>
-        <div class="hero-banner__slide">
-          <picture>
-            <source media="(max-width: 820px)" srcset="{{ 'hero-6-mobile.jpg' | asset_url }}">
-            <img class="hero-banner__img" src="{{ 'hero-6.jpg' | asset_url }}" alt="INCIA foaming facial cleanser" width="2000" height="848" loading="lazy">
-          </picture>
-        </div>
-        <div class="hero-banner__slide">
-          <picture>
-            <source media="(max-width: 820px)" srcset="{{ 'hero-7-mobile.jpg' | asset_url }}">
-            <img class="hero-banner__img" src="{{ 'hero-7.jpg' | asset_url }}" alt="INCIA natural herbal shampoo" width="2000" height="848" loading="lazy">
-          </picture>
-        </div>
+        {%- for file in slide_files -%}
+          <div class="hero-banner__slide{% if forloop.first %} is-active{% endif %}">
+            <picture>
+              <source media="(max-width: 820px)" srcset="{{ file | append: '-mobile.jpg' | asset_url }}">
+              <img class="hero-banner__img"
+                   src="{{ file | append: '.jpg' | asset_url }}"
+                   alt="{{ slide_alts[forloop.index0] | escape }}"
+                   width="2000" height="848"
+                   {% if forloop.first %}fetchpriority="high"{% else %}loading="lazy"{% endif %}>
+            </picture>
+          </div>
+        {%- endfor -%}
         <div class="hero-banner__dots" role="tablist" aria-label="Banner slides">
-          <button type="button" class="is-active" aria-label="Slide 1"></button>
-          <button type="button" aria-label="Slide 2"></button>
-          <button type="button" aria-label="Slide 3"></button>
-          <button type="button" aria-label="Slide 4"></button>
-          <button type="button" aria-label="Slide 5"></button>
-          <button type="button" aria-label="Slide 6"></button>
-          <button type="button" aria-label="Slide 7"></button>
+          {%- for file in slide_files -%}
+            <button type="button"{% if forloop.first %} class="is-active"{% endif %} aria-label="Slide {{ forloop.index }}"></button>
+          {%- endfor -%}
         </div>
       </div>
 
