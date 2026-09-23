@@ -1,0 +1,71 @@
+{%- comment -%}
+  Product reviews.
+
+  The theme is hand-built and has no app blocks anywhere else, so without this
+  section nothing on the storefront renders Judge.me reviews at all, even though
+  Judge.me is installed and has the review data synced.
+
+  judgeme.widget is Judge.me's server-rendered HTML, so the reviews ship inside
+  the initial response instead of being injected after load. That keeps them
+  readable by crawlers and avoids a layout shift.
+
+  The incentive notice is a legal requirement, not decoration. Reviewers are sent
+  a discount code, and under the DMCC Act the CMA requires that incentivised
+  reviews say so, in a place the reader will actually see. It sits above the
+  reviews rather than in a footer for that reason. If the discount-for-review
+  email is ever switched off, turn this off with it.
+
+  The section also accepts app blocks. It is the only section in this theme that
+  does, so any future review or app widget can be placed from the theme editor
+  without another theme edit.
+{%- endcomment -%}
+
+{%- assign jm_widget = product.metafields.judgeme.widget -%}
+
+{%- if jm_widget != blank or section.blocks.size > 0 -%}
+  <section class="wrap" id="reviews" style="padding-block: var(--section-y);">
+    {%- if jm_widget != blank and section.settings.show_incentive_notice -%}
+      <p class="muted" style="font-size: var(--fs-sm); margin-bottom: var(--space-5);">
+        {{ section.settings.incentive_notice }}
+      </p>
+    {%- endif -%}
+
+    {%- if jm_widget != blank -%}
+      <div class="jdgm-widget jdgm-review-widget"
+           data-product-title="{{ product.title | escape }}"
+           data-id="{{ product.id }}">
+        {{ jm_widget }}
+      </div>
+    {%- endif -%}
+
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when '@app' -%}
+          {% render block %}
+      {%- endcase -%}
+    {%- endfor -%}
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Product reviews",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_incentive_notice",
+      "label": "Show incentivised review notice",
+      "default": true,
+      "info": "Required while reviewers are offered a discount code. Turn off only if that offer ends."
+    },
+    {
+      "type": "text",
+      "id": "incentive_notice",
+      "label": "Incentivised review notice",
+      "default": "Some of these reviews were left after we emailed customers a discount code for reviewing, offered whatever the rating."
+    }
+  ],
+  "blocks": [{ "type": "@app" }],
+  "presets": [{ "name": "Product reviews" }]
+}
+{% endschema %}

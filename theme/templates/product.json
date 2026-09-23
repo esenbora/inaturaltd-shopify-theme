@@ -1,12 +1,62 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ *
+ * NOTE: the "reviews" section is what renders Judge.me reviews
+ * on the product page. It has been lost twice when a theme
+ * version was rebuilt from an older copy. If reviews vanish from
+ * product pages, check this key first.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
-    "main": { "type": "main-product", "settings": {} },
-    "trust": { "type": "trust-row", "blocks": {} },
-    "ingredients": { "type": "ingredients", "blocks": {} },
-    "complete-set": { "type": "complete-the-set", "settings": {} },
-    "related": { "type": "related-products", "settings": { "heading": "Pairs well with this." } },
-    "testimonials": { "type": "testimonials", "blocks": {} },
-    "newsletter": { "type": "newsletter", "settings": {} }
+    "main": {
+      "type": "main-product",
+      "settings": {}
+    },
+    "trust": {
+      "type": "trust-row",
+      "settings": {}
+    },
+    "ingredients": {
+      "type": "ingredients",
+      "settings": {}
+    },
+    "complete-set": {
+      "type": "complete-the-set",
+      "settings": {}
+    },
+    "reviews": {
+      "type": "product-reviews",
+      "settings": {}
+    },
+    "related": {
+      "type": "related-products",
+      "settings": {
+        "heading": "Pairs well with this."
+      }
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "settings": {}
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {}
+    }
   },
-  "order": ["main", "trust", "ingredients", "complete-set", "related", "testimonials", "newsletter"]
+  "order": [
+    "main",
+    "trust",
+    "ingredients",
+    "complete-set",
+    "reviews",
+    "related",
+    "testimonials",
+    "newsletter"
+  ]
 }

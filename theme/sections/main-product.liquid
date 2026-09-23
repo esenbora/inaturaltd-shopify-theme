@@ -13,6 +13,15 @@
     sayinin hic cikmamasinin sebebi buydu.
   endcomment
   assign review_count = product.metafields.reviews.rating_count.value
+  comment
+    Yildiz cubugu icin doluluk orani. Olcek metafield'den okunur (scale_max),
+    bes varsayilmaz: Judge.me olcegi degistirirse cubuk yanlis dolar.
+  endcomment
+  assign rating_max = rating.scale_max | default: 5 | times: 1.0
+  assign rating_pct = 0
+  if rating != blank and rating_max > 0
+    assign rating_pct = rating.rating | times: 1.0 | divided_by: rating_max | times: 100
+  endif
   assign breadcrumb_collection = product.collections.first
   assign p_vendor = product.vendor | default: 'INature UK'
   comment
@@ -253,11 +262,25 @@
         <p class="pdp__subtitle muted" style="font-size: var(--fs-base); margin: -10px 0 0;">{{ product.metafields.custom.tagline.value }}</p>
       {% endif %}
 
+      {%- comment -%}
+        Yildizlar sabit bes taneydi. Su an her urun 5.0 oldugu icin dogru
+        gorunuyordu, ama tek bir dort yildizli yorum geldigi gun sayfa puanin
+        soylemedigi bir sey soyleyecekti, ustelik ayni sayi yukaridaki
+        aggregateRating'e de gidiyor.
+
+        Iki kat ust uste binen yildiz dizisi: alttaki bos, ustteki dolu ve
+        genisligi puan yuzdesine kirpiliyor. Boylece 4.5 gercekten dort bucuk
+        yildiz cizer. Yari yildiz karakteri Unicode'da guvenilir degil, bu yuzden
+        kirpma tercih edildi.
+      {%- endcomment -%}
       {% if rating != blank %}
       <div class="pdp__rating">
-        <span class="rating__stars" style="color: var(--accent); letter-spacing: 2px;">★★★★★</span>
-        <strong style="font-size: var(--fs-sm);">{{ rating }}</strong>
-        {% if review_count != blank %}<span class="muted" style="font-size: var(--fs-sm);">· {{ review_count }} verified reviews</span>{% endif %}
+        <span class="rating__stars"
+              role="img"
+              aria-label="{{ rating.rating }} out of {{ rating.scale_max }} stars"
+              style="position: relative; display: inline-block; letter-spacing: 2px; color: var(--border); white-space: nowrap;">★★★★★<span aria-hidden="true" style="position: absolute; top: 0; left: 0; width: {{ rating_pct }}%; overflow: hidden; color: var(--accent); white-space: nowrap;">★★★★★</span></span>
+        <strong style="font-size: var(--fs-sm);">{{ rating.rating }}</strong>
+        {% if review_count != blank and review_count > 0 %}<a href="#reviews" class="muted" style="font-size: var(--fs-sm); text-decoration: underline;">· {{ review_count }} verified review{% unless review_count == 1 %}s{% endunless %}</a>{% endif %}
       </div>
       {% endif %}
 

@@ -1,0 +1,91 @@
+{%- comment -%}
+  Review reward page.
+
+  Two deliberately separate asks, because the platforms have opposite rules.
+
+  On-site (Judge.me) reviews carry a reward. Under the DMCC Act the CMA allows
+  that as long as the incentive is disclosed and the review reflects a genuine
+  experience, so the offer is stated plainly and is not conditional on a good
+  rating.
+
+  Trustpilot reviews carry NO reward. Trustpilot's guidelines for businesses
+  prohibit incentives outright, naming "discounts, promo codes, prize draw
+  entries, refunds, freebies", so attaching the code to a Trustpilot review would
+  risk the reviews being removed and a consumer alert on the profile. Saying why
+  out loud costs nothing and reads as honest.
+
+  This also removes the practical problem that Trustpilot reviewers are anonymous
+  to the shop: there is nothing for them to claim, so nobody needs identifying.
+  Judge.me reviews arrive with the reviewer's email, so those codes can be sent
+  without the customer doing anything.
+{%- endcomment -%}
+
+<section class="wrap" style="padding-block: var(--section-y); max-width: 760px;">
+
+  <h1>{{ section.settings.heading }}</h1>
+
+  {%- if section.settings.intro != blank -%}
+    <p style="font-size: var(--fs-lg); color: var(--muted); margin-top: var(--space-4);">{{ section.settings.intro }}</p>
+  {%- endif -%}
+
+  <div style="border: 1px solid var(--border); border-radius: 12px; padding: var(--space-6); margin-top: var(--space-7); background: var(--surface);">
+    <h2 style="margin-top: 0;">{{ section.settings.onsite_heading }}</h2>
+    <p>{{ section.settings.onsite_body }}</p>
+
+    <ol style="margin: var(--space-5) 0; padding-left: 1.2em;">
+      <li style="margin-bottom: var(--space-3);">{{ section.settings.step_1 }}</li>
+      <li style="margin-bottom: var(--space-3);">{{ section.settings.step_2 }}</li>
+      <li>{{ section.settings.step_3 }}</li>
+    </ol>
+
+    {%- if section.settings.onsite_cta_url != blank -%}
+      <a class="btn btn-primary" href="{{ section.settings.onsite_cta_url }}">{{ section.settings.onsite_cta_label }}</a>
+    {%- endif -%}
+
+    <p class="muted" style="font-size: var(--fs-xs); margin-top: var(--space-5);">{{ section.settings.terms }}</p>
+  </div>
+
+  <div style="border: 1px solid var(--border); border-radius: 12px; padding: var(--space-6); margin-top: var(--space-5);">
+    <h2 style="margin-top: 0;">{{ section.settings.trustpilot_heading }}</h2>
+    <p>{{ section.settings.trustpilot_body }}</p>
+
+    {%- if section.settings.trustpilot_url != blank -%}
+      <a class="btn" href="{{ section.settings.trustpilot_url }}" target="_blank" rel="noopener nofollow">{{ section.settings.trustpilot_cta_label }}</a>
+    {%- endif -%}
+  </div>
+
+  {%- if section.settings.help_text != blank -%}
+    <p class="muted" style="font-size: var(--fs-sm); margin-top: var(--space-6);">{{ section.settings.help_text }}</p>
+  {%- endif -%}
+
+</section>
+
+{% schema %}
+{
+  "name": "Review reward",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Leave a review, get 30% off" },
+    { "type": "textarea", "id": "intro", "label": "Intro", "default": "Ferhat and I started INature in Bristol after watching friends with new babies struggle to find natural care they could trust. We are still small, and most people who find us do so because someone else took two minutes to say what they thought." },
+
+    { "type": "header", "content": "Product reviews (rewarded)" },
+    { "type": "text", "id": "onsite_heading", "label": "Heading", "default": "Review a product you bought from us" },
+    { "type": "textarea", "id": "onsite_body", "label": "Body", "default": "Tell us how a product got on with your skin. One sentence is plenty, and an honest three stars is as useful to us as a five." },
+    { "type": "text", "id": "step_1", "label": "Step 1", "default": "Find the product on our site and leave your review at the bottom of the page." },
+    { "type": "text", "id": "step_2", "label": "Step 2", "default": "We will email your code within a couple of days, to the address you reviewed with." },
+    { "type": "text", "id": "step_3", "label": "Step 3", "default": "Use it on your next order. Orders over 20 pounds ship free, so the code goes further than it looks." },
+    { "type": "text", "id": "onsite_cta_label", "label": "Button label", "default": "Browse the range" },
+    { "type": "url", "id": "onsite_cta_url", "label": "Button link" },
+    { "type": "textarea", "id": "terms", "label": "Terms", "default": "The code is 30% off, one per customer, on orders of 30 pounds or more. Gift sets are excluded. Offered whatever rating you leave, and valid until 20 March 2027." },
+
+    { "type": "header", "content": "Trustpilot (not rewarded)" },
+    { "type": "text", "id": "trustpilot_heading", "label": "Heading", "default": "Or tell people how we did as a shop" },
+    { "type": "textarea", "id": "trustpilot_body", "label": "Body", "default": "If you would rather review the shop than a product, Trustpilot is the place. There is no code for these ones. Trustpilot does not allow businesses to offer anything in return for a review, and we would rather follow that rule than bend it. We would still be grateful for a line." },
+    { "type": "text", "id": "trustpilot_cta_label", "label": "Button label", "default": "Review us on Trustpilot" },
+    { "type": "url", "id": "trustpilot_url", "label": "Trustpilot link" },
+
+    { "type": "header", "content": "Footer" },
+    { "type": "textarea", "id": "help_text", "label": "Help text", "default": "Left a review but no code arrived? Email info@inatureltd.com and we will sort it out." }
+  ],
+  "presets": [{ "name": "Review reward" }]
+}
+{% endschema %}

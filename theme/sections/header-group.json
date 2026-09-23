@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "type": "header",
   "name": "Header",
@@ -8,36 +17,36 @@
         "m1": {
           "type": "message",
           "settings": {
-            "icon": "✦",
-            "text": "Free UK shipping over £20"
+            "text": "Free UK shipping over £20",
+            "icon": "✦"
           }
         },
         "m2": {
           "type": "message",
           "settings": {
-            "icon": "✦",
-            "text": "Official UK distributor for INCIA Naturals"
+            "text": "Official UK distributor for INCIA Naturals",
+            "icon": "✦"
           }
         },
         "m3": {
           "type": "message",
           "settings": {
-            "icon": "✦",
-            "text": "15% off your first order for new customers"
+            "text": "15% off your first order for new customers",
+            "icon": "✦"
           }
         },
         "m4": {
           "type": "message",
           "settings": {
-            "icon": "✦",
-            "text": "14-day returns, no questions"
+            "text": "14-day returns, no questions",
+            "icon": "✦"
           }
         },
         "m5": {
           "type": "message",
           "settings": {
-            "icon": "✦",
-            "text": "ETKO Cosmos certified · Vegan · Cruelty-free"
+            "text": "ETKO Cosmos certified · Vegan · Cruelty-free",
+            "icon": "✦"
           }
         }
       },
@@ -47,7 +56,8 @@
         "m3",
         "m4",
         "m5"
-      ]
+      ],
+      "settings": {}
     },
     "header": {
       "type": "header",

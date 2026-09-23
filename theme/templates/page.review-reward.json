@@ -1,0 +1,47 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "review-reward",
+      "settings": {
+        "heading": "Leave a review, get 30% OFF",
+        "intro": "INature started as a small family-run business here in Bristol, built by Seyda and Ferhat with a simple aim: to make trusted, natural care easier to find in the UK.\nWe’re still a small business, so every review genuinely means a lot to us. Taking just a couple of minutes to share your experience helps other families discover us, and helps us continue to grow and improve. Thank you for being part of our journey.",
+        "onsite_heading": "Review a product you bought from us",
+        "onsite_body": "Tell us how a product got on with your skin. One sentence is plenty, and an honest three stars is as useful to us as a five.",
+        "step_1": "Find the product on our site and leave your review at the bottom of the page.",
+        "step_2": "We will email your code within a couple of days, to the address you reviewed with.",
+        "step_3": "Use it on your next order. Orders over 20 pounds ship free, so the code goes further than it looks.",
+        "onsite_cta_label": "Browse the range",
+        "onsite_cta_url": "/collections/all",
+        "terms": "The code is 30% off, one per customer, on orders of 30 pounds or more. Gift sets are excluded. Offered whatever rating you leave, and valid until 20 March 2027.",
+        "trustpilot_heading": "Or tell people how we did as a shop",
+        "trustpilot_body": "If you would rather review the shop than a product, Trustpilot is the place. There is no code for these ones. Trustpilot does not allow businesses to offer anything in return for a review, and we would rather follow that rule than bend it. We would still be grateful for a line.",
+        "trustpilot_cta_label": "Review us on Trustpilot",
+        "trustpilot_url": "https://uk.trustpilot.com/review/www.inatureltd.com",
+        "help_text": "Left a review but no code arrived? Email info@inatureltd.com and we will sort it out."
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "eyebrow": "First-time shopper?",
+        "heading": "Get 15% off your first order.",
+        "subheading": "Plus restock alerts, INCIA arrivals from Türkiye, and the occasional founder note. Unsubscribe in one click.",
+        "placeholder": "your@email.com",
+        "button_label": "Get my 15% off"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "newsletter"
+  ]
+}

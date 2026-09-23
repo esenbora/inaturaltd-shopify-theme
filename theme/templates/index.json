@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "hero": {
@@ -18,7 +27,7 @@
     },
     "values": {
       "type": "value-props",
-      "blocks": {}
+      "settings": {}
     },
     "featured": {
       "type": "featured-collection",
@@ -32,28 +41,28 @@
     "editorial": {
       "type": "editorial",
       "settings": {
+        "media_position": "left",
         "eyebrow": "Our story",
         "heading": "A 2,000-year-old olive grove. A modern beauty cabinet.",
-        "media_position": "left",
         "cta_label": "Read the full story",
         "cta_url": "/pages/about"
       }
     },
     "ingredients": {
       "type": "ingredients",
-      "blocks": {}
+      "settings": {}
     },
     "testimonials": {
       "type": "testimonials",
-      "blocks": {}
+      "settings": {}
     },
     "trust": {
       "type": "trust-row",
-      "blocks": {}
+      "settings": {}
     },
     "quality_marks": {
       "type": "quality-marks",
-      "blocks": {}
+      "settings": {}
     },
     "newsletter": {
       "type": "newsletter",
@@ -61,7 +70,7 @@
     },
     "journal": {
       "type": "journal-strip",
-      "blocks": {}
+      "settings": {}
     }
   },
   "order": [
