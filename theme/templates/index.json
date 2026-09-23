@@ -71,6 +71,16 @@
     "journal": {
       "type": "journal-strip",
       "settings": {}
+    },
+    "bundles": {
+      "type": "featured-collection",
+      "settings": {
+        "eyebrow": "Bundles & Sets",
+        "heading": "Build the routine, save on the set.",
+        "collection": "bundles-sets",
+        "cta_label": "Shop bundles",
+        "cta_url": "/collections/bundles-sets"
+      }
     }
   },
   "order": [
@@ -79,6 +89,7 @@
     "trust",
     "featured",
     "values",
+    "bundles",
     "ingredients",
     "quality_marks",
     "testimonials",

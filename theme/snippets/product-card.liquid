@@ -1,7 +1,11 @@
 {%- liquid
   assign p = product
   assign rating = p.metafields.reviews.rating.value
-  assign review_count = p.metafields.reviews.count.value
+  comment
+    Metafield'in adi reviews.rating_count. main-product.liquid'de duzeltilmisti,
+    kart snippet'i ayni yanlis anahtarda kalmisti; kartlarda yorum sayisi hic cikmiyordu.
+  endcomment
+  assign review_count = p.metafields.reviews.rating_count.value
   assign tagline = p.metafields.custom.tagline.value | default: p.type
   comment
     These products lead with a promo/dark-bg shot in Shopify; show the clean white pack shot first for a consistent grid.
