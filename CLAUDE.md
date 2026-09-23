@@ -37,6 +37,30 @@ shopify theme check                                  # static Liquid lint
 other before assuming a permissions problem. "You are not authorized to use the
 CLI to develop in the provided store" is what a wrong domain looks like.
 
+**This theme is edited from two places, so always pull before you push.** This repo
+pushes with the CLI; the client's side edits through the Shopify integration and the
+theme editor. `shopify theme push` syncs the *whole* theme, so anything that exists
+only on the remote is deleted. Publishing a version built from an older local copy has
+already wiped the Judge.me / Clarity / Google-YouTube app embeds in
+`config/settings_data.json`, the `reviews` section in `templates/product.json`,
+`sections/product-reviews.liquid`, `sections/review-reward.liquid` and its template —
+twice. `/pages/review-reward` went blank on the live site both times.
+
+The rule, in order:
+
+```bash
+shopify theme pull --store inature-uk.myshopify.com --theme <live theme id>   # first, always
+# make changes
+shopify theme push --store inature-uk.myshopify.com --unpublished --theme "..."
+```
+
+Build every new version from **whatever is live right now**, never from an older one.
+Before publishing, open a product page in the preview and confirm the reviews are still
+there — that is the one check that catches this class of loss.
+
+Theme version numbers have collided before (two different `v10`s and two `v11`s, one set
+from each side). Check `shopify theme list` before naming a new one.
+
 `theme check` is the only mechanical check the theme has; verification is
 otherwise visual via `theme dev`.
 
