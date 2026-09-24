@@ -24,7 +24,13 @@
 
 {%- if jm_widget != blank or section.blocks.size > 0 -%}
   <section class="wrap" id="reviews" style="padding-block: var(--section-y);">
-    {%- if jm_widget != blank and section.settings.show_incentive_notice -%}
+    {%- comment -%}
+      Not, widget'in oldugu her durumda basilir. Kosul eskiden yalnizca
+      jm_widget'i sayiyordu; app block yorum gosterirken not dusuyordu.
+      Snippet widget 'auto' modda baska urunlerin yorumlarini da cekebilir,
+      ve onlarin arasinda tesvikli olanlar var.
+    {%- endcomment -%}
+    {%- if section.settings.show_incentive_notice -%}
       <p class="muted" style="font-size: var(--fs-sm); margin-bottom: var(--space-5);">
         {{ section.settings.incentive_notice }}
       </p>
