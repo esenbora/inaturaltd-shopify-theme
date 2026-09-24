@@ -40,6 +40,7 @@
         {%- assign current_handle = collection.handle | default: 'all-products' -%}
         <a href="{{ routes.all_products_collection_url }}" class="pill {% if current_handle == 'all-products' or current_handle == '' %}pill-soft{% endif %}">All</a>
         <a href="/collections/bestsellers-1" class="pill {% if current_handle == 'bestsellers-1' %}pill-soft{% endif %}">Bestsellers</a>
+        <a href="/collections/bundles-sets" class="pill {% if current_handle == 'bundles-sets' %}pill-soft{% endif %}">Bundles &amp; Sets</a>
         <a href="/collections/mom-baby-care" class="pill {% if current_handle == 'mom-baby-care' %}pill-soft{% endif %}">Mom &amp; Baby</a>
         <a href="/collections/personal-care-1" class="pill {% if current_handle == 'personal-care-1' %}pill-soft{% endif %}">Personal Care</a>
         <a href="/collections/sun-care-1" class="pill {% if current_handle == 'sun-care-1' %}pill-soft{% endif %}">Sun Care</a>
@@ -48,7 +49,7 @@
         <a href="/collections/lip-balms" class="pill {% if current_handle == 'lip-balms' %}pill-soft{% endif %}">Lip Balms</a>
         <a href="/collections/home-care-1" class="pill {% if current_handle == 'home-care-1' %}pill-soft{% endif %}">Home Care</a>
         <a href="/collections/must-haves-1" class="pill {% if current_handle == 'must-haves-1' %}pill-soft{% endif %}">Must Haves</a>
-        <a href="/collections/sale" class="pill {% if current_handle == 'sale' %}pill-soft{% endif %}">Sale</a>
+        <a href="/collections/sale" class="pill {% if current_handle == 'sale' %}pill-soft{% endif %}">On Sale</a>
       </div>
       <form method="get" class="cluster" style="--gap: var(--space-2);">
         <span class="muted" style="font-size: var(--fs-sm);">{{ collection.products_count | default: collection.all_products_count }} products</span>
