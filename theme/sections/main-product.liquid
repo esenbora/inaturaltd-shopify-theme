@@ -294,6 +294,14 @@
         {% endif %}
       </div>
 
+      {%- comment -%}
+        Directly under the price on purpose. On a free-gift product the two
+        numbers only mean something next to each other: this costs £4.95, and
+        it is free if your bag reaches £25. Renders nothing for every other
+        product. See snippets/product-gift-note.
+      {%- endcomment -%}
+      {% render 'product-gift-note', product: product %}
+
       <p class="pdp__short">{{ p_short }}</p>
 
       {% if product.has_only_default_variant == false %}
@@ -377,7 +385,7 @@
       <div class="pdp__perks">
         <div class="perk">{% render 'icon', name: 'truck' %} <span><strong>Free UK shipping over £20</strong>, £3 below. Dispatched from the UK, usually 1-3 working days.</span></div>
         <div class="perk">{% render 'icon', name: 'shield' %} <span><strong>14-day return policy.</strong> Unused, original packaging, we&apos;ll exchange or refund.</span></div>
-        <div class="perk">{% render 'icon', name: 'heart' %} <span><strong>140 verified eBay reviews</strong>, all positive, from families across the UK.</span></div>
+        <div class="perk">{% render 'icon', name: 'heart' %} <span><strong>{% render 'social-proof-line' %}</strong>, from families across the UK.</span></div>
         <div class="perk">{% render 'icon', name: 'leaf' %} <span><strong>ETKO Cosmos · BioArge · Vegan · Cruelty-Free.</strong> 100% natural origin. Made in Türkiye.</span></div>
       </div>
 

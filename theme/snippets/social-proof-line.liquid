@@ -1,0 +1,26 @@
+{%- comment -%}
+  Single source of truth for the eBay social-proof claim.
+
+  Verified 21 Aug 2026 on the seller profile: inature, 100% positive Feedback
+  (157). Of that score, eBay's own page reports "eBay automated feedback: 136"
+  and 46 results under the "Feedback left by buyer" filter. So 157 is a count of
+  positive transactions, NOT a count of written reviews. The previous wording,
+  "140 verified eBay reviews", counted eBay's automated entries as reviews.
+
+  Under the DMCC Act 2024 that distinction matters, so the two numbers are kept
+  apart here and every page pulls the wording from this one snippet.
+
+  Usage:
+    {% render 'social-proof-line' %}            100% positive eBay feedback across 157 orders
+    {% render 'social-proof-line', style: 'reviews' %}   46 verified buyer reviews on eBay
+{%- endcomment -%}
+
+{%- assign ebay_feedback_score = 157 -%}
+{%- assign ebay_written_reviews = 46 -%}
+
+{%- case style -%}
+  {%- when 'reviews' -%}
+    {{ ebay_written_reviews }} verified buyer reviews on eBay
+  {%- else -%}
+    100% positive eBay feedback across {{ ebay_feedback_score }} orders
+{%- endcase -%}
