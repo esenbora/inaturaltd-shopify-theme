@@ -5,16 +5,21 @@ abartısız. Verilen kararlar uygulandı: terk sepette %20, hoş geldinde %15.
 
 **Metinlerde geçen her iddia siteden doğrulandı:** ücretsiz UK kargo £20 üstü / altında
 £3, 14 gün iade (kullanılmamış, orijinal ambalajında), ETKO Cosmos sertifikalı, BioArge,
-vegan, cruelty-free, Türkiye'de üretim + UK'den gönderim, 140 doğrulanmış eBay yorumu.
+vegan, cruelty-free, Türkiye'de üretim + UK'den gönderim, eBay'de %100 olumlu geri
+bildirim (157 sipariş) ve 46 yazılı alıcı yorumu.
 
 **Bilerek KULLANILMAYAN iki şey:**
 
 1. **"Aluminium-free"** ifadesi hiçbir metinde yok. INCIA deodorantlarında potasyum şapı
    (bir alüminyum tuzu) var. Doğru ifade "no synthetic aluminium". ASA/CAP açısından bu
    ayrım önemli.
-2. **"£20 üstüne ücretsiz hediye (lip balm)"** kampanyası. Sitede vaat ediliyor ama
-   otomatik indirim kuralı olarak kurulu mu doğrulayamadım (API izni yok). Kurulu
-   olduğu teyit edilirse hoş geldin mailine eklenebilir. Teyitsiz vaat etmedim.
+2. ~~**"£20 üstüne ücretsiz hediye (lip balm)"** kampanyası — kurulu mu doğrulayamadım.~~
+   **DOĞRULANDI (24 Eylül 2026).** Canlı sepette test edildi: `Free Gift Over £25`
+   otomatik indirimi çalışıyor, hediye ürünü £4.95 → £0.00 yapıyor. Eşik **£20 değil
+   £25** ve hediyenin kendisi £25'e sayılmıyor — Shopify £25'lik *başka* ürün istiyor.
+   Seçenekler: havlu ayı (3 renk, isim işlemeli) ve 6 lip balm (yetişkin + çocuk).
+   Artık hoş geldin ve terk sepet mailinde kullanılabilir. Kullanırken "one offer per
+   order" kaydını düşür: yüzde indirim koduyla birleşmiyor.
 
 ---
 
@@ -217,14 +222,14 @@ farklılaşma noktası; rakiplerin çoğu "aluminium-free" diye yanlış beyanda
 
 ### Mail 2.3: 5. gün
 
-**Konu:** 140 reviews, and where to start
+**Konu:** 46 reviews, and where to start
 **Ön izleme:** Whether you are here for the baby range, the home range or your own skin
 
 ```
 Hi there,
 
-We have 140 verified reviews on eBay from families across the UK, all
-positive. We are not going to pretend that makes us a household name. It
+We have 100% positive eBay feedback across 157 orders, and 46 written
+buyer reviews, from families across the UK. We are not going to pretend that makes us a household name. It
 does mean the products do what we say when they arrive at someone's door.
 
 If you are still deciding where to begin, it usually comes down to one of
