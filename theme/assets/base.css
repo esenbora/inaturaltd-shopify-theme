@@ -1124,10 +1124,21 @@ body {
 }
 .mobile-menu.is-open .mobile-menu__panel { transform: translateX(0); }
 .mobile-menu__head {
+  flex: 0 0 auto;
   display: flex; align-items: center; justify-content: space-between;
   padding: var(--space-4); border-bottom: 1px solid var(--border);
 }
-.mobile-menu__nav { display: flex; flex-direction: column; padding: var(--space-3); gap: 2px; }
+/* Panel yuksekligi ekranla sinirli ve .mobile-menu overflow:hidden. Nav kendi
+   kaydirmasini almazsa tasan ogeler sessizce kesilir - 15 oge bir telefona
+   sigmiyor. min-height:0 sart: flex cocugu varsayilan olarak icerigi kadar
+   buyur ve overflow-y: auto hicbir sey yapmaz. */
+.mobile-menu__nav {
+  flex: 1 1 auto; min-height: 0;
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  display: flex; flex-direction: column; padding: var(--space-3); gap: 2px;
+  padding-bottom: calc(var(--space-5) + env(safe-area-inset-bottom, 0px));
+}
 .mobile-menu__nav a {
   padding: var(--space-3); border-radius: var(--radius-md);
   color: var(--ink); text-decoration: none; font-size: var(--fs-lg); font-weight: 500;
