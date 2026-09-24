@@ -1,47 +1,50 @@
 {%- comment -%}
-  Product reviews.
+  Urun sayfasinin tam yorum listesi ve yorum formu.
 
-  The theme is hand-built and has no app blocks anywhere else, so without this
-  section nothing on the storefront renders Judge.me reviews at all, even though
-  Judge.me is installed and has the review data synced.
+  Kompakt ozet burada DEGIL: o urun sutununda, perk kutusuyla akordeon
+  arasinda duruyor (snippets/product-review-summary). Burasi tam liste,
+  siralama, sayfalama ve "Write a review" formu.
 
-  judgeme.widget is Judge.me's server-rendered HTML, so the reviews ship inside
-  the initial response instead of being injected after load. That keeps them
-  readable by crawlers and avoids a layout shift.
+  NEDEN APP BLOCK, METAFIELD DEGIL. Judge.me iki yol sunuyor ve ikisi de
+  ayni anda basilirsa sayfada ayni yorumlar iki kez cikiyor - olculdu:
+  metafield'in server-rendered widget'i 1071px, app block 139px.
 
-  The incentive notice is a legal requirement, not decoration. Reviewers are sent
-  a discount code, and under the DMCC Act the CMA requires that incentivised
-  reviews say so, in a place the reader will actually see. It sits above the
-  reviews rather than in a footer for that reason. If the discount-for-review
-  email is ever switched off, turn this off with it.
+  Secim app block, cunku:
+    - judgeme.widget metafield'i 44 urunun yalnizca 19'unda dolu. Kalan
+      25 urun hic yorum bolumu gormuyordu; yorum almasinin tek yolu olan
+      form da yoktu, yani yorumsuz kalmasi kendi kendini besliyordu.
+    - App block Liquid'dir, sunucuda render edilir. Metafield'in SEO
+      avantaji diye bilinen sey burada da var, kaybedilen bir sey yok.
+    - Form yalnizca app block ile geliyor.
 
-  The section also accepts app blocks. It is the only section in this theme that
-  does, so any future review or app widget can be placed from the theme editor
-  without another theme edit.
+  Blok tipi review_widget (review_snippet_widget DEGIL). Snippet olani
+  139px'lik bir karusel ve yorumsuz urunde bos donuyor; review_widget
+  yorumsuz urunde "Be the first to write a review" + formu basiyor.
+
+  Tesvik bildirimi hukuki zorunluluk, susleme degil. Yorum birakana
+  indirim kodu gonderiliyor; DMCC Act kapsaminda CMA tesvikli yorumlarin
+  bunu okuyucunun gordugu bir yerde belirtmesini istiyor. Bu yuzden
+  listenin ustunde duruyor. Yorum-karsiligi-indirim e-postasi kapatilirsa
+  bu bildirim de kapatilmali.
 {%- endcomment -%}
 
-{%- assign jm_widget = product.metafields.judgeme.widget -%}
+{%- if section.blocks.size > 0 -%}
+  {%- assign jm_data = product.metafields.judgeme.review_widget_data.value -%}
+  {%- assign jm_count = jm_data.number_of_reviews | default: 0 | plus: 0 -%}
 
-{%- if jm_widget != blank or section.blocks.size > 0 -%}
-  <section class="wrap" id="reviews" style="padding-block: var(--section-y);">
+  <section class="wrap jdgm-themed" id="reviews" style="padding-block: var(--section-y);">
+    <h2 class="h2" style="margin-bottom: var(--space-4);">Reviews</h2>
+
     {%- comment -%}
-      Not, widget'in oldugu her durumda basilir. Kosul eskiden yalnizca
-      jm_widget'i sayiyordu; app block yorum gosterirken not dusuyordu.
-      Snippet widget 'auto' modda baska urunlerin yorumlarini da cekebilir,
-      ve onlarin arasinda tesvikli olanlar var.
+      Ortada tesvikli yorum yokken tesvik bildirimi basmak, olmayan bir
+      seyi aciklamak olur - yorumsuz urunde kutunun tamami "hic yorum
+      yok" derken uzerinde "bazi yorumlar indirim kodu sonrasi birakildi"
+      yazmasi tuhaf kaciyordu. Bu yuzden yorum sayisina bagli.
     {%- endcomment -%}
-    {%- if section.settings.show_incentive_notice -%}
+    {%- if section.settings.show_incentive_notice and jm_count > 0 -%}
       <p class="muted" style="font-size: var(--fs-sm); margin-bottom: var(--space-5);">
         {{ section.settings.incentive_notice }}
       </p>
-    {%- endif -%}
-
-    {%- if jm_widget != blank -%}
-      <div class="jdgm-widget jdgm-review-widget"
-           data-product-title="{{ product.title | escape }}"
-           data-id="{{ product.id }}">
-        {{ jm_widget }}
-      </div>
     {%- endif -%}
 
     {%- for block in section.blocks -%}
@@ -52,6 +55,85 @@
     {%- endfor -%}
   </section>
 {%- endif -%}
+
+<style>
+  {%- comment -%}
+    Judge.me'nin yeni widget'i kendi CSS degiskenlerini okuyor
+    (--jdgm-*). Onlari tema tokenlerine baglamak, tek tek kurallari
+    !important ile ezmekten hem kisa hem saglam: widget'in ic yapisi
+    degistiginde secicilerimiz kirilmaz, degiskenler kalir.
+
+    Varsayilan palet #108474 - turkuaz. Temada turkuaz yok; yildizlar
+    accent terracotta'ya, butonlar sage'e baglaniyor. Hex yazilmiyor ki
+    marka rengi degistiginde burasi kendiliginden takip etsin.
+  {%- endcomment -%}
+  {%- comment -%}
+    Judge.me bu degiskenleri widget'in kok elementine INLINE yaziyor
+    (olculdu: .jm-review-widget uzerinde style="--jm-review-widget-...").
+    Inline style normal bir kuralla ezilmez, bu yuzden !important sart -
+    degerler Judge.me panelinden de degistirilebilir, asil yeri orasi;
+    burasi panele erisim olmadan temayi tutarli tutuyor.
+  {%- endcomment -%}
+  .jdgm-themed .jm-review-widget,
+  .jdgm-themed [class*="jm-review-widget"] {
+    --jm-review-widget-button-color: var(--primary) !important;
+    --jm-review-widget-button-text-color: #fff !important;
+    --jm-review-widget-form-button-color: var(--primary) !important;
+    --jm-review-widget-form-button-text-color: #fff !important;
+    --jm-review-widget-star-and-histogram-color: var(--accent) !important;
+    --jm-review-widget-text-color: var(--ink) !important;
+    --jm-review-widget-lighter-text-color: var(--muted) !important;
+    --jm-review-widget-form-text-color: var(--ink) !important;
+    --jm-review-widget-form-field-background-color: var(--surface) !important;
+    --jm-widget-primary-color: var(--primary-dark) !important;
+  }
+
+  .jdgm-themed {
+    /* Eski (jdgm-) semanin karsiliklari; iki sema ayni sayfada
+       bulunabiliyor. Bunlar inline yazilmiyor, !important gerekmiyor. */
+    --jm-review-widget-button-color: var(--primary);
+    --jm-review-widget-button-text-color: #fff;
+    --jm-review-widget-form-button-color: var(--primary);
+    --jm-review-widget-form-button-text-color: #fff;
+    --jm-review-widget-star-and-histogram-color: var(--accent);
+    --jm-review-widget-text-color: var(--ink);
+    --jm-review-widget-lighter-text-color: var(--muted);
+    --jm-review-widget-form-text-color: var(--ink);
+    --jm-review-widget-form-background-color: var(--bg);
+    --jm-review-widget-form-field-background-color: var(--surface);
+    --jm-widget-primary-color: var(--primary-dark);
+
+    --jdgm-star-color: var(--accent);
+    --jdgm-primary-color: var(--primary-dark);
+    --jdgm-secondary-color: rgba(123, 159, 126, .12);
+    --jdgm-write-review-bg-color: var(--primary);
+    --jdgm-write-review-text-color: #fff;
+    --jdgm-paginate-color: var(--primary-dark);
+    --jdgm-reviewer-name-color: var(--ink);
+    --jdgm-border-radius: var(--radius-md);
+  }
+
+  {%- comment -%}
+    Bolumun kendi <h2>Reviews</h2> basligi var; widget'in "Customer
+    Reviews" basligi hemen altinda ikinci baslik yapiyordu. Eski
+    (jdgm-) ve yeni (jm-) sema ayni anda sayfada olabiliyor, ikisi de
+    kapatiliyor.
+  {%- endcomment -%}
+  .jdgm-themed .jm-review-widget-minimal-header__title,
+  .jdgm-themed .jdgm-rev-widg__title { display: none; }
+
+  {%- comment -%}
+    Yildizlar SVG degil, font ikonu: .jm-star-rating__font-icon ve rengi
+    color'dan geliyor. Widget'in --jm-review-widget-star-... degiskeni
+    bu ogeye ulasmiyor, o yuzden dogrudan hedefleniyor.
+  {%- endcomment -%}
+  .jdgm-themed .jm-star-rating__font-icon { color: var(--accent) !important; }
+
+  .jdgm-themed .jm-text,
+  .jdgm-themed .jdgm-rev__body { color: var(--ink); }
+  .jdgm-themed .jm-review__title,
+  .jdgm-themed .jdgm-rev__title { font-family: var(--font-heading); }
+</style>
 
 {% schema %}
 {

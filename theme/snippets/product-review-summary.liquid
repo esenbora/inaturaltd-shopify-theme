@@ -1,0 +1,97 @@
+{%- comment -%}
+  Urun sutununda, perk kutusuyla akordeon arasinda duran kompakt yorum ozeti.
+
+  NEDEN KENDI BILESENIMIZ. Judge.me iki sey basiyor: metafield'daki
+  server-rendered tam widget (olculdu: 1071px) ve app block'un snippet
+  karuseli (139px). Ikisi de kendi CSS'ini getiriyor ve tema paletine
+  uymuyor. Urun sutunu 534px; 1071px'lik widget oraya konursa sayfa
+  sutunu iki katina cikar ve galeri sticky oldugu icin yaninda bos alan
+  kalir. Bu yuzden ozet burada tema diliyle yeniden yazildi, tam liste
+  ve yorum formu asagidaki bolumde kaldi.
+
+  VERI KAYNAGI. judgeme.review_widget_data, tip json, yani Liquid onu
+  hazir hash olarak veriyor - HTML parse etmiyoruz. Icinde
+  number_of_reviews, average_rating ve reviews[] var; her yorumda title,
+  body, rating, reviewer_name, verified_buyer, created_at.
+
+  44 urunun 19'unda bu metafield dolu, 25'inde bos - ikisi de ayni
+  urunler, yani "yorum yok" ile "veri yok" ayni sey. Bos durumda kutu
+  yine basilir ve ilk yoruma cagiri yapar: o 25 urunun yorum almasinin
+  tek yolu bu. Sessizce gizlemek, en cok yoruma ihtiyaci olan urunu
+  yorumsuz birakmak olurdu.
+
+  Yildizlar PDP'nin ustundeki .rating__stars ile ayni teknikle cizilir
+  (ust uste iki span, ustteki yuzde genislikte kirpilir), boylece 4.5
+  gercekten yarim yildiz gorunur ve iki yerde ayni sekilde okunur.
+
+  Govde 140 karaktere kirpilir: iki yorum 534px'te dort satiri gecmesin
+  diye olculdu. Tam metin asagidaki listede duruyor, buradaki amac
+  okutmak degil, asagi indirmek.
+{%- endcomment -%}
+
+{%- assign jm = product.metafields.judgeme.review_widget_data.value -%}
+{%- assign jm_count = jm.number_of_reviews | default: 0 | plus: 0 -%}
+
+<div class="rev-sum">
+  {%- if jm_count > 0 -%}
+    {%- assign jm_avg = jm.average_rating | plus: 0.0 -%}
+    {%- assign jm_pct = jm_avg | times: 20 -%}
+
+    <div class="rev-sum__head">
+      <span class="rev-sum__stars" aria-hidden="true">★★★★★<span style="width: {{ jm_pct }}%;">★★★★★</span></span>
+      <strong class="rev-sum__score">{{ jm.average_rating }}</strong>
+      <span class="rev-sum__count">{{ jm_count }} review{% unless jm_count == 1 %}s{% endunless %}</span>
+    </div>
+
+    {%- for r in jm.reviews limit: 2 -%}
+      <figure class="rev-sum__item">
+        {%- if r.title != blank -%}
+          <figcaption class="rev-sum__title">{{ r.title }}</figcaption>
+        {%- endif -%}
+        <blockquote class="rev-sum__body">{{ r.body | strip_html | truncate: 140 }}</blockquote>
+        <p class="rev-sum__by">
+          {%- if r.reviewer_name != blank -%}{{ r.reviewer_name }}{%- else -%}Anonymous{%- endif -%}
+          {%- if r.verified_buyer -%} · <span class="rev-sum__verified">Verified buyer</span>{%- endif -%}
+        </p>
+      </figure>
+    {%- endfor -%}
+
+    <a class="rev-sum__link" href="#reviews">Read all {{ jm_count }} review{% unless jm_count == 1 %}s{% endunless %} →</a>
+
+  {%- else -%}
+    <p class="rev-sum__empty"><strong>No reviews yet.</strong> If you have tried this one, a line from you helps the next person decide.</p>
+    <a class="rev-sum__link" href="#reviews">Write the first review →</a>
+  {%- endif -%}
+</div>
+
+<style>
+  .rev-sum {
+    display: grid; gap: var(--space-3);
+    padding: var(--space-4);
+    border: 1px solid var(--border); border-radius: var(--radius-md);
+    background: var(--surface);
+  }
+  .rev-sum__head { display: flex; align-items: baseline; gap: var(--space-2); flex-wrap: wrap; }
+  /* PDP basindaki yildizlarla ayni teknik: alttaki gri, ustteki accent ve kirpilmis. */
+  .rev-sum__stars {
+    position: relative; display: inline-block;
+    letter-spacing: 2px; color: var(--border); white-space: nowrap;
+  }
+  .rev-sum__stars span {
+    position: absolute; top: 0; left: 0;
+    overflow: hidden; color: var(--accent); white-space: nowrap;
+  }
+  .rev-sum__score { font-size: var(--fs-lg); }
+  .rev-sum__count { font-size: var(--fs-sm); color: var(--muted); }
+  .rev-sum__item { margin: 0; padding-top: var(--space-3); border-top: 1px solid var(--border); }
+  .rev-sum__title { font-weight: 600; font-size: var(--fs-sm); margin-bottom: 2px; }
+  .rev-sum__body { margin: 0; font-size: var(--fs-sm); line-height: 1.5; }
+  .rev-sum__by { margin: 4px 0 0; font-size: .74rem; color: var(--muted); }
+  .rev-sum__verified { color: var(--primary-dark); }
+  .rev-sum__empty { margin: 0; font-size: var(--fs-sm); line-height: 1.5; }
+  .rev-sum__link {
+    font-size: var(--fs-sm); font-weight: 500;
+    color: var(--primary-dark); text-decoration: none;
+  }
+  .rev-sum__link:hover { text-decoration: underline; }
+</style>
