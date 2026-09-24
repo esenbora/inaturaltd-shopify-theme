@@ -1,3 +1,14 @@
+{%- comment -%}
+  Marquee of standing promises. Everything here is a promise the checkout has
+  to keep, so before adding a message check it against the others - two offers
+  that cannot both apply will be read as one offer that does.
+
+  The live example: Shopify will not let the Buy X Get Y free gift coexist
+  with a percentage discount code, so "15% off your first order" and the £25
+  free gift are mutually exclusive. The gift message carries "one offer per
+  order" for that reason - the same sentence the cart drawer and the product
+  page show. Do not drop that qualifier to shorten the line.
+{%- endcomment -%}
 <section class="announce" aria-label="Announcements">
   <div class="announce__marquee" aria-hidden="true">
     <div class="announce__track">
@@ -10,6 +21,7 @@
           </span>
         {% else %}
           <span class="announce__item">✦ Free UK shipping over £20</span>
+          <span class="announce__item">✦ Free gift of your choice over £25, one offer per order</span>
           <span class="announce__item">✦ Official UK distributor for INCIA Naturals</span>
           <span class="announce__item">✦ 15% off your first order for new customers</span>
           <span class="announce__item">✦ 14-day returns, no questions</span>
@@ -19,7 +31,7 @@
     </div>
   </div>
   <p class="visually-hidden">
-    {% for block in section.blocks %}{{ block.settings.text | replace: '£5.95', '15%' }}. {% else %}Free UK shipping over £20. Official UK distributor for INCIA Naturals. 15% off your first order for new customers.{% endfor %}
+    {% for block in section.blocks %}{{ block.settings.text | replace: '£5.95', '15%' }}. {% else %}Free UK shipping over £20. Free gift of your choice over £25, one offer per order. Official UK distributor for INCIA Naturals. 15% off your first order for new customers.{% endfor %}
   </p>
 </section>
 
@@ -37,7 +49,7 @@
       ]
     }
   ],
-  "max_blocks": 5,
+  "max_blocks": 6,
   "presets": [{ "name": "Announcement bar" }],
   "enabled_on": { "groups": ["header"] }
 }

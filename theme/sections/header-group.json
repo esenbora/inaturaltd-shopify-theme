@@ -21,6 +21,13 @@
             "icon": "✦"
           }
         },
+        "m6": {
+          "type": "message",
+          "settings": {
+            "text": "Free gift of your choice over £25, one offer per order",
+            "icon": "✦"
+          }
+        },
         "m2": {
           "type": "message",
           "settings": {
@@ -52,6 +59,7 @@
       },
       "block_order": [
         "m1",
+        "m6",
         "m2",
         "m3",
         "m4",
@@ -61,7 +69,10 @@
     },
     "header": {
       "type": "header",
-      "settings": {}
+      "settings": {
+        "menu": "main-menu",
+        "trustpilot_url": "https://uk.trustpilot.com/review/inatureltd.com"
+      }
     }
   },
   "order": [
