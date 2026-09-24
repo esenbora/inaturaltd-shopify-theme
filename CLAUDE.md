@@ -69,6 +69,17 @@ shopify theme push --store inature-uk.myshopify.com --nodelete \
 `--nodelete`**, and never against the live theme — push to an unpublished theme, verify,
 then publish from Admin.
 
+Two things the guard cannot catch:
+
+- **It compares files, not contents.** v8 also reverted `assets/base.css` to an older
+  copy, taking the burger menu's `overflow-y: auto` with it; the file was still there, so
+  nothing flagged it. After a rebuild, diff the contents of `base.css`, `theme.js`,
+  `announcement-bar.liquid` and the `templates/*.json` against the last good version, not
+  just the file list.
+- **A schema change and the JSON that uses it cannot ship in one push.** Shopify validated
+  `header-group.json` against the old `max_blocks: 5` and silently dropped the sixth block
+  — success, no warning. Push the liquid first, then the JSON in a second call.
+
 Build every new version from **whatever is live right now**, never from an older one.
 Before publishing, open a product page in the preview and confirm the reviews are still
 there, and put a £28 basket through `/cart` to confirm the gift picker offers a gift —
