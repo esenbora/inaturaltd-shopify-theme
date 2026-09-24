@@ -46,17 +46,33 @@ already wiped the Judge.me / Clarity / Google-YouTube app embeds in
 `sections/product-reviews.liquid`, `sections/review-reward.liquid` and its template —
 twice. `/pages/review-reward` went blank on the live site both times.
 
-The rule, in order:
+The same loss happened earlier at **v8 (17 Sept)** and took more with it:
+`snippets/cart-gift.liquid` + `cart-gift-assets.liquid` + `product-gift-note.liquid`
+(the free-gift picker), `sections/bundles.liquid`, `sections/judgeme-reviews.liquid`,
+`snippets/social-proof-line.liquid` and `layout/password.liquid`. Nobody noticed for
+five days, and the store went on taking qualifying orders with no way for a shopper to
+claim the gift the automatic discount was waiting to zero out.
+
+**A full push is the bug.** Pulling first narrows the window but does not close it —
+the client can install an app between your pull and your push, and `settings_data.json`
+app embeds do not survive being written from a stale copy. So:
 
 ```bash
-shopify theme pull --store inature-uk.myshopify.com --theme <live theme id>   # first, always
-# make changes
-shopify theme push --store inature-uk.myshopify.com --unpublished --theme "..."
+python3 scripts/theme_guard.py          # 1. canlıyı çeker, kaymayı raporlar
+                                        #    exit 1 = canlıda repoda olmayan dosya var
+cd theme && shopify theme check         # 2. lint
+shopify theme push --store inature-uk.myshopify.com --nodelete \
+  --theme <id> --only path/one --only path/two   # 3. SADECE degistirdigin dosyalar
 ```
+
+`theme_guard.py` prints the `--only` command for you. **Never push without `--only` and
+`--nodelete`**, and never against the live theme — push to an unpublished theme, verify,
+then publish from Admin.
 
 Build every new version from **whatever is live right now**, never from an older one.
 Before publishing, open a product page in the preview and confirm the reviews are still
-there — that is the one check that catches this class of loss.
+there, and put a £28 basket through `/cart` to confirm the gift picker offers a gift —
+those two checks catch this class of loss.
 
 Theme version numbers have collided before (two different `v10`s and two `v11`s, one set
 from each side). Check `shopify theme list` before naming a new one.
