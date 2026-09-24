@@ -1,0 +1,470 @@
+{%- comment -%}
+  Rewards progress + free gift picker. Rendered in TWO places: the cart drawer
+  and the cart page summary. Both surfaces must agree, otherwise a shopper who
+  reaches checkout via "View bag" is told a different story from one who uses
+  the drawer.
+
+  Markup only. The styles and the click handling live in cart-gift-assets,
+  which cart-drawer renders unconditionally - read the comment at the top of
+  that file before moving either back in here, because the split fixes a bug
+  rather than just tidying.
+
+  Because the cart page also contains the drawer markup, BOTH instances exist
+  in the DOM there at once. Nothing here may carry an id or look itself up via
+  document.querySelector - it would find whichever copy happens to come first
+  and operate on the invisible one. Every lookup is scoped to the enclosing
+  [data-gift-block] instead, and the name field uses a wrapping label rather
+  than a for/id pair.
+
+  One bar, two milestones: free UK shipping at £20, free gift at £25.
+
+  Colours come from .ship-progress__* - the theme's own classes - rather than
+  hardcoded hex, so the bar keeps matching if the palette ever changes.
+
+  Why the picker exists: Shopify's Buy X Get Y discount does NOT put the gift
+  in the cart. The shopper has to add it themselves, and only then is it
+  discounted to zero. Nothing said so, which is why 22 qualifying orders
+  produced exactly one redeemed gift.
+
+  Below the threshold the gifts are still shown, disabled. "Add £2.00 more"
+  on its own is an abstraction; seeing the towel you are £2 away from is not.
+
+  gift_threshold must match the 'Free Gift Over £25' AUTOMATIC discount.
+
+  WHAT COUNTS TOWARDS THE £25. Not the gift. Shopify needs £25 of other units
+  before it will hand one over, which is why qualifying_total skips the
+  free-gifts collection. Verified live:
+
+    £24 of products                      -> no gift
+    £24 + one lip balm  (cart £29.95)    -> lip balm still charged
+    £24 + two lip balms (cart £35.90)    -> one lip balm free
+
+  The middle row is the one shoppers trip over: the cart clears £25 on paper
+  but the only spare unit IS the gift. paid_gift_item spots that case and says
+  so rather than leaving them to guess.
+
+  THE DISCOUNT-CODE TRAP. Shopify will not let a Buy X Get Y discount coexist
+  with a percentage code, and which one loses depends on the order:
+
+    gift added first, code entered after  -> Shopify refuses the code, loudly
+    code active first, gift added after   -> the gift is charged, silently
+
+  The second is the dangerous one. Tested live: with BASKET20 in the session a
+  shopper who picked a 'free' lip balm got it at £4.76, no warning anywhere.
+  So when a code is already applied the picker is not rendered at all - we
+  explain instead. Never offer something the checkout will refuse to honour.
+
+  HOW OPTIONS ARE LAID OUT. The chip row is the scarce space. Measured on an
+  iPhone 12 Pro the drawer gives about 300px of usable width, which is two
+  chips and no more; a third chip, or a chip with a subtitle, wraps to a
+  second row and pushes the checkout button down. So the chip row carries the
+  minimum that identifies each gift and nothing else, and every finer
+  distinction lives in the panel that opens on tap, which costs no height
+  until it is opened.
+
+  The distinction that matters here is kids vs adult. All seven lip balms are
+  product_type 'Lip Care', so grouping on type alone offered a parent hunting
+  a kids balm Bergamot & Lemon, and offered an adult Kids Strawberry. Two
+  separate chips fixed that and cost a chip row. A "kids & adult" subtitle on
+  one chip fixed it more cheaply and still wrapped on a real handset. What
+  survives is the cheapest version: a bare "Lip Balm" chip whose chevron says
+  it opens, onto two labelled rows - Adults, Kids - keyed off the Kids marker
+  in the product title. The tags only render when both rows have something in
+  them, so if the adult flavours sell out the panel quietly becomes a plain
+  list rather than leaving a lone "Kids" tag hanging there.
+
+  That last rule is why the towel's colour row carries NO tag. A row tag earns
+  its place by telling two rows apart; with one row there is nothing to tell
+  apart, and "Colour" above Green / Beige / White only repeats what the words
+  already are. Adding it would also contradict the rule directly above, which
+  goes out of its way never to leave a tag standing on its own.
+
+  TWO WAYS A GIFT CAN OFFER A CHOICE, and they look identical to the shopper.
+  The lip balms are seven separate PRODUCTS sharing a product_type. The towel
+  is one product with three colour VARIANTS. The first version of this picker
+  only ever counted products, so a group holding a single product fell to the
+  plain-chip branch and added selected_or_first_available_variant without
+  asking. Every free towel that went out was Green, and Beige and White were
+  unreachable - the stock counts said so plainly, Green draining while the
+  other two sat untouched. avail_variant_count is what closes that: a lone
+  product with more than one available variant now opens the same panel the
+  lip balms use, one button per variant. Both paths end at the same
+  data-add-gift / data-variant-id contract, so cart-gift-assets needs no
+  change and never learns which kind of choice it just handled.
+
+  Variant buttons additionally carry data-variant-image, which the script uses
+  to swap the chip thumbnail to the chosen colour. The three towels are
+  genuinely different photographs, so the chip stops being a category icon and
+  becomes a preview of the exact bear that will arrive. It falls back to the
+  product shot when a variant has no image of its own, and the script ignores
+  the attribute entirely when it is absent, which is every lip balm.
+
+  CHIP IMAGES ARE THEIR OWN CROP. The 34px chip renders with object-fit:cover,
+  so a product photo composed for a product page arrives here centre-cropped
+  and mostly scenery - the bear filled about a third of the disc, the rest was
+  a vase and some books. Worse, the three towel photographs are not framed
+  alike: the beige shot has a wide ceramic vase crowding the bear where green
+  and white have a slim glass one, which made beige read as a smaller bear
+  when all three are within 2% of the same height. Measured, not guessed.
+
+  So the variant metafield custom.chip_image holds a square crop centred on
+  the subject, normalised so the subject occupies the same fraction of every
+  crop. That is the only thing it is for; it is not a second product image.
+  It is optional everywhere - both the resting chip and the variant buttons
+  resolve it with the same fallback chain, so anything without one drops
+  through to the variant image and then the product shot exactly as before.
+  Do not point it at a wide photo, and do not reuse it on the product page,
+  where the full composition is the point.
+
+  Sold-out variants are skipped, so if Green runs dry the panel simply offers
+  Beige and White, and if only one colour is left the chip goes back to being
+  a plain one-tap chip rather than opening a panel with a single button in it.
+
+  FLAVOUR NAMES ARE NEVER SHORTENED. A flavour button drops the words the row
+  tag and the chip already said - "Lemon", not "Kids Lip Balm Lemon" - and
+  nothing else. An earlier version also cut at ' & ', turning "Bergamot &
+  Lemon" into "Bergamot", to pull the Adults row back onto one line. That was
+  wrong twice over. On a scented product the scent IS the product, so someone
+  who dislikes lemon picks it unaware and someone who came for lemon skips it;
+  and the rule was general, so a future "Lavender & Chamomile" would silently
+  lose its second half with nobody noticing. The row is worth a wrapped line;
+  a product name is not worth quietly altering. Padding and gaps were trimmed
+  instead. If a longer flavour name ever does wrap, move the row tag onto its
+  own line so the buttons get the full panel width - do not cut the name.
+
+  Variant buttons follow the same rule and print the variant title as it is.
+  Colour names are short today; nothing here assumes they stay short.
+
+  Nothing is lost by the bare chip either: the flavour count and the full
+  product titles live in aria-label, where a screen reader announces them and
+  they cost no pixels at all.
+
+  Type sizes here run a step below the theme's own (.72rem chips, .70rem
+  flavours) for the same reason - it is what buys the single row. Do not go
+  smaller; the flavour buttons are already under a comfortable tap target.
+
+  Anything tagged 'Personalised' collects a name first, mirroring the product
+  page exactly - same wording, placeholder, 12-character cap, property name.
+  Chip text drops only the word "Personalised"; tapping the chip opens the
+  required name field immediately, so the shorter label hides nothing. When
+  the item also has variants the colour is chosen first and the name field
+  opens after it, because the name panel is what carries the confirm button.
+{%- endcomment -%}
+
+{%- assign ship_threshold = 2000 -%}
+{%- assign gift_threshold = 2500 -%}
+{%- assign qualifying_total = 0 -%}
+{%- assign gift_in_cart = false -%}
+{%- assign gift_charged = false -%}
+{%- assign paid_gift_item = false -%}
+{%- assign code_applied = false -%}
+{%- assign code_title = '' -%}
+{%- assign gift_products = collections['free-gifts'].products -%}
+
+{%- for d in cart.cart_level_discount_applications -%}
+  {%- if d.type == 'discount_code' -%}
+    {%- assign code_applied = true -%}
+    {%- assign code_title = d.title -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- for item in cart.items -%}
+  {%- for alloc in item.line_level_discount_allocations -%}
+    {%- if alloc.discount_application.type == 'discount_code' -%}
+      {%- assign code_applied = true -%}
+      {%- assign code_title = alloc.discount_application.title -%}
+    {%- endif -%}
+  {%- endfor -%}
+
+  {%- if item.properties['_free_gift'] and item.final_line_price > 0 -%}
+    {%- assign gift_charged = true -%}
+  {%- endif -%}
+
+  {%- assign is_gift_product = false -%}
+  {%- for gift in gift_products -%}
+    {%- if gift.id == item.product_id -%}
+      {%- assign is_gift_product = true -%}
+      {%- break -%}
+    {%- endif -%}
+  {%- endfor -%}
+
+  {%- if is_gift_product -%}
+    {%- if item.final_line_price == 0 -%}
+      {%- assign gift_in_cart = true -%}
+    {%- else -%}
+      {%- assign paid_gift_item = true -%}
+    {%- endif -%}
+  {%- else -%}
+    {%- assign qualifying_total = qualifying_total | plus: item.final_line_price -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- assign ship_unlocked = false -%}
+{%- if cart.total_price >= ship_threshold -%}{%- assign ship_unlocked = true -%}{%- endif -%}
+{%- assign gift_unlocked = false -%}
+{%- if qualifying_total >= gift_threshold -%}{%- assign gift_unlocked = true -%}{%- endif -%}
+
+{%- assign bar_pct = qualifying_total | times: 100 | divided_by: gift_threshold -%}
+{%- if bar_pct > 100 -%}{%- assign bar_pct = 100 -%}{%- endif -%}
+{%- assign notch_pct = ship_threshold | times: 100 | divided_by: gift_threshold -%}
+
+<div class="gift-progress" data-gift-block>
+
+  <div class="ship-progress reward-progress">
+    {%- if gift_unlocked and code_applied == false -%}
+      <p class="ship-progress__msg ship-progress__msg--ok">✓ Free UK shipping and your free gift are unlocked</p>
+    {%- elsif ship_unlocked -%}
+      <p class="ship-progress__msg ship-progress__msg--ok">✓ Free UK shipping unlocked</p>
+      {%- if code_applied == false -%}
+        <p class="ship-progress__msg">Add <strong>{{ gift_threshold | minus: qualifying_total | money }}</strong> more for a free gift</p>
+      {%- endif -%}
+    {%- else -%}
+      <p class="ship-progress__msg">Add <strong>{{ ship_threshold | minus: cart.total_price | money }}</strong> more for free UK shipping{% if code_applied == false %}, <strong>{{ gift_threshold | minus: qualifying_total | money }}</strong> for a free gift{% endif %}</p>
+    {%- endif -%}
+
+    <div class="ship-progress__bar reward-bar">
+      <span style="width: {{ bar_pct }}%;"></span>
+      <i class="reward-bar__notch{% if ship_unlocked %} is-passed{% endif %}" style="left: {{ notch_pct }}%;" aria-hidden="true"></i>
+    </div>
+
+    <div class="reward-scale" aria-hidden="true">
+      <span class="reward-scale__mark{% if ship_unlocked %} is-done{% endif %}" style="left: {{ notch_pct }}%;">{{ ship_threshold | money_without_trailing_zeros }}</span>
+      <span class="reward-scale__mark reward-scale__mark--end{% if gift_unlocked %} is-done{% endif %}">{{ gift_threshold | money_without_trailing_zeros }} gift</span>
+    </div>
+  </div>
+
+  {%- if gift_charged -%}
+    {%- comment -%}
+      Shopify charged for the gift. Two different things cause that: a discount
+      code cancelled the automatic gift discount, or the basket dropped back
+      under the threshold. Naming the wrong one sends the shopper hunting for a
+      code they never entered, so each case says what actually happened.
+    {%- endcomment -%}
+    {%- if code_applied -%}
+      <p class="gift-alert">Your gift is being charged because {% if code_title != blank %}<strong>{{ code_title }}</strong> is{% else %}a discount code is{% endif %} applied. Remove the code at checkout to get the gift free, or remove the gift from your bag.</p>
+    {%- else -%}
+      <p class="gift-alert">Your gift is being charged because your basket is now under {{ gift_threshold | money_without_trailing_zeros }}. Add {{ gift_threshold | minus: qualifying_total | money }} more to get it free, or remove the gift from your bag.</p>
+    {%- endif -%}
+
+  {%- elsif code_applied -%}
+    <p class="gift-progress__note">{% if code_title != blank %}<strong>{{ code_title }}</strong> is applied.{% else %}A discount code is applied.{% endif %} A free gift cannot be combined with a discount code, so no gift is offered on this order. Remove the code at checkout if you would rather claim a free gift.</p>
+
+  {%- elsif gift_in_cart -%}
+    <p class="gift-progress__note">One offer per order. If you have a discount code you would rather use, remove the gift from your bag.</p>
+
+  {%- else -%}
+    {%- comment -%}
+      One chip per product family, in catalogue order. Out-of-stock products
+      never form a group, so Cinnamon at zero stock simply vanishes.
+    {%- endcomment -%}
+    {%- assign group_names = '' -%}
+    {%- for g in gift_products -%}
+      {%- unless g.available -%}{%- continue -%}{%- endunless -%}
+      {%- assign gl = g.type -%}
+      {%- if g.type contains 'Lip' -%}{%- assign gl = 'Lip Balm' -%}{%- endif -%}
+      {%- assign group_names = group_names | append: gl | append: '||' -%}
+    {%- endfor -%}
+    {%- assign gift_groups = group_names | split: '||' | uniq -%}
+
+    {%- if gift_unlocked -%}
+      <p class="gift-progress__msg gift-progress__msg--ok">Pick your free gift</p>
+    {%- else -%}
+      <p class="gift-progress__msg gift-locked__title">Your free gift at {{ gift_threshold | money_without_trailing_zeros }}</p>
+    {%- endif -%}
+
+    <div class="gift-progress__options{% unless gift_unlocked %} is-locked{% endunless %}">
+      {%- for group in gift_groups -%}
+        {%- assign avail_count = 0 -%}
+        {%- assign first_gift = blank -%}
+        {%- for g in gift_products -%}
+          {%- unless g.available -%}{%- continue -%}{%- endunless -%}
+          {%- assign gl = g.type -%}
+          {%- if g.type contains 'Lip' -%}{%- assign gl = 'Lip Balm' -%}{%- endif -%}
+          {%- if gl == group -%}
+            {%- assign avail_count = avail_count | plus: 1 -%}
+            {%- if avail_count == 1 -%}{%- assign first_gift = g -%}{%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+
+        {%- comment -%}
+          A lone product still offers a choice when it has more than one
+          variant in stock - see the note about the towel at the top.
+        {%- endcomment -%}
+        {%- assign avail_variant_count = 0 -%}
+        {%- if avail_count == 1 -%}
+          {%- for v in first_gift.variants -%}
+            {%- if v.available -%}{%- assign avail_variant_count = avail_variant_count | plus: 1 -%}{%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+
+        {%- comment -%}
+          The chip at rest shows the first colour a shopper can actually pick,
+          in its own crop where one exists. Resolving it from the first
+          AVAILABLE variant rather than from the product's featured image keeps
+          the chip honest when a colour sells out: the resting chip is never a
+          bear the panel below it cannot offer.
+        {%- endcomment -%}
+        {%- assign chip_img = first_gift.featured_image -%}
+        {%- if avail_count == 1 and avail_variant_count > 1 -%}
+          {%- for v in first_gift.variants -%}
+            {%- unless v.available -%}{%- continue -%}{%- endunless -%}
+            {%- assign chip_img = v.metafields.custom.chip_image.value | default: v.image | default: first_gift.featured_image -%}
+            {%- break -%}
+          {%- endfor -%}
+        {%- endif -%}
+
+        {%- assign group_key = group | handleize -%}
+        {%- if first_gift != blank -%}
+          {%- assign gift_full = first_gift.title | split: '|' | first | remove: 'INCIA ' | strip -%}
+          {%- assign gift_label = gift_full | remove: 'Personalised ' | strip -%}
+        {%- endif -%}
+
+        {%- if avail_count == 1 and avail_variant_count > 1 -%}
+          {%- comment -%}
+            One product, several colours. Same chip shape as the lip balms so
+            the two read as one control, and the same panel opens beneath it.
+          {%- endcomment -%}
+          <button type="button" class="gift-option gift-option--group" {% if gift_unlocked %}data-gift-group="{{ group_key }}" aria-expanded="false" aria-label="{{ gift_full | escape }} - choose from {{ avail_variant_count }} colours"{% else %}disabled aria-disabled="true" aria-label="{{ gift_full | escape }} - {{ avail_variant_count }} colours, unlocks at {{ gift_threshold | money_without_trailing_zeros }}"{% endif %}>
+            <img src="{{ chip_img | image_url: width: 96 }}" alt="" width="34" height="34" loading="lazy">
+            <span>{{ gift_label }}</span>
+            {%- if gift_unlocked -%}
+              <svg class="gift-option__chevron" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            {%- endif -%}
+          </button>
+
+        {%- elsif avail_count == 1 -%}
+          {%- comment -%}
+            Full title for assistive tech, short label on screen - see the note
+            about chip width at the top of this file.
+          {%- endcomment -%}
+          <button type="button" class="gift-option" {% if gift_unlocked %}data-add-gift data-variant-id="{{ first_gift.selected_or_first_available_variant.id }}" data-gift-label="{{ gift_full | escape }}"{% if first_gift.tags contains 'Personalised' %} data-needs-name="Name"{% endif %} aria-label="Add free {{ gift_full | escape }}"{% else %}disabled aria-disabled="true" aria-label="{{ gift_full | escape }} - unlocks at {{ gift_threshold | money_without_trailing_zeros }}"{% endif %}>
+            <img src="{{ first_gift.featured_image | image_url: width: 96 }}" alt="" width="34" height="34" loading="lazy">
+            <span>{{ gift_label }}</span>
+          </button>
+        {%- elsif avail_count > 1 -%}
+          {%- comment -%}
+            Bare label - the chevron says it opens, and the flavour count is in
+            aria-label where it costs nothing. See the layout note at the top.
+          {%- endcomment -%}
+          <button type="button" class="gift-option gift-option--group" {% if gift_unlocked %}data-gift-group="{{ group_key }}" aria-expanded="false" aria-label="{{ group | escape }} - choose from {{ avail_count }} flavours"{% else %}disabled aria-disabled="true" aria-label="{{ group | escape }} - {{ avail_count }} flavours, unlocks at {{ gift_threshold | money_without_trailing_zeros }}"{% endif %}>
+            <img src="{{ first_gift.featured_image | image_url: width: 96 }}" alt="" width="34" height="34" loading="lazy">
+            <span>{{ group }}</span>
+            {%- if gift_unlocked -%}
+              <svg class="gift-option__chevron" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            {%- endif -%}
+          </button>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    {%- if gift_unlocked -%}
+      {%- for group in gift_groups -%}
+        {%- assign avail_count = 0 -%}
+        {%- assign kids_count = 0 -%}
+        {%- assign first_gift = blank -%}
+        {%- for g in gift_products -%}
+          {%- unless g.available -%}{%- continue -%}{%- endunless -%}
+          {%- assign gl = g.type -%}
+          {%- if g.type contains 'Lip' -%}{%- assign gl = 'Lip Balm' -%}{%- endif -%}
+          {%- if gl == group -%}
+            {%- assign avail_count = avail_count | plus: 1 -%}
+            {%- if avail_count == 1 -%}{%- assign first_gift = g -%}{%- endif -%}
+            {%- if g.title contains 'Kids' -%}{%- assign kids_count = kids_count | plus: 1 -%}{%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {%- assign adult_count = avail_count | minus: kids_count -%}
+
+        {%- assign avail_variant_count = 0 -%}
+        {%- if avail_count == 1 -%}
+          {%- for v in first_gift.variants -%}
+            {%- if v.available -%}{%- assign avail_variant_count = avail_variant_count | plus: 1 -%}{%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+
+        {%- assign group_key = group | handleize -%}
+
+        {%- if avail_count == 1 and avail_variant_count > 1 -%}
+          {%- comment -%}
+            One row, no tag: the chip already said what the product is and the
+            only thing left to choose is the variant. Titles print as they are.
+            data-variant-image lets the script swap the chip thumbnail to the
+            colour being chosen - see the note at the top. It prefers the
+            square chip crop and falls back to the variant photo, so the
+            thumbnail never changes framing halfway through a choice.
+          {%- endcomment -%}
+          {%- assign gift_full = first_gift.title | split: '|' | first | remove: 'INCIA ' | strip -%}
+          <div class="gift-flavours" data-gift-group-panel="{{ group_key }}" hidden>
+            <div class="gift-flavours__row">
+              {%- for v in first_gift.variants -%}
+                {%- unless v.available -%}{%- continue -%}{%- endunless -%}
+                <button type="button" class="gift-flavour" data-add-gift data-variant-id="{{ v.id }}" data-variant-image="{{ v.metafields.custom.chip_image.value | default: v.image | default: first_gift.featured_image | image_url: width: 96 }}" data-gift-label="{{ gift_full | append: ' - ' | append: v.title | escape }}" {% if first_gift.tags contains 'Personalised' %}data-needs-name="Name"{% endif %} aria-label="Add free {{ gift_full | escape }} in {{ v.title | escape }}">{{ v.title }}</button>
+              {%- endfor -%}
+            </div>
+          </div>
+
+        {%- elsif avail_count > 1 -%}
+          {%- comment -%}
+            Two labelled rows only when both actually have something in them.
+            If the adult flavours sell out this collapses back to one unlabelled
+            row rather than leaving a lone "Kids" tag hanging there.
+          {%- endcomment -%}
+          {%- assign show_tags = false -%}
+          {%- if kids_count > 0 and adult_count > 0 -%}{%- assign show_tags = true -%}{%- endif -%}
+          <div class="gift-flavours" data-gift-group-panel="{{ group_key }}" hidden>
+            {%- assign subsets = 'adult,kids' | split: ',' -%}
+            {%- for subset in subsets -%}
+              {%- assign row_count = adult_count -%}
+              {%- if subset == 'kids' -%}{%- assign row_count = kids_count -%}{%- endif -%}
+              {%- if row_count == 0 -%}{%- continue -%}{%- endif -%}
+              <div class="gift-flavours__row">
+                {%- if show_tags -%}
+                  <span class="gift-flavours__tag">{% if subset == 'kids' %}Kids{% else %}Adults{% endif %}</span>
+                {%- endif -%}
+                {%- for g in gift_products -%}
+                  {%- unless g.available -%}{%- continue -%}{%- endunless -%}
+                  {%- assign gl = g.type -%}
+                  {%- if g.type contains 'Lip' -%}{%- assign gl = 'Lip Balm' -%}{%- endif -%}
+                  {%- unless gl == group -%}{%- continue -%}{%- endunless -%}
+                  {%- assign is_kids = false -%}
+                  {%- if g.title contains 'Kids' -%}{%- assign is_kids = true -%}{%- endif -%}
+                  {%- if subset == 'kids' and is_kids == false -%}{%- continue -%}{%- endif -%}
+                  {%- if subset == 'adult' and is_kids -%}{%- continue -%}{%- endif -%}
+                  {%- comment -%}
+                    Drop only the words the row tag and the chip already said.
+                    The scent name itself is never cut - see the note at the
+                    top of this file about "Bergamot & Lemon".
+                  {%- endcomment -%}
+                  {%- assign flavour = g.title | remove: 'INCIA ' | remove: 'Kids Lip Balm ' | remove: 'Lip Balm ' | split: '|' | first | strip -%}
+                  <button type="button" class="gift-flavour" data-add-gift data-variant-id="{{ g.selected_or_first_available_variant.id }}" data-gift-label="{{ g.title | remove: 'INCIA ' | escape }}" {% if g.tags contains 'Personalised' %}data-needs-name="Name"{% endif %} aria-label="Add free {{ g.title | remove: 'INCIA ' | escape }}">{{ flavour }}</button>
+                {%- endfor -%}
+              </div>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+
+      <p class="gift-progress__note">One offer per order - the free gift cannot be used together with a discount code.</p>
+
+      <div class="gift-name" data-gift-name hidden>
+        <label class="gift-name__label">
+          <span class="gift-name__labeltext">Baby&rsquo;s name for personalisation <span class="gift-name__req">required</span></span>
+          <input type="text" maxlength="12" autocomplete="off" placeholder="e.g. Amelia" data-gift-name-input>
+        </label>
+        <p class="gift-name__help">Up to 12 characters. Letters, spaces, apostrophes and hyphens only. Please double check the spelling, personalised items are made to order and cannot be returned unless faulty.</p>
+        <p class="gift-name__error" data-gift-name-error hidden></p>
+        <div class="gift-name__actions">
+          <button type="button" class="gift-name__confirm" data-gift-name-confirm>Add my free gift</button>
+          <button type="button" class="gift-name__cancel" data-gift-name-cancel>Cancel</button>
+        </div>
+      </div>
+
+    {%- elsif paid_gift_item -%}
+      {%- comment -%}
+        They already have a lip balm or the towel in the bag at full price and
+        the cart may well read over £25, so "add more" looks wrong until we say
+        what the £25 is actually counted on.
+      {%- endcomment -%}
+      <p class="gift-progress__note">Lip balms and the towel do not count towards the {{ gift_threshold | money_without_trailing_zeros }} - your free gift has to be an extra item.</p>
+    {%- endif -%}
+  {%- endif -%}
+</div>

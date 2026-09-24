@@ -42,17 +42,29 @@
     {% if cart.item_count > 0 %}
       <div class="cart-drawer__foot">
         <div class="cart-totals"><span>Subtotal</span><span>{{ cart.total_price | money }}</span></div>
-        <div class="ship-progress">
-          {%- if cart.total_price >= 2000 -%}
-            <p class="ship-progress__msg ship-progress__msg--ok">✓ Free UK shipping unlocked</p>
-          {%- else -%}
-            <p class="ship-progress__msg">Add <strong>{{ 2000 | minus: cart.total_price | money }}</strong> more for free UK shipping</p>
-          {%- endif -%}
-          <div class="ship-progress__bar"><span style="width: {% if cart.total_price >= 2000 %}100{% else %}{{ cart.total_price | times: 100 | divided_by: 2000 }}{% endif %}%;"></span></div>
-        </div>
+        {%- comment -%}
+          Shipping and gift progress used to be two separate blocks with two
+          bars. They are one bar with two milestones now - see cart-gift.
+        {%- endcomment -%}
+        {% render 'cart-gift' %}
         <a href="/checkout" class="btn btn-primary btn-block btn-lg">Checkout · {{ cart.total_price | money }}</a>
         <a href="{{ routes.cart_url }}" class="btn btn-ghost btn-block">View bag</a>
       </div>
     {% endif %}
   </div>
+
+  {%- comment -%}
+    Deliberately OUTSIDE the item_count guard above, and outside the panel.
+
+    theme.js refreshes this drawer with drawer.innerHTML = newDrawer.innerHTML,
+    and a <script> inserted through innerHTML never executes. So the gift
+    picker's handler only ever runs on a real page load. While it lived inside
+    cart-gift, a shopper who arrived with an empty cart never got it at all -
+    the block had not rendered, so the tag was never in the document. They
+    would add products, the drawer would refresh and show the chips, and
+    clicking one did nothing until they reloaded the page. Rendering the assets
+    unconditionally means the delegated listener is registered once at load and
+    survives every later swap.
+  {%- endcomment -%}
+  {% render 'cart-gift-assets' %}
 </aside>

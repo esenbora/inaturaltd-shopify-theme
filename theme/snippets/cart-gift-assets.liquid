@@ -1,0 +1,307 @@
+{%- comment -%}
+  Styles and behaviour for the free gift picker. Rendered from cart-drawer
+  OUTSIDE the {% if cart.item_count > 0 %} guard, so it is on every page
+  whatever the cart holds.
+
+  That placement is the whole point of this file existing, and it fixes a real
+  bug. theme.js refreshes the drawer with:
+
+      drawer.innerHTML = newDrawer.innerHTML
+
+  and a <script> inserted through innerHTML NEVER executes - that is a browser
+  rule, not a theme quirk. So while the markup below the guard re-renders
+  correctly on every cart change, the script that makes it clickable only ever
+  runs on a full page load.
+
+  With the script living inside cart-gift, a shopper whose cart was empty when
+  the page loaded got no script at all: the gift block had not rendered, so the
+  tag was never in the document. They would add products, the drawer would
+  refresh and show the chips, and clicking one did nothing. Pressing reload
+  fixed it - by then the cart was no longer empty, so the block rendered and
+  the script ran. First order silently loses the gift; second order works.
+
+  Rendering the assets unconditionally means the listener is registered once at
+  page load and survives every later innerHTML swap, because it is delegated
+  from document rather than bound to the buttons. The __inatureGiftInit guard
+  keeps a second render from binding twice.
+
+  It also stops the styles being emitted twice on the cart page, where the gift
+  block appears in both the page summary and the drawer markup.
+{%- endcomment -%}
+
+<style>
+  .gift-progress { display: grid; gap: 8px; }
+  .reward-bar { position: relative; }
+  .reward-bar__notch { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: #fff; opacity: .9; }
+  .reward-bar__notch.is-passed { opacity: .55; }
+  .reward-scale { position: relative; height: 11px; font-size: .62rem; color: var(--primary-dark); opacity: .45; }
+  .reward-scale__mark { position: absolute; top: 0; transform: translateX(-100%); padding-right: 5px; white-space: nowrap; }
+  .reward-scale__mark--end { left: auto; right: 0; transform: none; padding-right: 0; }
+  .reward-scale__mark.is-done { opacity: 1; font-weight: 600; }
+  .gift-progress__msg { font-size: .85rem; margin: 0; }
+  .gift-progress__msg--ok { color: var(--primary-dark); font-weight: 600; }
+  .gift-locked__title { font-weight: 600; opacity: .55; }
+  .gift-progress__note { font-size: .72rem; line-height: 1.4; opacity: .68; margin: 0; }
+  .gift-alert { font-size: .74rem; line-height: 1.4; margin: 0; padding: 8px 10px; border: 1px solid rgba(179,38,30,.35); background: rgba(179,38,30,.05); border-radius: 8px; color: #8c1d18; }
+  .gift-progress__options { display: flex; gap: 7px; flex-wrap: wrap; }
+  .gift-progress__options.is-locked { opacity: .55; }
+  /* Sized to fit two chips on one row in a ~300px drawer - see the layout note
+     in the comment at the top of cart-gift before enlarging any of this. */
+  .gift-option { display: flex; align-items: center; gap: 6px; padding: 3px 10px 3px 3px; border: 1px solid rgba(0,0,0,.12); border-radius: 999px; background: #fff; cursor: pointer; font-size: .72rem; line-height: 1.2; text-align: left; color: inherit; white-space: nowrap; transition: border-color .15s ease, background .15s ease; }
+  .gift-option:hover:not(:disabled) { border-color: var(--primary-dark); background: #f6faf6; }
+  .gift-option.is-selected, .gift-option[aria-expanded='true'] { border-color: var(--primary-dark); background: #f0f6f0; }
+  .gift-option:disabled { cursor: default; filter: grayscale(1); }
+  .gift-option img { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; flex: 0 0 auto; }
+  .gift-option__chevron { flex: 0 0 auto; opacity: .5; transition: transform .15s ease; }
+  .gift-option[aria-expanded='true'] .gift-option__chevron { transform: rotate(180deg); }
+  .gift-flavours { display: grid; gap: 6px; padding: 7px; border: 1px dashed rgba(0,0,0,.16); border-radius: 10px; }
+  /* A class-level display value outranks the browser's [hidden] rule, so the
+     collapse needs its own guard - without this the flavour panel renders open
+     and the grouping does nothing. Scoped deliberately: a blanket
+     [hidden]{display:none} here would reach the whole page. */
+  .gift-flavours[hidden] { display: none; }
+  /* These paddings and gaps are deliberately tight: they are what lets the
+     Adults row hold "Bergamot & Lemon" in full on one line. Flavour names are
+     never abbreviated to save width - see the note in cart-gift. If a longer
+     name is added one day and the row wraps, make .gift-flavours__tag a block
+     so the buttons get the full width; do not shrink the font further, the
+     buttons are already under a comfortable tap target. */
+  .gift-flavours__row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+  .gift-flavours__tag { flex: 0 0 auto; min-width: 28px; font-size: .58rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; opacity: .45; }
+  .gift-flavour { border: 1px solid rgba(0,0,0,.12); background: #fff; border-radius: 999px; padding: 4px 8px; font-size: .7rem; line-height: 1.2; cursor: pointer; color: inherit; white-space: nowrap; transition: border-color .15s ease, background .15s ease; }
+  .gift-flavour:hover:not(:disabled) { border-color: var(--primary-dark); background: #f6faf6; }
+  /* Personalised gifts open the name field instead of adding straight away, so
+     the chosen button has to stay visibly chosen while the shopper types -
+     otherwise a towel colour picked a moment ago looks unpicked and they tap a
+     second one. The chip row already had this; the flavour buttons did not,
+     which only became visible once the towel's colours started using them. */
+  .gift-flavour.is-selected { border-color: var(--primary-dark); background: #f0f6f0; font-weight: 600; }
+  .gift-flavour:disabled { opacity: .5; cursor: default; }
+  .gift-name { padding: 10px; border: 1px solid rgba(0,0,0,.12); border-radius: 10px; background: #fff; }
+  .gift-name__label { display: block; }
+  .gift-name__labeltext { display: block; font-size: .78rem; font-weight: 600; margin-bottom: 5px; }
+  .gift-name__req { display: inline-block; margin-left: 5px; padding: 1px 6px; border: 1px solid var(--accent); border-radius: 4px; color: var(--accent); font-size: .62rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; vertical-align: middle; }
+  .gift-name input { width: 100%; padding: 7px 9px; border: 1px solid rgba(0,0,0,.18); border-radius: 7px; font-size: .85rem; }
+  .gift-name input[aria-invalid='true'] { border-color: #b3261e; }
+  .gift-name__help { font-size: .7rem; line-height: 1.35; opacity: .6; margin: 5px 0 0; }
+  .gift-name__error { color: #b3261e; font-size: .74rem; margin: 5px 0 0; }
+  .gift-name__actions { display: flex; gap: 6px; margin-top: 8px; }
+  .gift-name__confirm, .gift-name__cancel { border-radius: 999px; font-size: .78rem; padding: 6px 12px; cursor: pointer; border: 1px solid transparent; }
+  .gift-name__confirm { background: var(--primary-dark); color: #fff; }
+  .gift-name__confirm:disabled { opacity: .6; cursor: default; }
+  .gift-name__cancel { background: transparent; color: inherit; border-color: rgba(0,0,0,.18); }
+</style>
+
+<script>
+  // Guarded so it initialises once per page load. The drawer's innerHTML is
+  // replaced wholesale on every cart change, so listeners are delegated from
+  // document rather than bound to the buttons - they would die on the first
+  // refresh otherwise, and a re-inserted script tag would not run to rebind them.
+  //
+  // Every lookup below is scoped to the clicked button's own [data-gift-block].
+  // On the cart page this block renders twice (page summary + drawer markup),
+  // so a document-wide query would find whichever copy came first and open the
+  // name field on the invisible one.
+  //
+  // Locked chips carry no data-add-gift and are disabled, so they fall through
+  // every branch here without needing a special case.
+  (function () {
+    if (window.__inatureGiftInit) return;
+    window.__inatureGiftInit = true;
+
+    var REOPEN = 'inature_reopen_cart';
+    var pending = null;
+
+    function blockOf(el) { return el.closest('[data-gift-block]'); }
+    function panelIn(block) { return block ? block.querySelector('[data-gift-name]') : null; }
+
+    function closeGroups(block) {
+      if (!block) return;
+      block.querySelectorAll('[data-gift-group-panel]').forEach(function (p) { p.hidden = true; });
+      block.querySelectorAll('[data-gift-group]').forEach(function (b) { b.setAttribute('aria-expanded', 'false'); });
+    }
+
+    // The towel comes in three colours and each one has its own photograph, so
+    // the chip thumbnail becomes the confirmation: pick Beige and the bear on
+    // the chip is the beige bear. Without it the shopper is trusting a word.
+    // Only variant buttons carry data-variant-image, so the lip balms - seven
+    // separate products, each already its own chip - fall straight through.
+    function swapChipImage(btn) {
+      var src = btn.getAttribute('data-variant-image');
+      if (!src) return;
+      var panel = btn.closest('[data-gift-group-panel]');
+      if (!panel) return;
+      var block = blockOf(btn);
+      var key = panel.getAttribute('data-gift-group-panel');
+      var chip = block ? block.querySelector('[data-gift-group="' + key + '"]') : null;
+      var img = chip ? chip.querySelector('img') : null;
+      if (!img) return;
+      // Remember the product shot once, so Cancel can put it back however many
+      // colours were tried in between.
+      if (!img.hasAttribute('data-original-src')) {
+        img.setAttribute('data-original-src', img.getAttribute('src') || '');
+      }
+      img.setAttribute('src', src);
+    }
+
+    function restoreChipImages(block) {
+      if (!block) return;
+      block.querySelectorAll('[data-gift-group] img[data-original-src]').forEach(function (img) {
+        img.setAttribute('src', img.getAttribute('data-original-src'));
+        img.removeAttribute('data-original-src');
+      });
+    }
+
+    function flash(btn, message) {
+      // Chips carry an image plus a span; flavour chips are plain text. Write
+      // to the span when there is one so the thumbnail survives the message.
+      var target = btn.querySelector('span') || btn;
+      var original = target.textContent;
+      target.textContent = message;
+      setTimeout(function () { target.textContent = original; }, 1800);
+    }
+
+    function addGift(variantId, properties, onFail) {
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ items: [{ id: variantId, quantity: 1, properties: properties }] })
+      }).then(function (r) {
+        if (!r.ok) throw new Error('gift add failed');
+        // Full reload rather than a partial re-render: the theme rebinds the
+        // drawer's own remove and quantity handlers during its own refresh, and
+        // we cannot reach that function from here without editing theme.js.
+        try { sessionStorage.setItem(REOPEN, '1'); } catch (err) {}
+        window.location.reload();
+      }).catch(function () { if (onFail) onFail(); });
+    }
+
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest) return;
+
+      var groupBtn = e.target.closest('[data-gift-group]');
+      if (groupBtn) {
+        e.preventDefault();
+        var gBlock = blockOf(groupBtn);
+        var key = groupBtn.getAttribute('data-gift-group');
+        var target = gBlock ? gBlock.querySelector('[data-gift-group-panel="' + key + '"]') : null;
+        var wasOpen = groupBtn.getAttribute('aria-expanded') === 'true';
+        closeGroups(gBlock);
+        if (target && !wasOpen) {
+          target.hidden = false;
+          groupBtn.setAttribute('aria-expanded', 'true');
+        }
+        return;
+      }
+
+      var cancelBtn = e.target.closest('[data-gift-name-cancel]');
+      if (cancelBtn) {
+        e.preventDefault();
+        pending = null;
+        var cBlock = blockOf(cancelBtn);
+        var pc = panelIn(cBlock);
+        if (pc) pc.hidden = true;
+        restoreChipImages(cBlock);
+        if (cBlock) {
+          cBlock.querySelectorAll('[data-add-gift]').forEach(function (b) { b.classList.remove('is-selected'); b.disabled = false; });
+        }
+        return;
+      }
+
+      var confirmBtn = e.target.closest('[data-gift-name-confirm]');
+      if (confirmBtn) {
+        e.preventDefault();
+        if (!pending) return;
+        var pp = panelIn(blockOf(confirmBtn));
+        var input = pp && pp.querySelector('[data-gift-name-input]');
+        var errorEl = pp && pp.querySelector('[data-gift-name-error]');
+        var value = input ? input.value.trim() : '';
+        var fail = function (msg) {
+          if (!errorEl) return;
+          errorEl.textContent = msg;
+          errorEl.hidden = false;
+          if (input) { input.setAttribute('aria-invalid', 'true'); input.focus(); }
+        };
+        if (errorEl) errorEl.hidden = true;
+        if (input) input.removeAttribute('aria-invalid');
+        if (!value) { fail('Please add the name for personalisation.'); return; }
+        // Same rules the product page enforces, so a name accepted here is a
+        // name that can actually be stitched.
+        if (value.length > 12) { fail('Please use 12 characters or fewer.'); return; }
+        if (!/^[\p{L} '-]+$/u.test(value)) { fail('Please use letters, spaces, apostrophes or hyphens only.'); return; }
+        var props = { _free_gift: 'yes' };
+        props[pending.propertyName] = value;
+        confirmBtn.disabled = true;
+        confirmBtn.textContent = 'Adding...';
+        addGift(pending.variantId, props, function () {
+          confirmBtn.disabled = false;
+          confirmBtn.textContent = 'Add my free gift';
+          fail('Something went wrong - please try again.');
+        });
+        return;
+      }
+
+      var btn = e.target.closest('[data-add-gift]');
+      if (!btn) return;
+      e.preventDefault();
+      var variantId = btn.getAttribute('data-variant-id');
+      if (!variantId || btn.disabled) return;
+
+      var propertyName = btn.getAttribute('data-needs-name');
+      if (propertyName) {
+        // Personalised item - collect the name first rather than sending a
+        // blank one to the packing bench.
+        var aBlock = blockOf(btn);
+        pending = { variantId: variantId, propertyName: propertyName, label: btn.getAttribute('data-gift-label') || 'your gift' };
+        if (aBlock) {
+          aBlock.querySelectorAll('[data-add-gift]').forEach(function (b) { b.classList.remove('is-selected'); });
+        }
+        btn.classList.add('is-selected');
+        swapChipImage(btn);
+        var pn = panelIn(aBlock);
+        if (pn) {
+          pn.hidden = false;
+          var inp = pn.querySelector('[data-gift-name-input]');
+          if (inp) { inp.value = ''; inp.removeAttribute('aria-invalid'); inp.focus(); }
+          var err = pn.querySelector('[data-gift-name-error]');
+          if (err) err.hidden = true;
+        }
+        return;
+      }
+
+      // Not personalised: the page is about to reload, so the swap only ever
+      // shows during the request. It still matters if the add fails, which is
+      // why the restore is paired with the failure branch rather than skipped.
+      swapChipImage(btn);
+      btn.disabled = true;
+      addGift(variantId, { _free_gift: 'yes' }, function () {
+        btn.disabled = false;
+        restoreChipImages(blockOf(btn));
+        flash(btn, 'Try again');
+      });
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter') return;
+      if (!e.target.matches || !e.target.matches('[data-gift-name-input]')) return;
+      e.preventDefault();
+      var own = blockOf(e.target);
+      var c = own ? own.querySelector('[data-gift-name-confirm]') : null;
+      if (c) c.click();
+    });
+
+    var shouldReopen = false;
+    try { shouldReopen = sessionStorage.getItem(REOPEN) === '1'; } catch (err) {}
+    if (shouldReopen) {
+      try { sessionStorage.removeItem(REOPEN); } catch (err) {}
+      window.addEventListener('load', function () {
+        // On the cart page the gift is already visible in the line-item list,
+        // so throwing the drawer open on top of it would just be in the way.
+        if (document.querySelector('[data-cart-page]')) return;
+        var opener = document.querySelector('[data-cart-open]');
+        if (opener) setTimeout(function () { opener.click(); }, 120);
+      });
+    }
+  })();
+</script>

@@ -1,0 +1,52 @@
+{%- comment -%}
+  "You can have this free" note on the product page of anything in the Free
+  Gifts collection - today the personalised towel and the lip balms.
+
+  Why it earns its place: the towel product page is the second most visited
+  page on the site, 113 of 436 sessions in a 20-day window, second only to the
+  home page. It is also the best selling item by units. And until this snippet
+  existed it said nothing at all about being free over £25. A quarter of all
+  traffic was arriving at exactly the product we give away, and leaving
+  without being told how to get it.
+
+  Membership is read from the collection rather than a tag or a hardcoded
+  handle list, so it is the same source of truth the cart picker and the
+  Shopify discount use. Add a product to Free Gifts and its page starts saying
+  so; remove it and the note disappears. Nothing to keep in sync by hand.
+
+  gift_threshold must match cart-gift and the 'Free Gift Over £25' AUTOMATIC
+  discount. Three places, one number - change all three together.
+
+  The wording is deliberate on two points:
+
+  "on other items" - Shopify needs £25 of OTHER units before it hands the gift
+  over, so a £23 bag plus this £3.95 towel reads as £26.95 and still does not
+  qualify. That surprised us in testing; it will surprise shoppers harder.
+
+  "one offer per order" - Shopify will not combine a Buy X Get Y gift with a
+  percentage discount code, and the site advertises 15% off a first order in
+  the announcement bar. Saying so here costs one line and saves a shopper
+  discovering it at checkout.
+{%- endcomment -%}
+
+{%- assign gift_threshold = 2500 -%}
+{%- assign is_gift = false -%}
+{%- for g in collections['free-gifts'].products -%}
+  {%- if g.id == product.id -%}
+    {%- assign is_gift = true -%}
+    {%- break -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- if is_gift -%}
+  <div class="pdp-gift">
+    <p class="pdp-gift__head">Free on orders over {{ gift_threshold | money_without_trailing_zeros }}</p>
+    <p class="pdp-gift__body">Spend {{ gift_threshold | money_without_trailing_zeros }} on other items and you can pick this as your free gift in your bag. One offer per order, so it cannot be used together with a discount code.</p>
+  </div>
+
+  <style>
+    .pdp-gift { margin: 2px 0 0; padding: 10px 12px; border: 1px solid rgba(0,0,0,.10); border-left: 3px solid var(--primary-dark); border-radius: 8px; background: #f6faf6; }
+    .pdp-gift__head { margin: 0; font-size: .85rem; font-weight: 600; color: var(--primary-dark); }
+    .pdp-gift__body { margin: 4px 0 0; font-size: .74rem; line-height: 1.45; opacity: .72; }
+  </style>
+{%- endif -%}
