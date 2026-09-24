@@ -21,6 +21,15 @@
     <title>
       {%- if template == 'index' -%}
         INCIA Natural Skincare, Shipped from the UK | {{ shop.name }}
+      {%- elsif template == 'blog' -%}
+        {%- comment -%}
+          Blogun kendi adi "News" ve baslik "News | INATURE" olarak cikiyordu -
+          15 karakter, icerigi hakkinda hicbir sey soylemiyor ve arama
+          sonucunda hangi konuda oldugu anlasilmiyor. Blog adini degil ne
+          oldugunu yaziyoruz; blog Admin'de yeniden adlandirilsa da bu baslik
+          dogru kalir.
+        {%- endcomment -%}
+        Natural Skincare Guides & Advice | {{ shop.name }}
       {%- elsif page_title -%}
         {{ page_title }} | {{ shop.name }}
       {%- else -%}
@@ -79,6 +88,12 @@
       endcomment
       if template == 'index'
         assign meta_title = 'INCIA Natural Skincare, Shipped from the UK'
+      endif
+      comment
+        <title> ile ayni: paylasim kartinda "News" yazmasin.
+      endcomment
+      if template == 'blog'
+        assign meta_title = 'Natural Skincare Guides & Advice'
       endif
     -%}
 
