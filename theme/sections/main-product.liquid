@@ -389,20 +389,66 @@
         <div class="perk">{% render 'icon', name: 'leaf' %} <span><strong>ETKO Cosmos · BioArge · Vegan · Cruelty-Free.</strong> 100% natural origin. Made in Türkiye.</span></div>
       </div>
 
-      <!-- Accordion -->
+      {%- comment -%}
+        Akordeon, urun aciklamasinin KENDI yapisindan uretilir.
+
+        Onceki hali her seyi tek basliga tikiyordu: "About this product" ham
+        product.description'i basiyor, altindaki "How to use" ve "Ingredients"
+        ise urunle ilgisi olmayan sabit metinlerdi - 44 urunun 44'unde ayni iki
+        paragraf. Yani urunun gercek kullanim talimati ve icerik listesi ilk
+        basligin icine gomuluyken, o iki baslik jenerik metin gosteriyordu.
+
+        Aciklamalar zaten <h3> ile bolunmus durumda (44/44 urun): Key benefits
+        36, How to use 41, Ingredients 41, Frequently asked questions 44, arti
+        setlere ve havluya ozel basliklar (What is in the set, Materials, Care
+        instructions). Basliklari sabit bir listeye eslemek yerine ne varsa onu
+        basiyoruz - yeni bir baslik yazildiginda tema degisikligi gerekmez.
+
+        <h3> etiketleri duz, attribute tasimiyorlar; split bu yuzden guvenli.
+        Attribute'lu bir h3 yazilirsa o bolum baslik yerine ham metin gosterir,
+        bu durumda burayi degil aciklamayi duzeltin.
+
+        h3 tasimayan bir aciklama (mock urun, disaridan ice aktarma) eski
+        davranisa duser: tek "About this product" + jenerik iki baslik.
+      {%- endcomment -%}
+      {%- assign desc_parts = product.description | split: '<h3>' -%}
       <div class="accordion mt-3">
-        <details>
-          <summary>About this product</summary>
-          <div>{{ product.description }}</div>
-        </details>
-        <details>
-          <summary>How to use</summary>
-          <div>Apply to clean, dry skin. Reapply throughout the day as needed. We recommend a patch test first if you have sensitive or reactive skin. Safe for the whole family.</div>
-        </details>
-        <details>
-          <summary>Ingredients &amp; certifications</summary>
-          <div>100% natural origin. ETKO Cosmos certified. BioArge formulation. Vegan. Cruelty-Free. Free from parabens, mineral oils, artificial fragrances and synthetic preservatives. Made in Türkiye, distributed in the UK by INature.</div>
-        </details>
+        {%- if desc_parts.size > 1 -%}
+          {%- for part in desc_parts -%}
+            {%- if forloop.first -%}
+              {%- assign intro = part | strip -%}
+              {%- if intro != blank -%}
+                <details open>
+                  <summary>About this product</summary>
+                  <div>{{ intro }}</div>
+                </details>
+              {%- endif -%}
+            {%- else -%}
+              {%- assign head_body = part | split: '</h3>' -%}
+              {%- assign sec_title = head_body[0] | strip_html | strip -%}
+              {%- assign sec_body = head_body[1] | strip -%}
+              {%- if sec_title != blank and sec_body != blank -%}
+                <details>
+                  <summary>{{ sec_title }}</summary>
+                  <div>{{ sec_body }}</div>
+                </details>
+              {%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- else -%}
+          <details open>
+            <summary>About this product</summary>
+            <div>{{ product.description }}</div>
+          </details>
+          <details>
+            <summary>How to use</summary>
+            <div>Apply to clean, dry skin. Reapply throughout the day as needed. We recommend a patch test first if you have sensitive or reactive skin. Safe for the whole family.</div>
+          </details>
+          <details>
+            <summary>Ingredients &amp; certifications</summary>
+            <div>100% natural origin. ETKO Cosmos certified. BioArge formulation. Vegan. Cruelty-Free. Free from parabens, mineral oils, artificial fragrances and synthetic preservatives. Made in Türkiye, distributed in the UK by INature.</div>
+          </details>
+        {%- endif -%}
         <details>
           <summary>Shipping &amp; returns</summary>
           <div>Dispatched from the UK. Free UK shipping on orders over £20 (£3 below). 14-day return policy on unused items in original packaging. International shipping available at checkout.{% if sku_value != blank %} SKU: {{ sku_value }}.{% endif %}</div>
