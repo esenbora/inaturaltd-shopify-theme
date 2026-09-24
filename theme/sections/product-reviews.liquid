@@ -123,6 +123,41 @@
   .jdgm-themed .jdgm-rev-widg__title { display: none; }
 
   {%- comment -%}
+    HIZA. Judge.me widget kokune inline "max-width:1100px; margin:0 auto"
+    yaziyor (app block'un max_width ayari). Bolum 1320px oldugu icin
+    widget 110px iceri kayiyor ve basligi ile tesvik notunun hizasini
+    tutturamiyordu - olculdu: baslik 368px'de, yorumlar 478px'de
+    basliyordu. Inline oldugu icin !important sart.
+
+    Govdeye ayri bir olcu veriliyor: tam genislikte satir ~100 karakteri
+    geciyor ve okunmasi zorlasiyor. Blok hizali, metin okunur kalir.
+  {%- endcomment -%}
+  .jdgm-themed .jdgm-review-widget {
+    max-width: none !important;
+    margin-inline: 0 !important;
+  }
+  .jdgm-themed .jm-review-content { max-width: 74ch; }
+
+  {%- comment -%}
+    Yorumsuz urunde widget iki sey birden basiyordu: cagriyi tasiyan
+    .jm-no-reviews-state ("Be the first to write a review" + buton) ve
+    hemen altinda liste alaninin bos mesaji, "No items found". Ikincisi
+    hem gereksiz hem de olumsuz okunuyor; cagri kaliyor, o gidiyor.
+  {%- endcomment -%}
+  .jdgm-themed .jm-review-widget__body > .jm-center--intrinsic:not(.jm-no-reviews-state) { display: none; }
+
+  {%- comment -%}
+    Widget'in kendi renk degiskenlerine ulasmayan son turkuaz izleri:
+    avatar dairesi (teal %10) ve tarih satiri. Ikisi de dogrudan.
+  {%- endcomment -%}
+  .jdgm-themed .jm-reviewer-avatar {
+    background: rgba(123, 159, 126, .14) !important;
+    color: var(--primary-dark) !important;
+  }
+  .jdgm-themed .jm-reviewer-info__name { font-weight: 600; }
+  .jdgm-themed .jm-review-content__title { font-family: var(--font-heading); font-weight: 600; }
+
+  {%- comment -%}
     Yildizlar SVG degil, font ikonu: .jm-star-rating__font-icon ve rengi
     color'dan geliyor. Widget'in --jm-review-widget-star-... degiskeni
     bu ogeye ulasmiyor, o yuzden dogrudan hedefleniyor.
