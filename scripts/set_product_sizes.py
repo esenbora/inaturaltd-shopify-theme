@@ -54,6 +54,15 @@ OLCU = re.compile(r"\b(\d{1,4}(?:[.,]\d{1,2})?)\s?(ml|ML|mL|g|gr|kg|L)\b")
 # Bu kaliplari tasiyan urunler olcu almaz (set / tekstil).
 ATLA = re.compile(r"\bset\b|\bgift box\b|\btowel\b|\bbear\b", re.I)
 
+# INCIA verisinde bulunmayan, musterinin ambalajdan okuyup bildirdigi olculer.
+# Kaynak: Ferhat Demir, 26 Eylul 2026 (bebek yagi icin ambalaj fotografi da
+# gonderildi; etikette "110 mle / 3.87 oz" yaziyor). Buraya bir deger yazmadan
+# once ambalajdan dogrulanmis olmasi sarttir - tahmin girilmez.
+ELLE = {
+    "incia-natural-baby-oil": "110ml",
+    "incia-natural-sunscreen-for-baby-and-child-spf50": "50ml",
+}
+
 PRODUCTS = """
 { products(first: 60) {
     nodes { id handle title status descriptionHtml }
@@ -130,11 +139,13 @@ def main() -> None:
         if ATLA.search(p["title"]):
             atlanan.append(p["title"]); continue
 
-        olcu = incia.get(normalize(p["title"]))
+        olcu = ELLE.get(p["handle"]) or incia.get(normalize(p["title"]))
         govde = re.sub(r"<[^>]+>", " ", p["descriptionHtml"] or "")
         metinden = {standart(m) for m in OLCU.finditer(govde)}
 
-        if olcu:
+        if p["handle"] in ELLE:
+            kaynak = "ambalaj (musteri)"
+        elif olcu:
             kaynak = "iki kaynak" if olcu in metinden else "INCIA verisi"
         elif len(metinden) == 1:
             olcu, kaynak = metinden.pop(), "urun metni"

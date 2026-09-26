@@ -138,13 +138,13 @@ için 25 g gösteriyor, oysa içindeki balm 6 g.
 **Setler ve havlu ölçü almadı** (6 ürün). Bir sette birden fazla ürün var,
 tek bir ml/g yazmak yanlış olurdu; içindekiler zaten açıklamada listeli.
 
-**Şu iki üründe hiçbir güvenilir kaynakta ölçü yok:**
+~~Şu iki üründe hiçbir güvenilir kaynakta ölçü yoktu:~~ **KAPANDI (26 Eylül).**
+Ferhat ambalajdan okuyup bildirdi, ikisi de başlıklara işlendi:
 
-- INCIA Natural Sunscreen for Baby and Child SPF50
-- INCIA Natural Baby Oil
+- INCIA Natural Sunscreen for Baby and Child SPF50 — **50 ml**
+- INCIA Natural Baby Oil — **110 ml** (ambalaj fotoğrafıyla doğrulandı)
 
-Bunların ambalajındaki net içerik bilgisi gerekiyor. Geldiğinde
-başlıklarına eklenecek, tekrar bir işlem gerekmiyor.
+Artık 38 aktif ürünün 32'sinde ölçü var; kalan 6 kalem set ve havludur.
 
 ---
 

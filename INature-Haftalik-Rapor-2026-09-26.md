@@ -21,7 +21,7 @@ Bu hafta otuz kod değişikliği yayına alınmıştır. Çalışmanın önemli 
 
 Kaybolan işlevler arasında en maliyetlisi **sepetteki hediye seçicisidir**. Mağazanın "£25 üzeri ücretsiz hediye" indirim kuralı çalışmaya devam etmiş, ancak müşterinin hediyeyi sepete ekleyebileceği arayüz ortadan kalktığı için kampanya fiilen işlememiştir. Bu durum 17 Eylül'den 24 Eylül'e kadar sürmüştür.
 
-Bunun dışında ürün yorumları sistemi elden geçirilmiş, ürün sayfası akordeonu ürünün kendi içeriğinden üretilir hâle getirilmiş, on iki blog yazısına görsel hazırlanmış ve ürün başlıklarına net içerik ölçüsü eklenmiştir.
+Bunun dışında ürün yorumları sistemi elden geçirilmiş, ürün sayfası akordeonu ürünün kendi içeriğinden üretilir hâle getirilmiş, on iki blog yazısına görsel hazırlanmış ve ürün başlıklarına net içerik ölçüsü eklenmiştir. Ölçü çalışması, Müşterinin ambalajdan bildirdiği son iki değerle birlikte tamamlanmıştır.
 
 Ayrıca iki ürün iddiasında mevzuat riski tespit edilmiştir. Bunlar ayrı bir belgeyle (*Uyum Uyarısı, 24 Eylül 2026*) iletilmiştir; 12. bölümde özeti bulunmaktadır. **Bir tanesi satış devam ederken cevap bekleyen acil bir konudur.**
 
@@ -196,7 +196,7 @@ Kalan madde blog ana sayfasının başlığıydı. "News | INATURE" ifadesi on b
 
 ## 11. Ürün başlıklarında içerik ölçüsü
 
-Müşteri talebi üzerine ürün başlıklarına net içerik ölçüsü eklenmiştir: sıvılarda mililitre, katılarda gram. Çalışma öncesinde kırk dört üründen yalnızca üçünde bu bilgi vardı; şimdi **otuz sekiz aktif üründen otuzunda** bulunmaktadır.
+Müşteri talebi üzerine ürün başlıklarına net içerik ölçüsü eklenmiştir: sıvılarda mililitre, katılarda gram. Çalışma öncesinde kırk dört üründen yalnızca üçünde bu bilgi vardı; şimdi **otuz sekiz aktif üründen otuz ikisinde** bulunmaktadır. Ölçüsü olmayan altı kalemin tamamı set ve havludur.
 
 Ölçü bilgisinin kaynağı önemlidir. Üç aday incelenmiş, ikisi elenmiştir:
 
@@ -205,6 +205,10 @@ Müşteri talebi üzerine ürün başlıklarına net içerik ölçüsü eklenmi�
 - **INCIA'nın kendi ürün metni** ölçüyü net içerik olarak vermektedir. Kaynak budur.
 
 Altı üründe iki kaynak aynı değeri verdiği için çapraz doğrulama sağlanmıştır.
+
+İki ürünün ölçüsü hiçbir kaynakta bulunmadığı için Müşteriye sorulmuş ve **26 Eylül tarihinde ambalajdan okunarak** bildirilmiştir: Baby & Child SPF50 güneş kremi **50 ml**, Baby Oil **110 ml**. Bebek yağının ambalaj fotoğrafı da iletilmiş, etiketteki "110 ml e / 3,87 oz" ibaresi ve içerik listesi doğrulanmıştır. İkisi de başlıklara işlenmiştir.
+
+Tahmin yürütülmemiştir: güneş kremi için diğer güneş ürünlerine bakarak bir hacim varsaymak mümkündü, ancak yanlış hacim yazmak hiç yazmamaktan kötüdür.
 
 **Setlere ve havluya ölçü eklenmemiştir.** Bir sette birden fazla ürün bulunduğundan tek bir ölçü yazmak yanıltıcı olurdu; içindekiler zaten açıklamada listelenmektedir.
 
@@ -228,7 +232,6 @@ Aynı denetimde **sorun bulunmayan** başlıklar da vardır: egzama ile ilgili y
 
 - **Böcek kovucu ürünü.** Ruhsat ve içerik bilgisi beklenmektedir. Cevap gelene kadar ürün satıştadır.
 - **"Hypoallergenic" iddiası.** INCIA'nın ürün bilgi dosyasındaki veri beklenmektedir.
-- **İki üründe ölçü bilgisi.** Baby & Child SPF50 güneş kremi ile Baby Oil ürünlerinin ambalajındaki net içerik bilgisi gerekmektedir.
 - **Judge.me renk ayarları.** Uygulamanın kendi yönetim panelinden de ayarlanabilir. Yapıldığı takdirde tema tarafındaki geçersiz kılma kuralları sadeleştirilebilir.
 - **Telefonda göz kontrolü.** Yan menü kaydırması ve yorum kutusu gerçek bir telefonda denetlenmemiştir.
 - **`.com` alan adı yönlendirmesi.** İki adımda çalışmaktadır. İşlevsel bir sorun değildir.
