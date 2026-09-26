@@ -125,6 +125,29 @@ kaldırmış oluruz.
 
 ---
 
+## 3. Eksik ölçü bilgisi — iki ürün
+
+Ferhat'ın isteği üzerine ürün başlıklarına net içerik ölçüsü eklendi:
+sıvılarda ml, katılarda g. 38 aktif üründen **30'unda** artık başlıkta
+görünüyor (önceden yalnızca 3'ünde vardı).
+
+Ölçüler INCIA'nın kendi ürün metninden alındı. Shopify'daki kargo ağırlığı
+bilerek kullanılmadı: o ambalaj dahil ağırlık, net içerik değil — lip balm
+için 25 g gösteriyor, oysa içindeki balm 6 g.
+
+**Setler ve havlu ölçü almadı** (6 ürün). Bir sette birden fazla ürün var,
+tek bir ml/g yazmak yanlış olurdu; içindekiler zaten açıklamada listeli.
+
+**Şu iki üründe hiçbir güvenilir kaynakta ölçü yok:**
+
+- INCIA Natural Sunscreen for Baby and Child SPF50
+- INCIA Natural Baby Oil
+
+Bunların ambalajındaki net içerik bilgisi gerekiyor. Geldiğinde
+başlıklarına eklenecek, tekrar bir işlem gerekmiyor.
+
+---
+
 ## Bu denetimde temiz çıkanlar
 
 Panik gerekmediğini göstermek için: aynı taramada kontrol edilip **sorun bulunmayan**
