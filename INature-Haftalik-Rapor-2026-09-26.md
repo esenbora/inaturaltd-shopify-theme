@@ -5,7 +5,7 @@
 
 ---
 
-**Dönem:** 22-26 Eylül 2026
+**Dönem:** 21-26 Eylül 2026
 
 **Müşteri:** INATURE LIMITED
 
