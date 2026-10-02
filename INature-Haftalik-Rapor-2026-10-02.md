@@ -120,20 +120,9 @@ Yorumu bulunmayan 25 ürün için geçmiş siparişlere toplu yorum daveti gönd
 
 ---
 
-## 5. Ürün iddialarına ilişkin bir tespit
-
-24 Eylül tarihli *Uyum Uyarısı* belgesinde, on dört üründe kullanılan "hypoallergenic" ifadesinin mevzuat açısından veri gerektirdiği bildirilmişti.
-
-Bu hafta afiş çalışması sırasında ürün ambalajı yüksek çözünürlükte incelenirken, **ifadenin ürün ambalajının üzerinde basılı olduğu** görülmüştür.
-
-Bu, iddianın üreticiye ait olduğunu göstermektedir. Mevzuat açısından gereklilik değişmemektedir — iddiayı destekleyen verinin ürün bilgi dosyasında bulunması gerekir — ancak Müşteri'den istenecek bilginin niteliği netleşmiştir: iddianın kullanılıp kullanılmayacağı değil, üreticinin dosyasındaki dayanağın ne olduğu sorulmalıdır.
-
----
-
-## 6. Bekleyen konular
+## 5. Bekleyen konular
 
 - **Böcek kovucu ürünü.** 24 Eylül tarihli Uyum Uyarısı belgesinde bildirilen konu açıktır. Ruhsat durumu ve ambalajdaki içerik listesi beklenmektedir. Ürün satışa devam etmektedir.
-- **"Hypoallergenic" iddiası.** Üreticinin ürün bilgi dosyasındaki dayanak beklenmektedir.
 - **Eski sağlayıcıdaki kayıtlar.** Silme işlemi, Shopify panelindeki liste ile karşılaştırma yapılmadan gerçekleştirilmemelidir.
 - **`.com` alan adının DNS taşınması.** Acil değildir, planlı yapılmalıdır.
 - **`.co.uk` koruma kayıtları.** Değerleri iletilmiştir, eklenmeyi beklemektedir.
@@ -143,7 +132,7 @@ Bu, iddianın üreticiye ait olduğunu göstermektedir. Mevzuat açısından ger
 
 ---
 
-## 7. Sıradaki öncelikler
+## 6. Sıradaki öncelikler
 
 1. Böcek kovucu ürünü hakkında gelen cevaba göre işlem yapılması
 2. Yorumu bulunmayan 25 ürün için geçmiş siparişlere toplu yorum daveti
