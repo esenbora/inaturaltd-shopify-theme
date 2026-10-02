@@ -19,9 +19,20 @@
         "CRECKCE NATURAL" (COSMOS NATURAL). SPF iddiasi tasiyan bir urunde bu
         kozmetik bir kusur degildi.
       {%- endcomment -%}
+      {%- comment -%}
+        hero-gift-bear digerlerinden farkli: uretilmis degil, musterinin
+        kendi urun fotografi (havlu ayiciklarin urun galerisindeki kare).
+        Dikey cekilmis (1086x1448), afis ise 2000x848 istiyor. Kirpmak
+        urunlerin ustunu kesiyordu, bu yuzden kenarlar outpaint ile
+        uzatildi - ama outpaint tum kareyi yeniden uretince ambalaj
+        yazilari bozuldu ("GIAPER BASU PREVEIITIVE CREAM", "ORGANIO").
+        Bu yuzden sonucta yalnizca kenarlar AI'dan: orijinal fotograf
+        tam cozunurlukte geri yapistirildi, urunler ve etiketler
+        dokunulmamis durumda.
+      {%- endcomment -%}
       {%- liquid
-        assign slide_files = 'hero-autumn-group,hero-autumn,hero-2,hero-3,hero-4,hero-5,hero-6,hero-7' | split: ','
-        assign slide_alts = 'INCIA autumn range on an oak harvest table with dried leaves and acorns|INCIA SOS Stick on woodland bark with acorns and rosehips|INCIA natural face sunscreen SPF50 on sunlit beach sand|INCIA natural baby and kids shampoo on a bath rim beside a folded towel|INCIA intensive repair care cream on marble with linen and lavender|INCIA natural lip balm nestled in a knitted wool blanket|INCIA foaming facial cleanser on a wet ceramic washbasin|INCIA natural herbal shampoo on an olive wood board with fresh herbs' | split: '|'
+        assign slide_files = 'hero-autumn-group,hero-gift-bear,hero-autumn,hero-2,hero-3,hero-4,hero-5,hero-6,hero-7' | split: ','
+        assign slide_alts = 'INCIA autumn range on an oak harvest table with dried leaves and acorns|INCIA baby care bottles beside a basket of personalised sage-green towel bears against a brick wall|INCIA SOS Stick on woodland bark with acorns and rosehips|INCIA natural face sunscreen SPF50 on sunlit beach sand|INCIA natural baby and kids shampoo on a bath rim beside a folded towel|INCIA intensive repair care cream on marble with linen and lavender|INCIA natural lip balm nestled in a knitted wool blanket|INCIA foaming facial cleanser on a wet ceramic washbasin|INCIA natural herbal shampoo on an olive wood board with fresh herbs' | split: '|'
       -%}
       <div class="hero-banner__slides">
         {%- for file in slide_files -%}
