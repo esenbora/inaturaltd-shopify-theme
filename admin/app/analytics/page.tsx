@@ -16,6 +16,17 @@ function pct(n: number | undefined): string {
   // GSC returns ctr as a 0..1 fraction.
   return `${((n ?? 0) * 100).toFixed(1)}%`;
 }
+/** "2026-09-29" -> "29 Sep" — kartin ustunde yer kaplamadan okunur. */
+function gscDate(iso: string): string {
+  const d = new Date(`${iso}T00:00:00Z`);
+  return Number.isNaN(d.getTime())
+    ? iso
+    : d.toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "short",
+        timeZone: "UTC",
+      });
+}
 function pos(n: number | undefined): string {
   return (n ?? 0).toFixed(1);
 }
@@ -112,10 +123,13 @@ export default async function AnalyticsPage({ searchParams }: PageProps) {
 
       <RangeTabs basePath="/analytics" active={shown} />
 
-      {shown <= 7 ? (
+      {gsc?.dataThrough ? (
         <p className="mb-4 text-xs text-muted">
-          Search Console publishes with a two-day delay, so short ranges look
-          lower than they really are. Use 30 days or more to judge a trend.
+          Search Console data runs to{" "}
+          <strong className="text-ink">{gscDate(gsc.dataThrough)}</strong>.
+          Google publishes on a delay that varies from a couple of days to
+          about a week, so the most recent days are never in here yet. Google
+          Analytics below is current.
         </p>
       ) : null}
 
@@ -128,12 +142,20 @@ export default async function AnalyticsPage({ searchParams }: PageProps) {
       {gsc ? (
         <>
           <SectionTitle>Search Console</SectionTitle>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <Metric label="Clicks" value={int(gsc.totals.clicks)} />
-            <Metric label="Impressions" value={int(gsc.totals.impressions)} />
-            <Metric label="CTR" value={pct(gsc.totals.ctr)} />
-            <Metric label="Avg position" value={pos(gsc.totals.position)} />
-          </div>
+          {gsc.noDataInRange ? (
+            <div className="card px-4 py-5 text-sm text-muted">
+              Google has not published search data for this range yet. This is
+              a delay on Google&rsquo;s side, not a drop in traffic — the
+              Analytics figures below cover the same period.
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              <Metric label="Clicks" value={int(gsc.totals.clicks)} />
+              <Metric label="Impressions" value={int(gsc.totals.impressions)} />
+              <Metric label="CTR" value={pct(gsc.totals.ctr)} />
+              <Metric label="Avg position" value={pos(gsc.totals.position)} />
+            </div>
+          )}
 
           <div className="mt-4 grid gap-4 lg:grid-cols-2">
             <div className="card overflow-hidden">

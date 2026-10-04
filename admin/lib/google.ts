@@ -47,6 +47,10 @@ export interface GscSummary {
   totals: GscMetrics;
   topQueries: GscQueryRow[];
   topPages: GscPageRow[];
+  /** Son veri bulunan gun (YYYY-MM-DD). Google hic veri yayinlamadiysa null. */
+  dataThrough: string | null;
+  /** Sorgulanan pencerede hic satir donmediyse true: "0" degil, "veri yok". */
+  noDataInRange: boolean;
 }
 
 export interface Ga4Totals {
@@ -102,7 +106,15 @@ const GSC_SCOPE = "https://www.googleapis.com/auth/webmasters.readonly";
 const GA4_SCOPE = "https://www.googleapis.com/auth/analytics.readonly";
 
 /** GSC data lags ~2 days; anchor every date range this far back from today. */
-const GSC_LAG_DAYS = 2;
+/**
+ * Son veri gununu ararken geriye bakilacak gun sayisi.
+ *
+ * Burada eskiden sabit bir GSC_LAG_DAYS = 2 vardi ve pencere ona gore
+ * kuruluyordu. Gecikme sabit degil: 4 Ekim 2026'da son veri 29 Eylul'du,
+ * yani 5 gun. Sabit varsayim pencereyi bos gunlere dusurup paneli "0"
+ * gosterdigi icin kaldirildi.
+ */
+const GSC_PROBE_DAYS = 21;
 
 const DEFAULT_RANGE_DAYS = 28;
 
@@ -431,12 +443,44 @@ export async function fetchGscSummary(
   const env = readEnv();
   const token = await getGoogleAccessToken([GSC_SCOPE]);
 
-  const endDate = toIsoDate(daysAgoDate(GSC_LAG_DAYS));
-  const startDate = toIsoDate(daysAgoDate(days + GSC_LAG_DAYS));
-
   const url = `https://searchconsole.googleapis.com/webmasters/v3/sites/${encodeURIComponent(
     env.gscSiteUrl,
   )}/searchAnalytics/query`;
+
+  // GSC'nin yayin gecikmesi SABIT DEGIL. Kod 2 gun varsayiyordu; 4 Ekim 2026'da
+  // olculen gecikme 5 gundu (son veri 29 Eylul). Sabit varsayimla pencere
+  // Google'in henuz yayinlamadigi gunlere dusuyor ve panel "0" gosteriyordu.
+  // Musteri bunu trafik durdu sandi.
+  //
+  // Bu yuzden once gercek son veri gunu sorulur, pencere ona gore kurulur.
+  const probeStart = toIsoDate(daysAgoDate(GSC_PROBE_DAYS));
+  const probeEnd = toIsoDate(daysAgoDate(0));
+  const probe = await postJson(url, token, {
+    startDate: probeStart,
+    endDate: probeEnd,
+    dimensions: ["date"],
+    rowLimit: GSC_PROBE_DAYS,
+  });
+  const probeDates = gscRows(probe)
+    .map((row) => firstKey(row))
+    .filter((d) => d.length > 0)
+    .sort();
+  const dataThrough = probeDates.at(-1) ?? null;
+
+  if (dataThrough === null) {
+    return {
+      totals: { clicks: 0, impressions: 0, ctr: 0, position: 0 },
+      topQueries: [],
+      topPages: [],
+      dataThrough: null,
+      noDataInRange: true,
+    };
+  }
+
+  const endDate = dataThrough;
+  const startDate = toIsoDate(
+    new Date(Date.parse(dataThrough) - (days - 1) * 86_400_000),
+  );
 
   const baseRange = { startDate, endDate };
 
@@ -469,7 +513,13 @@ export async function fetchGscSummary(
     ...toGscMetrics(row),
   }));
 
-  return { totals, topQueries, topPages };
+  return {
+    totals,
+    topQueries,
+    topPages,
+    dataThrough,
+    noDataInRange: totalsRow === undefined,
+  };
 }
 
 // ---------------------------------------------------------------------------
