@@ -7,19 +7,62 @@
     <header class="section-head section-head--center text-center mx-auto">
       <span class="eyebrow">{{ section.settings.eyebrow | default: 'Pairs well with' }}</span>
       <h2 class="h2">{{ section.settings.heading | default: 'Build the routine.' }}</h2>
+      {%- comment -%}
+        Kategori belliyse koleksiyona acik bir cikis veriyoruz: ziyaretci
+        dort karttan fazlasini gormek isterse sayfadan cikmak zorunda kalmasin.
+      {%- endcomment -%}
     </header>
+    {%- comment -%}
+      Eskiden burasi her urun sayfasinda ayni dort "bestseller"i basiyordu:
+      dis macunu sayfasinda da, deodorant sayfasinda da ayni kartlar. Alakasiz
+      oldugu icin tiklanmiyordu - olculdu, urun sayfalarindan cikma orani
+      %80-100 arasindaydi ve sayfa basina yalnizca 2-5 ic link vardi.
+
+      Artik oneri urunun KENDI kategorisinden geliyor. Urunun koleksiyonlari
+      arasinda gezilirken herkese ait olan genel kovalar atlanir (all-products,
+      indirim/hediye listeleri gibi), cunku onlar "benzer urun" bilgisi
+      tasimaz. Kategoriden yeterli urun cikmazsa kalan yerler bestseller'larla
+      tamamlanir, yani bolum hicbir zaman bos kalmaz.
+    {%- endcomment -%}
+    {%- liquid
+      assign genel = 'all-products,all-products-1,discount-eligible,free-gifts,sale,must-haves-1,bestsellers-1'
+      assign kategori = blank
+      for c in product.collections
+        unless genel contains c.handle
+          assign kategori = c
+          break
+        endunless
+      endfor
+    -%}
     <div class="grid product-grid">
-      {%- comment -%} Real products from the bestsellers collection (excluding the current product), not mock data {%- endcomment -%}
-      {%- assign rel = collections['bestsellers-1'].products -%}
-      {%- if rel.size == 0 -%}{%- assign rel = collections.all.products -%}{%- endif -%}
       {%- assign shown = 0 -%}
-      {%- for p in rel -%}
-        {%- if product != blank and p.id == product.id -%}{%- continue -%}{%- endif -%}
-        {%- if shown >= 4 -%}{%- break -%}{%- endif -%}
-        {% render 'product-card', product: p %}
-        {%- assign shown = shown | plus: 1 -%}
-      {%- endfor -%}
+      {%- if kategori != blank -%}
+        {%- for p in kategori.products -%}
+          {%- if p.id == product.id -%}{%- continue -%}{%- endif -%}
+          {%- if shown >= 4 -%}{%- break -%}{%- endif -%}
+          {% render 'product-card', product: p %}
+          {%- assign shown = shown | plus: 1 -%}
+        {%- endfor -%}
+      {%- endif -%}
+
+      {%- comment -%} Kategori dort urunu doldurmadiysa kalani tamamla. {%- endcomment -%}
+      {%- if shown < 4 -%}
+        {%- assign yedek = collections['bestsellers-1'].products -%}
+        {%- if yedek.size == 0 -%}{%- assign yedek = collections.all.products -%}{%- endif -%}
+        {%- for p in yedek -%}
+          {%- if product != blank and p.id == product.id -%}{%- continue -%}{%- endif -%}
+          {%- if kategori != blank and kategori.products contains p -%}{%- continue -%}{%- endif -%}
+          {%- if shown >= 4 -%}{%- break -%}{%- endif -%}
+          {% render 'product-card', product: p %}
+          {%- assign shown = shown | plus: 1 -%}
+        {%- endfor -%}
+      {%- endif -%}
     </div>
+    {%- if kategori != blank -%}
+      <p class="text-center mt-4">
+        <a href="{{ kategori.url }}" class="btn btn-ghost">All {{ kategori.title | downcase }}</a>
+      </p>
+    {%- endif -%}
   </div>
 </section>
 {%- endunless -%}
