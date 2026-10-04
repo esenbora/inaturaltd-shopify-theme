@@ -1,8 +1,21 @@
 <section class="collection-hero">
   <div class="wrap">
     <h1 class="h1">{{ collection.title | default: 'The full INCIA range, distributed in the UK.' }}</h1>
+    {%- comment -%}
+      Admin'deki aciklama artik tek cumle degil: basliklar, paragraflar ve ic
+      linkler tasiyor (arama sonuclarinda koleksiyonun kendisi siralansin diye).
+
+      Tamami basligin altina konunca urunler ilk ekrandan tasiyordu -
+      koleksiyon sayfasina gelen once urun gormek ister. Bu yuzden metin
+      ikiye ayriliyor: ilk paragraf burada ozet olarak kalir, gerisi urun
+      izgarasinin altina gider. Arama motoru acisindan ikisi de ayni
+      sayfadadir, degisen yalnizca okuma sirasi.
+
+      Sarmalayici <p> degil <div>: <p> icine <p>/<h2> koymak gecersiz HTML'dir.
+    {%- endcomment -%}
+    {%- assign desc_parcalar = collection.description | split: '</p>' -%}
     {% if collection.description != blank %}
-      <p class="lead muted mt-3 mx-auto" style="max-width: 60ch;">{{ collection.description }}</p>
+      <div class="collection-intro lead muted mt-3 mx-auto" style="max-width: 60ch;">{{ desc_parcalar[0] | append: '</p>' }}</div>
     {% else %}
       {%- assign intro_class = 'lead muted mt-3 mx-auto' -%}
       {%- case collection.handle -%}
@@ -78,6 +91,20 @@
     </div>
   </div>
 </section>
+
+{%- comment -%}
+  Aciklamanin ilk paragraf disindaki kismi. Basligin altinda degil burada,
+  cunku urunler once gelmeli; icerik yine ayni sayfada duruyor.
+{%- endcomment -%}
+{%- if desc_parcalar.size > 1 -%}
+  <section class="wrap">
+    <div class="collection-intro collection-intro--foot muted mx-auto" style="max-width: 68ch;">
+      {%- for parca in desc_parcalar offset: 1 -%}
+        {%- if parca != blank -%}{{ parca | append: '</p>' }}{%- endif -%}
+      {%- endfor -%}
+    </div>
+  </section>
+{%- endif -%}
 
 <div style="height: var(--space-8);" aria-hidden="true"></div>
 
