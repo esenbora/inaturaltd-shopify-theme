@@ -3,6 +3,12 @@
 Shopify Email'e doğrudan yapıştırılabilir. UK English, marka sesi: sıcak, dürüst,
 abartısız. Verilen kararlar uygulandı: terk sepette %20, hoş geldinde %15.
 
+**5 Ekim 2026 kontrolü:** 157 sipariş / %100 olumlu eBay geri bildirimi, £20 üstü
+ücretsiz kargo ve £3 alt ücret canlı siteden yeniden doğrulandı. **Yorum sayısı
+düzeltildi:** metinde 46 yazıyordu, doğrulanamadı — `reviews-content/ebay-reviews.json`
+18 kayıt tutuyor, Judge.me ise 29 gösteriyor (Admin API, 13 ürün). Yayına giden metin
+artık 29 diyor ve kaynağı site yorumları olarak adlandırıyor.
+
 **Metinlerde geçen her iddia siteden doğrulandı:** ücretsiz UK kargo £20 üstü / altında
 £3, 14 gün iade (kullanılmamış, orijinal ambalajında), ETKO Cosmos sertifikalı, BioArge,
 vegan, cruelty-free, Türkiye'de üretim + UK'den gönderim, eBay'de %100 olumlu geri
@@ -222,15 +228,15 @@ farklılaşma noktası; rakiplerin çoğu "aluminium-free" diye yanlış beyanda
 
 ### Mail 2.3: 5. gün
 
-**Konu:** 46 reviews, and where to start
+**Konu:** 29 reviews, and where to start
 **Ön izleme:** Whether you are here for the baby range, the home range or your own skin
 
 ```
 Hi there,
 
-We have 100% positive eBay feedback across 157 orders, and 46 written
-buyer reviews, from families across the UK. We are not going to pretend that makes us a household name. It
-does mean the products do what we say when they arrive at someone's door.
+We have 100% positive eBay feedback across 157 orders, and 29 reviews on
+the site from UK families. We are not going to pretend that makes us a household
+name. It does mean the products do what we say when they arrive at someone's door.
 
 If you are still deciding where to begin, it usually comes down to one of
 three routes.
