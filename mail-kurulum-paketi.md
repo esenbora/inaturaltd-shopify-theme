@@ -1,5 +1,62 @@
 # Mail otomasyonu — kurulum paketi
 
+> ## DURUM: 8 Ekim 2026 — kurulum yapıldı
+>
+> Bu paket panele elle girilmek üzere yazılmıştı. **Gerek kalmadı: panele erişim yolu
+> bulundu ve kurulum tamamlandı.** Aşağıdaki metinler artık canlıda. Paket, ileride
+> değişiklik gerekirse kaynak metin olarak duruyor.
+>
+> **Erişim yolu (not):** Shopify'ın uygulama yüzeyi (Messaging, Flow) çapraz-kaynak bir
+> iframe'de çalışır ve tıklamaları almaz. Engel Sidekick panelinin açık olmasıydı:
+> panel kapatılıp sayfa tam genişliğe geçince editör tıklanabilir hâle geliyor. Dört
+> alternatif yol (Admin API, Flow içe aktarma, bildirim şablonları, Sidekick'e
+> kaydettirme) ayrı ayrı araştırıldı ve dördü de elendi — çalışan tek yol bu.
+>
+> ### Yapılanlar
+> - **Terk sepet maili yenilendi.** Konu "Complete your order" → **"You left something
+>   behind"**, ön izleme metni boştu → **"Your basket is still here, we saved it for
+>   you"**, gövde Shopify'ın jenerik metninden bu paketteki metne çevrildi. Aktif.
+> - **Çift otomasyon kapatıldı.** İki terk sepet otomasyonu birden aktifti ve ikisi de
+>   aynı anda çalışmıştı (ikisinde de "Last ran Tuesday at 5:34 am"). Eskisi
+>   ("Don't forget, your basket is waiting for you 🛒", flow 44240240891) pasife alındı.
+>   Silinmedi, geri alınabilir.
+> - **Karşılama serisine dokunulmadı** — zaten iyi durumda, aşağıdaki nota bakınız.
+>
+> ### Yapılmayanlar
+> - **Terk sepetin 2. ve 3. maili (24 saat / 72 saat) eklenmedi.** Akışa yeni adım
+>   eklemek Flow editörünü gerektiriyor; o ayrı bir iframe ve "Edit workflow" yanıt
+>   vermiyor. Metinleri aşağıda hazır.
+> - **`BASKET20` indirim kodu oluşturulmadı** — 3. mail kurulmadığı için gerekmedi.
+>
+> ### Karşılama serisi: değiştirilmedi, çünkü mevcut hâli daha iyi
+> Paket yazılırken karşılama maillerinin de Shopify'ın jenerik şablonu olduğu
+> varsayılmıştı. **Yanlış çıktı.** Mevcut iki mail elle yazılmış ve bu paketteki
+> metinlerden güçlü: ürün görselleri, Bristol deposu vurgusu, `WELCOME15` kodu, doğru
+> kargo/iade bilgisi ve Seyda imzalı kişisel kapanış taşıyor. Üzerine yazmak geriye
+> gidiş olurdu.
+>
+> İki not: kullanılan kod **`WELCOME15`**, bu paketin metinlerinde `INATURE15` yazıyor —
+> canlıdaki doğru olan `WELCOME15`. Ve maillerin %0 tık oranı 7 ve 5 kişilik gönderime
+> dayanıyor, yani istatistiksel olarak anlamsız; "kötü mail" göstergesi değil.
+>
+> ### Karşılama serisinde iki uyum bulgusu — KARAR BEKLİYOR
+> Her ikisi de 24 Eylül tarihli Uyum Uyarısı'nda açılmış ve hâlâ cevapsız olan
+> konuların maillerde tekrarlanması:
+>
+> 1. **"Every formula is dermatologically tested, hypoallergenic, vegan and
+>    cruelty-free"** (2. mail). Uyum Uyarısı'nda "hypoallergenic" iddiasının 14 üründe
+>    kanıtsız kullanıldığı bildirilmişti. Maildeki kullanım daha geniş: **"Every
+>    formula"** diyerek iddiayı tüm ürün yelpazesine genelliyor. Bu mail her yeni
+>    aboneye gidiyor.
+> 2. **Böcek kovucu ürünü bestseller olarak gösteriliyor** (1. mail, "INCIA Natural
+>    Remedy for Insect Bites" £12.00 → £10.00). Bu ürünün PT19 biocidal ruhsat durumu
+>    açık; satış devam ettiği gibi artık pazarlaması da yapılıyor.
+>
+> Metne dokunulmadı: 24 Eylül'de "veri varsa iddiayı gereksiz yere kaldırmış oluruz"
+> denilerek beklenmesi kararlaştırılmıştı, o karar tutuldu. Ancak o gün iddia yalnızca
+> site metnindeydi; bugün aktif gönderilen bir e-postada. Karar Müşteri'nindir.
+
+
 Shopify Admin'den uygulanacak. Her adım kopyala-yapıştır hazır.
 Metinlerin kaynağı `mail-metinleri.md`; buradaki tek fark, doğrudan panele
 girilebilecek biçimde ayrılmış olması.
