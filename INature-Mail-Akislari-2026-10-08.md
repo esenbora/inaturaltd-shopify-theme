@@ -9,7 +9,8 @@ Hazırlayan: Stimilon LLC
 Mağazada çalışan otomatik e-postaların tamamı aşağıdadır. Metinler canlıdan
 alınmıştır, örnek değildir.
 
-Üç akış var: biri sepetini yarım bırakanlara, ikisi yeni abone olanlara.
+Üç akış var: sepetini yarım bırakanlara iki e-posta, yeni abone olanlara iki
+e-posta.
 Hepsi yalnızca **pazarlama izni vermiş** adreslere gider, hepsinin altında
 tek tıkla abonelikten çıkma bağlantısı ve şirket adresi bulunur (UK PECR
 gereği). Gönderen adres `info@inatureltd.com`.
@@ -35,6 +36,28 @@ gereği). Gönderen adres `info@inatureltd.com`.
 **Bu mailde bu hafta ne değişti:** Konu satırı "Complete your order" idi,
 ön izleme metni ise boştu, gelen kutusunda ikinci satır boşa gidiyordu.
 Gövde Shopify'ın hazır şablonuydu. Üçü de değiştirildi.
+
+### İkinci e-posta, 24. saatte
+
+**Konu satırı:** Everything you'd want to know before ordering
+
+**Ön izleme metni:** UK dispatch, 14-day returns, and what our certifications
+actually mean
+
+> **Still thinking it over?**
+>
+> Your basket is still saved. Dispatched from the UK, usually within 1 to 3
+> working days, free over £20. Fourteen days to change your mind. ETKO Cosmos
+> certified, vegan and cruelty-free, with no parabens, mineral oils or
+> synthetic fragrance.
+>
+> *[müşterinin sepetindeki ürünler]*
+>
+> **[ Complete your order ]**
+
+Bu e-posta **yeni kuruldu**. İlk e-postanın 14 saat ardından, yani sepet
+bırakıldıktan 24 saat sonra gidiyor. İndirim içermiyor: bu bir itiraz giderme
+e-postasıdır, insanların çoğu fiyattan değil belirsizlikten duruyor.
 
 **İkinci bir düzeltme:** Aynı tetikleyiciye bağlı **iki ayrı otomasyon**
 birden çalışıyordu; ikisi de aynı gün aynı saatte tetiklenmişti. Yani
@@ -169,26 +192,22 @@ yoksa `Eucalyptus citriodora oil, hydrated, cyclized` (Citriodiol) mü?
 
 ---
 
-## Kurulamayan iki e-posta
+## Üçüncü e-posta: karar bekliyor
 
-Sepetini yarım bırakanlara gönderilmek üzere iki takip e-postası daha
-hazırlanmıştı: biri 24 saat, diğeri 72 saat sonrası için. **Bunlar
-kurulamadı.**
+Sepetini yarım bırakanlara bir e-posta daha hazırlanmıştı: 72. saatte giden,
+son hatırlatma niteliğinde. **Kurulmadı, çünkü bir karar gerektiriyor.**
 
-Teknik sebep: Shopify Messaging arayüzü mevcut e-postaların metnini
-düzenlemeye izin veriyor, ancak **akışa yeni adım eklemeye veya zamanlama
-değiştirmeye izin vermiyor**. Shopify'ın kendi yapay zekâ asistanı da aynı
-sınırı bildirdi. Bu adımların eklenmesi için gereken Flow düzenleyicisi
-açılmıyor.
+O e-posta bir **%20 indirim kodu** içeriyor. Marj açısından not: %20, karşılama
+indiriminden (%15) yüksektir. Yani indirime ulaşmanın en kârlı yolu abone olmak
+değil, sepeti yarım bırakmak olur. Tekrar alan müşteriler bunu zamanla
+öğrenebilir.
 
-Metinler hazır bekliyor. Shopify tarafındaki bu kısıt aşıldığında ya da
-Müşteri kendi oturumundan Flow düzenleyicisini açtığında eklenebilirler.
+Kodun **tek kullanımlık ve süreli** olması bu riski sınırlar. Üç ay sonra
+bakılacak sayı: terk edilen sepet oranı yükseldi mi.
 
-Üçüncü e-posta bir **%20 indirim kodu** içeriyor. O kod da henüz
-oluşturulmadı; üçüncü e-posta kurulmadığı için gerekmedi. Kurulacaksa marj
-açısından bir not: %20, karşılama indiriminden (%15) yüksektir. Yani indirime
-ulaşmanın en kârlı yolu abone olmak değil, sepeti yarım bırakmak olur. Kodun
-tek kullanımlık ve süreli olması bu riski sınırlar.
+Kurulması halinde akışa 48 saatlik bir bekleme daha ve üçüncü bir e-posta
+eklenecek, ayrıca `BASKET20` kodunun oluşturulması gerekecek. Metin hazır.
+**Karar Müşteri'nindir.**
 
 ---
 
