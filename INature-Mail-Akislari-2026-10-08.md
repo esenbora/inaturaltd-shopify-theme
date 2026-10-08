@@ -196,17 +196,67 @@ yoksa `Eucalyptus citriodora oil, hydrated, cyclized` (Citriodiol) mü?
 
 Sepetini yarım bırakanlara bir e-posta daha hazırlanmıştı: 72. saatte giden,
 son hatırlatma niteliğinde. **Kurulmadı, çünkü bir karar gerektiriyor.**
+Metni aşağıdadır, karar verilebilsin diye.
 
-O e-posta bir **%20 indirim kodu** içeriyor. Marj açısından not: %20, karşılama
-indiriminden (%15) yüksektir. Yani indirime ulaşmanın en kârlı yolu abone olmak
-değil, sepeti yarım bırakmak olur. Tekrar alan müşteriler bunu zamanla
-öğrenebilir.
+**Konu satırı:** 20% off your basket, for the next 48 hours
 
-Kodun **tek kullanımlık ve süreli** olması bu riski sınırlar. Üç ay sonra
-bakılacak sayı: terk edilen sepet oranı yükseldi mi.
+**Ön izleme metni:** Last nudge, then we will leave you be
 
-Kurulması halinde akışa 48 saatlik bir bekleme daha ve üçüncü bir e-posta
-eklenecek, ayrıca `BASKET20` kodunun oluşturulması gerekecek. Metin hazır.
+> Hi there,
+>
+> This is the last email about your basket. If the timing is not right, no
+> hard feelings, and we will stop here.
+>
+> If it is just the final push you needed, here is 20% off:
+>
+> **BASKET20**
+>
+> The code works for the next 48 hours and can be used once.
+>
+> *[müşterinin sepetindeki ürünler]*
+>
+> **[ Complete your order ]**
+>
+> INature
+> Pure Turkish Skincare. Naturally British.
+
+### Kararın dayanağı
+
+Mesele metin değil, **indirim oranı**.
+
+%20, karşılama indiriminden (%15) yüksektir. Yani indirime ulaşmanın en kârlı
+yolu abone olmak değil, sepeti yarım bırakmak olur. Tekrar alan müşteriler
+bunu zamanla öğrenebilir ve alışkanlık hâline getirebilir.
+
+Kodun **tek kullanımlık ve 48 saat süreli** olması bu riski sınırlar, ancak
+ortadan kaldırmaz. Üç ay sonra bakılacak sayı: terk edilen sepet oranı
+yükseldi mi.
+
+Üç seçenek var:
+
+**1.** Metin olduğu gibi kurulur, %20 kalır.
+
+**2.** Oran %10 veya %15'e çekilir. Karşılama indiriminin altında ya da ona eşit
+olur, yukarıdaki risk ortadan kalkar; buna karşılık son hatırlatmanın ikna gücü
+azalır.
+
+**3.** Hiç kurulmaz. Akış iki e-postayla kalır. Sepetini üç gün sonra hâlâ
+tamamlamamış müşteri zaten büyük ihtimalle dönmeyecektir; indirim vermeden
+bırakmak marjı korur.
+
+### Kurulması hâlinde yapılacaklar
+
+Akışa 48 saatlik bir bekleme adımı ve üçüncü bir e-posta eklenir. Ayrıca
+indirim kodunun oluşturulması gerekir:
+
+| Alan | Değer |
+|---|---|
+| Kod | `BASKET20` |
+| Tür | Yüzde indirim |
+| Oran | %20 (ya da seçilen oran) |
+| Kullanım | Müşteri başına bir kez |
+| Birleşim | Diğer indirim kodlarıyla birleşmez |
+
 **Karar Müşteri'nindir.**
 
 ---
