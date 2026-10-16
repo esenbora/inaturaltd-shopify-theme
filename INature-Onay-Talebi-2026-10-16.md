@@ -160,28 +160,28 @@ Bunun pratik anlamı şu: bu kodlardan herhangi biri bir indirim sitesine veya b
 
 ### Kodların listesi
 
-| Kod | İndirim | Bugüne kadar kullanım |
-|---|---|---|
-| TARA50 | %50 | 0 |
-| BRISTOLCAMI45 | %45 | 0 |
-| SEDATUGCE40 | %40 | 0 |
-| MURAT40 | %40 | 1 |
-| ITU35UK | %35 | 0 |
-| TRACIE30 | %30 | 0 |
-| DERYA30 | %30 | 0 |
-| DUMANFAM30 | %30 | 0 |
-| ROSEY30 | %30 | 0 |
-| CHARLIE30 | %30 | 0 |
-| MERVEPOLAT30 | %30 | 0 |
-| CENGIZ25 | %25 | 0 |
-| SADIYA25 | %25 | 0 |
-| OGUZ25 | %25 | 2 |
-| MELCELIKCAPA | %25 | 0 |
-| ESRAGUL25 | %25 | 0 |
-| SEVDEGUNDOGDU25 | %25 | 0 |
-| ELIFVURAL25 | %25 | 1 |
-| LAUREN25 | %25 | 0 |
-| DOULAOZGE20 | %20 | 1 |
+| Kod | İndirim | Kullanım | Karar (K / T / G) |
+|---|---|---|---|
+| TARA50 | %50 | 0 | |
+| BRISTOLCAMI45 | %45 | 0 | |
+| SEDATUGCE40 | %40 | 0 | |
+| MURAT40 | %40 | 1 | |
+| ITU35UK | %35 | 0 | |
+| TRACIE30 | %30 | 0 | |
+| DERYA30 | %30 | 0 | |
+| DUMANFAM30 | %30 | 0 | |
+| ROSEY30 | %30 | 0 | |
+| CHARLIE30 | %30 | 0 | |
+| MERVEPOLAT30 | %30 | 0 | |
+| CENGIZ25 | %25 | 0 | |
+| SADIYA25 | %25 | 0 | |
+| OGUZ25 | %25 | 2 | |
+| MELCELIKCAPA | %25 | 0 | |
+| ESRAGUL25 | %25 | 0 | |
+| SEVDEGUNDOGDU25 | %25 | 0 | |
+| ELIFVURAL25 | %25 | 1 | |
+| LAUREN25 | %25 | 0 | |
+| DOULAOZGE20 | %20 | 1 | |
 
 ### Neden bu listeyi tek başımıza kapatmıyoruz
 
@@ -191,13 +191,13 @@ Yanlış kapatmak, açık bırakmak kadar zarar verir. Bu yüzden karar sizde.
 
 ### Her kod için üç seçenekten biri
 
-**Kapansın.** Kod artık kullanılmayacaksa bitiş tarihi bugüne çekilir.
+**K: Kapansın.** Kod artık kullanılmayacaksa bitiş tarihi bugüne çekilir.
 
-**Tek kişilik.** Kod bir kişiye verildiyse kişi başı tek kullanım ve toplam bir kullanım tanımlanır, altı ay sonra kapanır.
+**T: Tek kişilik.** Kod bir kişiye verildiyse kişi başı tek kullanım ve toplam bir kullanım tanımlanır, altı ay sonra kapanır.
 
-**Grup kodu.** Kod bir gruba verildiyse kişi başı tek kullanım tanımlanır, toplam kullanım açık kalır, altı ay sonra kapanır. Grup üyeleri kullanmaya devam eder, tek kişi defalarca kullanamaz.
+**G: Grup kodu.** Kod bir gruba verildiyse kişi başı tek kullanım tanımlanır, toplam kullanım açık kalır, altı ay sonra kapanır. Grup üyeleri kullanmaya devam eder, tek kişi defalarca kullanamaz.
 
-Listeyi işaretleyip geri gönderin, uygulaması kısa sürer. Hangi kodun ne olduğunu hatırlamıyorsanız o satırı boş bırakın, birlikte bakarız.
+Tablodaki son sütuna her satır için **K**, **T** veya **G** yazmanız yeterli. Hangi kodun ne olduğunu hatırlamıyorsanız o satırı boş bırakın, birlikte bakarız. Boş bırakılan kodlara hiçbir işlem yapılmaz, oldukları gibi kalırlar.
 
 Ayrıca bundan sonra verilecek her yeni kodun dört korumayla birlikte oluşturulmasını öneriyoruz. Mevcut kodlardan ikisi zaten bu kalıpta: THANKYOU30 ve BASKET20.
 
