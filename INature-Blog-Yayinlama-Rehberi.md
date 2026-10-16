@@ -14,11 +14,11 @@ INature yönetim paneli üzerinden, adım adım
 
 ## Neden bu adım var
 
-Blog otomasyonu her Pazartesi çalışıyor ve yeni yazıları hazırlıyor. Ancak hiçbirini kendiliğinden yayınlamıyor; hepsini **taslak** olarak bırakıp sizin onayınızı bekliyor.
+Blog yazıları artık Blog Kiti ile sizin tarafınızdan hazırlanıyor. Metni yapay zekâ hazırlıyor, yayın kararını siz veriyorsunuz. Bu Hizmet Sözleşmesi'nin 1.3 maddesinde yazılıdır: *"Yayın kararı her zaman Müşteri'nindir."*
 
-Bu bilinçli bir karardır ve Hizmet Sözleşmesi'nin 1.3 maddesinde yazılıdır: *"Yayın kararı her zaman Müşteri'nindir."*
+Yazıyı kendiniz hazırlıyor olmanız, aşağıdaki kontrol adımını gereksiz kılmaz. Tam tersini yapar. Bir modelin ürettiği metin akıcı olduğu için doğru görünür, oysa akıcılık doğruluk demek değildir. Dördüncü adımdaki kontrol listesindeki hataların hepsi gerçek yazılarda çıktı.
 
-Shopify, taslak yazıları mağazada hiç göstermez. Dolayısıyla bir yazı siz onaylayana kadar sitede görünmez. Sitede en son 30 Temmuz tarihli yazının görünmesinin sebebi budur: yayınlanmış son yazı odur.
+Shopify, taslak yazıları mağazada hiç göstermez. Bir yazı siz görünürlüğünü açana kadar sitede bulunmaz.
 
 ---
 
@@ -30,19 +30,21 @@ Tarayıcıdan panel adresine gidin ve şifrenizle giriş yapın.
 
 ---
 
-## Adım 2: Bekleyen taslakları görün
+## Adım 2: Yazıyı panele girin
 
-Listenin üstünde üç sekme vardır:
+Sağ üstten yeni yazı oluşturun ve kitin hazırladığı metni yapıştırın. Başlık, gövde, özet ve arama motoru açıklaması alanlarını doldurun.
+
+Yazıyı tek oturumda bitirmek zorunda değilsiniz. Görünürlük düğmesi kapalıyken kaydederseniz yazı taslak olarak bekler ve sitede görünmez.
+
+Listenin üstündeki üç sekme nerede olduğunuzu gösterir:
 
 | Sekme | Gösterdiği |
 |---|---|
 | **All** | Bütün yazılar |
 | **Visible** | Sitede yayında olanlar |
-| **Hidden** | Onayınızı bekleyen taslaklar |
+| **Hidden** | Kaydedilmiş ama yayınlanmamış yazılar |
 
-**Hidden** sekmesine tıklayın. Bekleyen taslak varsa sekmenin yanındaki sayı size kaç tane olduğunu söyler.
-
-Her satırda yazının başlığı, görünürlük durumu, yazarı ve son güncelleme tarihi bulunur.
+**Hidden** sekmesinde şu anda 28 Eylül tarihli bir yazı bekliyor: *Living With Eczema Prone Skin: My 6 Gentle Routine Tips*. Önceki sistemin hazırladığı son taslaktır. Okuyup yayınlayabilir veya silebilirsiniz.
 
 ---
 
@@ -98,19 +100,21 @@ Yeni yazı listenin en üstünde çıkmalıdır. Çıkmazsa sayfayı yenileyin; 
 
 ## Önerilen ritim
 
-Otomasyon haftada iki yazı üretiyor. Haftada bir kez, on beş dakikalık bir gözden geçirme yeterlidir.
+Ayda iki yazı. Hangi tarihte yayınlandığı önemli değil, aralığın düzenli olması önemli.
 
-Birikmesini beklemeyin. Bir ay bekletildiğinde önünüzde sekiz yazı birden bulursunuz ve bu iş ertelenir. Haftalık ritimde ise her seferinde iki yazı okunur.
+Arama motorları yeni bir yazıyı bulup sıralamaya oturtana kadar genellikle birkaç ay geçer. Bu yüzden yayınlanmayan bir yazı sadece bugünün trafiğini değil, üç ay sonrasının trafiğini de kaybettirir. Düzen, tek tek yazıların mükemmelliğinden daha belirleyicidir.
+
+Kit kurulduktan sonra bir yazının hazırlanması yarım saati geçmez. Asıl zaman yayın öncesi kontrolde geçer.
 
 ---
 
-## Otomatik yayınlama neden önerilmiyor
+## Kontrol adımı neden atlanmamalı
 
-Otomasyonu, üretilen yazıları doğrudan yayınlayacak şekilde ayarlamak teknik olarak mümkündür. Bunu önermiyoruz.
+Metni okuyup doğrudan yapıştırmak ve yayınlamak mümkün. Bunu önermiyoruz.
 
-Yukarıdaki kontrol listesindeki hataların tamamı gerçek yazılarda ortaya çıktı ve tamamı taslak aşamasında yakalandığı için siteye hiç ulaşmadı. Onay adımı kaldırıldığında bu hatalar doğrudan yayına girer.
+Dördüncü adımdaki kontrol listesindeki hataların tamamı gerçek yazılarda ortaya çıktı ve tamamı yayın öncesinde yakalandığı için siteye hiç ulaşmadı. Kontrol kaldırıldığında bu hatalar doğrudan yayına girer.
 
-Yanlış bir ürün iddiası yayına girdiğinde bunun bedeli, haftada on beş dakikalık gözden geçirmeden çok daha yüksektir.
+Yanlış bir ürün iddiası yayına girdiğinde bunun bedeli, yazı başına on beş dakikalık okumadan çok daha yüksektir. Kozmetik mevzuatında kanıtlanamayan bir iddia, iyi niyetle yazılmış olsa bile ihlaldir.
 
 ---
 

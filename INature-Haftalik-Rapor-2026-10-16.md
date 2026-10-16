@@ -98,6 +98,14 @@ Blog yazılarının hazırlanması için bir kit oluşturuldu. Kit, yapay zekâ 
 
 Kitin en önemli dosyası `03-uyum-kurallari.md`. Kozmetik mevzuatı, bir ürün hakkında yapılan her iddianın Ürün Bilgi Dosyasında kanıtla desteklenmesini zorunlu kılıyor. Model bu dosyayı okuduğunda, kanıtlanamayacak iddiaları metne koymuyor.
 
+### Önceki sistem devre dışı bırakıldı
+
+Blog yazıları bu döneme kadar sunucuda haftalık çalışan bir otomasyonla hazırlanıyordu. Bu sistem 4 Ekim'den beri hata veriyordu ve üretim yapmıyordu. Hata, kullandığı yapay zekâ modelinin sağlayıcı tarafından katalogdan kaldırılmasından kaynaklanıyordu.
+
+Blog üretimi kite devredildiği için otomasyon onarılmadı, zamanlaması kaldırıldı. Servis duruyor ancak artık tetiklenmiyor, dolayısıyla boşa çalışmıyor. Veri ve ayarları yerinde, gerekirse geri açılabilir.
+
+Bu değişikliğin pratik anlamı şu: blog üretimi artık bizim çalıştırdığımız hiçbir sisteme bağlı değil. Kit sizde, yazıyı istediğiniz an hazırlayabilirsiniz.
+
 Kurulum bir defaya mahsus. Kullanım adımları bir sonraki bölümde.
 
 ---
@@ -149,6 +157,8 @@ Mail akışları kurulduktan sonra kendi başına çalışır, günlük müdahal
 ## 6. Blog yazılarının arama motorlarındaki yeri
 
 Mağazada 16 yayınlanmış blog yazısı var. Sonuncusu 20 Eylül'de yayınlandı. Bugün itibarıyla 26 gündür yeni yazı eklenmedi.
+
+Panelde ayrıca yayınlanmayı bekleyen bir yazı duruyor: *Living With Eczema Prone Skin: My 6 Gentle Routine Tips*, 28 Eylül tarihli. Önceki sistemin hazırladığı son taslak. Blog articles bölümünde Hidden sekmesinde görünür. Okunup yayınlanırsa aradaki boşluk kapanmaya başlar.
 
 ### Neden önemli
 
