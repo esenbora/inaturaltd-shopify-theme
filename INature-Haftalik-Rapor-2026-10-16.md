@@ -79,7 +79,11 @@ Koleksiyon kaldırıldı. Kaldırmadan önce içindeki 32 ürünün tamamının 
 
 İndirim kodları tarafında da iki düzeltme yapıldı. BASKET20 koduna bitiş tarihi ve kullanım limiti tanımlandı. AGAIN10 ve COMEBACK10 kodlarının diğer indirimlerle üst üste binmesi kapatıldı.
 
-Burada açık kalan bir konu var. Mağazada 50 indirim kodu tanımlı, bunların 33'ü aktif. Aktif kodların 31'inde bitiş tarihi, 30'unda kullanım limiti yok. 24'ü bugüne kadar hiç kullanılmamış. Bitiş tarihi olmayan bir indirim kodu, bir kere internete düştüğünde süresiz olarak geçerli kalır.
+Burada açık kalan bir konu var ve bu dönemde ölçünce sanılandan büyük çıktı. Mağazada 50 indirim kodu tanımlı, 33'ü aktif. Aktif kodların 20'si isme veya bir gruba verilmiş kodlar ve bu yirmisinin **hiçbirinde** bitiş tarihi, toplam kullanım limiti, kişi başı kullanım limiti veya minimum sepet tutarı tanımlı değil.
+
+Dört korumanın dördü birden eksik olunca şu ortaya çıkıyor: bu kodlardan biri bir indirim sitesine veya bir paylaşıma düşerse süresiz ve sınırsız sayıda kullanılabilir. Minimum sepet tutarı da olmadığı için tek bir ürün alıp yarı fiyatına çıkmak mümkün. Listedeki en yüksek kod yüzde 50, ardından yüzde 45 ve iki tane yüzde 40 geliyor.
+
+Kodların tam listesi ve her biri için verilmesi gereken karar Onay Talebi belgesinde. Hangi kodun tek kişiye, hangisinin bir gruba verildiğini yalnızca siz bildiğiniz için bu temizlik tek taraflı yapılmıyor: yanlış kapatmak, açık bırakmak kadar zarar verir.
 
 ---
 
@@ -190,13 +194,17 @@ Kit kurulduktan sonra bir yazının hazırlanması yarım saati geçmez. Asıl z
 
 ---
 
-## 7. Onay bekleyen iki konu
+## 7. Onay bekleyen dört karar
 
-Bu iki iş hazır ve test edilmiş durumda, gönderim kararı sizde. Ayrıntıları 16 Ekim tarihli Onay Talebi belgesinde.
+Dördünün ayrıntısı da 16 Ekim tarihli Onay Talebi belgesinde. İlk ikisi kurulu ve test edilmiş durumda.
 
 **1.** Maile kayıtlı olup hiç sipariş vermemiş 150 aboneye hoş geldin indirimi hatırlatması.
 
 **2.** Son altı ayın müşterilerine yorum daveti. Mağazadaki 38 ürünün 26'sında hiç yorum yok, bunların 12'si son dönemde satılmış durumda ve yorum istenebilir.
+
+**3.** Ücretsiz kargo eşiğinin 30 sterline çıkarılması. 15 Ekim raporunda ölçülen en büyük tek kaldıraçtı.
+
+**4.** Yirmi isme özel indirim kodunun her biri için verilecek karar. Aralarında en aceleli olan budur, sebebi aşağıda.
 
 ---
 
@@ -206,7 +214,7 @@ Bu iki iş hazır ve test edilmiş durumda, gönderim kararı sizde. Ayrıntıla
 
 **Hypoallergenic ifadesi.** Üreticiden Ürün Bilgi Dosyası kanıtı bekleniyor. Kanıt gelirse ifade kalır, gelmezse 14 üründeki 40 kullanım tek işlemde kaldırılır. Hazırlık tamamlandı.
 
-**İndirim kodu düzeni.** 31 aktif kodun bitiş tarihi, 30'unun kullanım limiti yok.
+**İndirim kodu düzeni.** Onay Talebi belgesindeki liste işaretlenip geri döndüğünde uygulanacak.
 
 **Mükerrer müşteri kayıtları.** Aynı kişiye ait bölünmüş kayıtlar var. Birleştirme için gereken yetki henüz açık değil.
 
@@ -218,7 +226,7 @@ Bu iki iş hazır ve test edilmiş durumda, gönderim kararı sizde. Ayrıntıla
 
 1. Onay bekleyen iki gönderimin karara bağlanması
 2. Blog yayınının düzene sokulması, ilk yazının kitle hazırlanması
-3. İndirim kodlarına bitiş tarihi ve kullanım limiti tanımlanması
+3. İşaretlenmiş indirim kodu listesine göre temizliğin uygulanması
 4. Böcek kovucu ve hypoallergenic konularında gelen cevaba göre işlem
 5. Kalan maillerin görünümünün siteyle eşitlenmesi
 
