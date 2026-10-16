@@ -77,11 +77,15 @@ Katalogda aynı ürünleri gösteren ikinci bir koleksiyon vardı. Arama motorla
 
 Koleksiyon kaldırıldı. Kaldırmadan önce içindeki 32 ürünün tamamının ana koleksiyonda bulunduğu doğrulandı ve liste yedeklendi. Eski adres yeni adrese yönlendiriliyor, yönlendirmenin çalıştığı kontrol edildi.
 
-Aynı konunun ikinci yarısı bu dönemde ortaya çıktı. Mağazada, Shopify'ın kendiliğinden oluşturduğu bir ürün listesi sayfası daha var. Bu sayfa silinemez, mağaza yapısının parçasıdır. Sitenin arama motorlarına sunduğu haritada yer almaz, yani o adres arama motoruna hiç gösterilmez.
+Aynı konunun ikinci yarısı bu dönemde ortaya çıktı ve ilk bakışta sanılandan büyük çıktı. Mağazada, Shopify'ın kendiliğinden oluşturduğu bir ürün listesi sayfası daha var. Bu sayfa silinemez, mağaza yapısının parçasıdır. Shopify onu sitenin arama motorlarına sunduğu haritaya da koymaz, yani o adres arama motoruna hiç gösterilmez.
 
-Buna rağmen sitenin en görünür üç düğmesi o adrese gidiyordu: ana sayfadaki "Shop the range", öne çıkan ürünlerin altındaki "Shop all" ve yorum ödülü sayfasındaki düğme. Bir sitede iç bağlantılar, arama motoruna hangi sayfanın önemli olduğunu söyler. Burada en güçlü üç işaret, gösterilmeyen bir adresi işaret ediyordu. Kataloğun asıl sayfası ise bu desteği hiç almıyordu.
+Buna rağmen sitenin katalog bağlantılarının tamamı o adrese gidiyordu. Üst menüdeki "Shop all" her sayfada, ürün sayfalarındaki "All products" izi, koleksiyon sayfalarındaki "All" filtresi, sepet, sepet çekmecesi, bulunamayan sayfa ve ana sayfadaki iki büyük düğme. Toplam on bir giriş.
 
-Üçünün de hedefi kataloğun asıl adresi olacak şekilde düzeltildi, değişiklik yayına alınmayı bekliyor. Alışveriş yapan açısından hiçbir şey değişmiyor, iki adres de aynı 38 ürünü gösteriyor.
+Bir sitede iç bağlantılar, arama motoruna hangi sayfanın önemli olduğunu söyler. Burada sitenin bütün katalog ağırlığı gösterilmeyen bir adrese akıyordu. Haritada yer alan asıl katalog sayfası ise bu desteği hiç almıyordu. İki sayfa da aynı 38 ürünü taşıdığı için arama motoru bunları birbirinin kopyası olarak görür ve ikisini birden aşağı çeker.
+
+Ana sayfadaki iki düğmenin hedefi asıl katalog sayfasına çevrildi. Kalan dokuz giriş için bağlantıları tek tek değiştirmek yerine sayfanın kendisine adres bildirimi eklendi: Shopify'ın otomatik sayfası artık arama motoruna "asıl adres şudur" diyerek kataloğun gerçek sayfasını gösteriyor. Bu çözüm on bir girişin hepsini birden kapatıyor, dışarıdan verilmiş ve kayıtlı bağlantıları da toplar, ileride bir isim değişirse kırılmaz.
+
+Değişiklik yayında ve doğrulandı. Alışveriş yapan açısından hiçbir şey değişmiyor, iki adres de aynı ürünleri göstermeye devam ediyor.
 
 İndirim kodları tarafında da iki düzeltme yapıldı. BASKET20 koduna bitiş tarihi ve kullanım limiti tanımlandı. AGAIN10 ve COMEBACK10 kodlarının diğer indirimlerle üst üste binmesi kapatıldı.
 
