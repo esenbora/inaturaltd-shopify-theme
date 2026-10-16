@@ -13,7 +13,7 @@
       "type": "hero",
       "settings": {
         "eyebrow": "100% natural · now in the UK",
-        "heading": "<p>Clean care, <em>naturally</em>.</p>",
+        "heading": "Clean care, naturally.",
         "subheading": "100% natural, dermatologically tested skincare for the whole family, sun care, baby, face and body. Trusted by 50,000+ across Europe, now in the UK.",
         "cta_primary_label": "Shop the range",
         "cta_primary_url": "/collections/all-products",
@@ -23,10 +23,12 @@
     },
     "marquee": {
       "type": "marquee",
-      "settings": {}
+      "settings": {
+        "items": ""
+      }
     },
-    "values": {
-      "type": "value-props",
+    "trust": {
+      "type": "trust-row",
       "settings": {}
     },
     "featured": {
@@ -34,43 +36,18 @@
       "settings": {
         "eyebrow": "Customer Favourites",
         "heading": "Your most-loved natural essentials.",
+        "collection": "",
         "cta_label": "Shop all",
         "cta_url": "/collections/all-products"
       }
     },
-    "editorial": {
-      "type": "editorial",
+    "values": {
+      "type": "value-props",
       "settings": {
-        "media_position": "left",
-        "eyebrow": "Our story",
-        "heading": "A 2,000-year-old olive grove. A modern beauty cabinet.",
-        "cta_label": "Read the full story",
-        "cta_url": "/pages/about"
+        "eyebrow": "",
+        "heading": "",
+        "subheading": ""
       }
-    },
-    "ingredients": {
-      "type": "ingredients",
-      "settings": {}
-    },
-    "testimonials": {
-      "type": "testimonials",
-      "settings": {}
-    },
-    "trust": {
-      "type": "trust-row",
-      "settings": {}
-    },
-    "quality_marks": {
-      "type": "quality-marks",
-      "settings": {}
-    },
-    "newsletter": {
-      "type": "newsletter",
-      "settings": {}
-    },
-    "journal": {
-      "type": "journal-strip",
-      "settings": {}
     },
     "bundles": {
       "type": "featured-collection",
@@ -80,6 +57,62 @@
         "collection": "bundles-sets",
         "cta_label": "Shop bundles",
         "cta_url": "/collections/bundles-sets"
+      }
+    },
+    "ingredients": {
+      "type": "ingredients",
+      "settings": {
+        "before_label": "Before",
+        "after_label": "After",
+        "cta_label": "Shop sensitive skin care",
+        "cta_url": ""
+      }
+    },
+    "quality_marks": {
+      "type": "quality-marks",
+      "settings": {
+        "eyebrow": "Our quality marks",
+        "heading": "Certified, not just claimed.",
+        "subheading": "",
+        "certificates_url": "https://incia.com/sertifikalarimiz/"
+      }
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "settings": {
+        "eyebrow": "Reviews",
+        "heading": "",
+        "subheading": ""
+      }
+    },
+    "editorial": {
+      "type": "editorial",
+      "settings": {
+        "video_url": "",
+        "media_position": "left",
+        "eyebrow": "Our story",
+        "heading": "A 2,000-year-old olive grove. A modern beauty cabinet.",
+        "body": "",
+        "cta_label": "Read the full story",
+        "cta_url": "/pages/about"
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "eyebrow": "First-time shopper?",
+        "heading": "Get 15% off your first order.",
+        "subheading": "Plus restock alerts, INCIA arrivals from Türkiye, and the occasional founder note. Unsubscribe in one click.",
+        "placeholder": "your@email.com",
+        "button_label": "Get my 15% off"
+      }
+    },
+    "journal": {
+      "type": "journal-strip",
+      "settings": {
+        "eyebrow": "",
+        "heading": "",
+        "blog": ""
       }
     }
   },
