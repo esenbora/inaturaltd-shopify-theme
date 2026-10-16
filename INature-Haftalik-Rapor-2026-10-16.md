@@ -19,7 +19,7 @@
 
 Bu dönemde üç yeni sistem kuruldu ve çalışır hale getirildi: sepeti yarıda bırakan müşteriyi geri çağıran mail dizisi, ilk siparişten sonra devreye giren tekrar satın alma hatırlatması, ve blog yazılarının sizin tarafınızdan hazırlanmasını sağlayan blog kiti.
 
-Bunların yanında mağaza içinde biriken birkaç düzensizlik giderildi: katalogdaki çift koleksiyon kaldırıldı, karşılama mailinde yanlış ürünün görünmesine yol açan ayar düzeltildi, maillerin görünümü site tasarımıyla eşitlendi.
+Bunların yanında mağaza içinde biriken birkaç düzensizlik giderildi: katalogdaki çift koleksiyon kaldırıldı, ana sayfanın en görünür düğmeleri doğru katalog sayfasına çevrildi, karşılama mailinde yanlış ürünün görünmesine yol açan ayar düzeltildi, maillerin görünümü site tasarımıyla eşitlendi.
 
 Dönem içinde ayrıca dört ayrı ölçüm belgesi hazırlandı. Müşteri tabanı, brüt marj, sadakat programı ve indirim yapısı bu belgelerde ele alındı. İçerikleri burada tekrarlanmıyor.
 
@@ -77,6 +77,12 @@ Katalogda aynı ürünleri gösteren ikinci bir koleksiyon vardı. Arama motorla
 
 Koleksiyon kaldırıldı. Kaldırmadan önce içindeki 32 ürünün tamamının ana koleksiyonda bulunduğu doğrulandı ve liste yedeklendi. Eski adres yeni adrese yönlendiriliyor, yönlendirmenin çalıştığı kontrol edildi.
 
+Aynı konunun ikinci yarısı bu dönemde ortaya çıktı. Mağazada, Shopify'ın kendiliğinden oluşturduğu bir ürün listesi sayfası daha var. Bu sayfa silinemez, mağaza yapısının parçasıdır. Sitenin arama motorlarına sunduğu haritada yer almaz, yani o adres arama motoruna hiç gösterilmez.
+
+Buna rağmen sitenin en görünür üç düğmesi o adrese gidiyordu: ana sayfadaki "Shop the range", öne çıkan ürünlerin altındaki "Shop all" ve yorum ödülü sayfasındaki düğme. Bir sitede iç bağlantılar, arama motoruna hangi sayfanın önemli olduğunu söyler. Burada en güçlü üç işaret, gösterilmeyen bir adresi işaret ediyordu. Kataloğun asıl sayfası ise bu desteği hiç almıyordu.
+
+Üçünün de hedefi kataloğun asıl adresi olacak şekilde düzeltildi, değişiklik yayına alınmayı bekliyor. Alışveriş yapan açısından hiçbir şey değişmiyor, iki adres de aynı 38 ürünü gösteriyor.
+
 İndirim kodları tarafında da iki düzeltme yapıldı. BASKET20 koduna bitiş tarihi ve kullanım limiti tanımlandı. AGAIN10 ve COMEBACK10 kodlarının diğer indirimlerle üst üste binmesi kapatıldı.
 
 Burada açık kalan bir konu var ve bu dönemde ölçünce sanılandan büyük çıktı. Mağazada 50 indirim kodu tanımlı, 33'ü aktif. Aktif kodların 20'si isme veya bir gruba verilmiş kodlar ve bu yirmisinin **hiçbirinde** bitiş tarihi, toplam kullanım limiti, kişi başı kullanım limiti veya minimum sepet tutarı tanımlı değil.
@@ -84,6 +90,14 @@ Burada açık kalan bir konu var ve bu dönemde ölçünce sanılandan büyük �
 Dört korumanın dördü birden eksik olunca şu ortaya çıkıyor: bu kodlardan biri bir indirim sitesine veya bir paylaşıma düşerse süresiz ve sınırsız sayıda kullanılabilir. Minimum sepet tutarı da olmadığı için tek bir ürün alıp yarı fiyatına çıkmak mümkün. Listedeki en yüksek kod yüzde 50, ardından yüzde 45 ve iki tane yüzde 40 geliyor.
 
 Kodların tam listesi ve her biri için verilmesi gereken karar Onay Talebi belgesinde. Hangi kodun tek kişiye, hangisinin bir gruba verildiğini yalnızca siz bildiğiniz için bu temizlik tek taraflı yapılmıyor: yanlış kapatmak, açık bırakmak kadar zarar verir.
+
+### Site kayıtlarının karşılaştırılması
+
+Site dosyalarının bizdeki kaydı ile canlı mağazadaki hali bu dönemde karşılaştırıldı. Dört dosyada fark çıktı ve farkların tamamında canlı mağaza esas alındı. Sitede görünen hiçbir şey değiştirilmedi.
+
+Bu karşılaştırma şu nedenle yapılıyor. Site iki ayrı yerden düzenlenebiliyor: yönetim ekranındaki tema editöründen ve dosya tarafından. İki taraf birbirinden habersiz ilerlerse, eski bir kopyadan yapılan bir güncelleme yeni olanı siler. Bu mağazada daha önce üç kez yaşandı. Her seferinde ürün sayfalarındaki yorumlar veya sepetteki hediye seçici kayboldu ve bir keresinde beş gün boyunca fark edilmedi. Düzenli karşılaştırma bunun tekrarlanmasını önlüyor.
+
+Karşılaştırmadan bir soru çıktı. Üst bardaki Trustpilot bağlantısı `www.inatureltd.com` adresine gidiyor, mağazanın adresi ise `inatureltd.co.uk`. Trustpilot dışarıdan sorgulamaya kapalı olduğu için hangisinin doğru olduğu buradan doğrulanamadı. Trustpilot hesabınızın hangi alan adına kayıtlı olduğunu bildirmeniz yeterli, bağlantı ona göre düzeltilir.
 
 ---
 
@@ -186,6 +200,16 @@ Panelin Analytics bölümünde, hangi aramalardan geldiğiniz ortalama sıralama
 
 Görüntülenmesi yüksek ama tıklanması düşük aramalar da dikkat ister. Orada sorun sıralama değil, başlık ve açıklama metni olabilir.
 
+### Bunun ürün sayfalarına etkisi
+
+Bu dönemde bir ürün sayfası örnek olarak baştan sona incelendi: koyu koltuk altı için üretilen deodorant. Sayfa 28 günde arama sonuçlarında 158 kez göründü ve hiç tıklanmadı.
+
+Sayfanın kendisinde eksik bulunamadı. Ürünün ne olduğu, ne olmadığı, koltuk altının neden koyulaştığı ve antiperspiranttan farkı dâhil yedi soru sayfada cevaplanmış durumda. İlgili blog yazısı da sayfaya altı ayrı yerden bağlantı veriyor.
+
+Eksik olan sıralama. Sayfa bu aramalarda 10 ile 13 arasında çıkıyor, yani ilk sayfanın en altı ile ikinci sayfanın başı. Orada görünmek tıklanmak anlamına gelmiyor, tıklamaların neredeyse tamamı ilk üç sıraya gidiyor. 158 görüntülenmeye karşılık sıfır tıklama bu konumda beklenen sonuçtur.
+
+Çıkarım şu: bu sayfa metinle düzeltilecek durumda değil, zaten düzgün. Sayfayı yukarı taşıyacak olan, sitenin o konudaki genel ağırlığı. O ağırlığı kuran da bu bölümün başında anlatılan yazı düzeni. Ürün sayfalarının sırası, blog yazıları biriktikçe yükselir. Bu, blog yayınının neden ürün satışıyla doğrudan ilgili olduğunun somut örneğidir.
+
 ### Önerilen düzen
 
 Ayda iki yazı. Her yazı ikiden üçe kadar ürün sayfasına bağlantı versin. Tarih önemli değil, aralığın düzenli olması önemli.
@@ -214,13 +238,17 @@ Kit kurulduktan sonra bir yazının hazırlanması yarım saati geçmez. Asıl z
 
 ## 8. Bekleyen konular
 
-**Böcek kovucu ürünü.** PT19 yetkilendirmesi hakkında beklenen cevap 24 Eylül'den beri açık.
+**Böcek kovucu ürünü.** Birleşik Krallık'ta böcek kovucu bir ürün kozmetik sayılmaz, biyosidal ürün sayılır. Biyosidal Ürünler Yönetmeliği bu ürünleri numaralandırılmış tiplere ayırır ve kovucular 19 numaralı tiptir, kısa adıyla PT19. Bu tipteki bir ürünün satılabilmesi için hem etken maddesinin onaylı olması hem de ürünün Sağlık ve Güvenlik Kurumundan yetkilendirme almış olması gerekir. Kozmetik mevzuatına uygun olmak yeterli değildir, bu tamamen ayrı bir rejimdir.
+
+Üreticiden beklenen, ürünün bu yetkilendirmeye sahip olduğunu gösteren belgedir. Talep 24 Eylül'den beri açık. Belge gelene kadar ürünün kovucu özelliği öne çıkarılarak pazarlanmaması güvenli olan yoldur.
 
 **Hypoallergenic ifadesi.** Üreticiden Ürün Bilgi Dosyası kanıtı bekleniyor. Kanıt gelirse ifade kalır, gelmezse 14 üründeki 40 kullanım tek işlemde kaldırılır. Hazırlık tamamlandı.
 
 **İndirim kodu düzeni.** Onay Talebi belgesindeki liste işaretlenip geri döndüğünde uygulanacak.
 
-**Mükerrer müşteri kayıtları.** Aynı kişiye ait bölünmüş kayıtlar var ve sipariş sayısına bağlı her kural bunların üzerinde yanlış çalışıyor. Birleştirme yetkisinin kapalı olduğu doğrulandı, talep Açık Kalan Kararlar belgesinde.
+**Mükerrer müşteri kayıtları.** Aynı kişiye ait bölünmüş kayıtlar var ve sipariş sayısına bağlı her kural bunların üzerinde yanlış çalışıyor. Birleştirme yetkisinin hâlâ kapalı olduğu bu rapor hazırlanırken yeniden ölçüldü. Talep Açık Kalan Kararlar belgesinde.
+
+**Trustpilot alan adı.** Üst bardaki bağlantının hangi adrese gitmesi gerektiği teyit bekliyor. Ayrıntısı üçüncü bölümde.
 
 **Eski maillerin görünümü.** İki sepet maili ve karşılama dizisinin ikinci maili eski şablonda duruyor.
 
@@ -229,10 +257,11 @@ Kit kurulduktan sonra bir yazının hazırlanması yarım saati geçmez. Asıl z
 ## 9. Sıradaki öncelikler
 
 1. Onay bekleyen iki gönderimin karara bağlanması
-2. Blog yayınının düzene sokulması, ilk yazının kitle hazırlanması
+2. Bekleyen blog taslağının gözden geçirilip yayınlanması, ardından ayda iki yazılık düzene geçilmesi
 3. İşaretlenmiş indirim kodu listesine göre temizliğin uygulanması
 4. Böcek kovucu ve hypoallergenic konularında gelen cevaba göre işlem
-5. Kalan maillerin görünümünün siteyle eşitlenmesi
+5. Kalan üç mailin görünümünün siteyle eşitlenmesi
+6. Trustpilot alan adının teyidi ve bağlantının düzeltilmesi
 
 ---
 
