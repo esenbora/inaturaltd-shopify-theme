@@ -16,7 +16,7 @@
         "heading": "<p>Clean care, <em>naturally</em>.</p>",
         "subheading": "100% natural, dermatologically tested skincare for the whole family, sun care, baby, face and body. Trusted by 50,000+ across Europe, now in the UK.",
         "cta_primary_label": "Shop the range",
-        "cta_primary_url": "/collections/all",
+        "cta_primary_url": "/collections/all-products",
         "cta_secondary_label": "Bestsellers",
         "cta_secondary_url": "/collections/bestsellers-1"
       }
@@ -35,7 +35,7 @@
         "eyebrow": "Customer Favourites",
         "heading": "Your most-loved natural essentials.",
         "cta_label": "Shop all",
-        "cta_url": "/collections/all"
+        "cta_url": "/collections/all-products"
       }
     },
     "editorial": {
