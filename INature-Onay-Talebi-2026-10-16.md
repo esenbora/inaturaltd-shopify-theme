@@ -229,17 +229,17 @@ Karşılaştırma için: sadakat şemasında önerilen ödül 5 sterlindi ve sip
 
 **☐ Yüzde 30 kalsın**
 
-## Bir yetki talebi
+## Karar 6: Mükerrer müşteri kayıtları
 
 Mağazadaki müşteri kayıtlarında aynı kişiye ait bölünmüş kayıtlar var. Bunlar büyük ölçüde eski sistemden taşınırken oluştu. Bölünmüş kayıt iki şeyi bozuyor: müşterinin gerçek sipariş sayısı olduğundan düşük görünüyor, ve sipariş sayısına bağlı her kural yanlış çalışıyor. Sadakat şeması bunların başında geliyor.
 
-Birleştirme işlemi için uygulamanın `write_customers` yetkisine ihtiyacı var. Bu yetki şu anda kapalı. Açılması Shopify yönetim ekranından uygulama ayarları üzerinden yapılıyor ve geri alınabilir bir işlem.
+Birleştirme işlemi Shopify yönetim ekranında hazır duruyor. Müşteri kaydının üzerindeki birleştirme seçeneği iki kaydı tek kayda indiriyor ve sipariş geçmişini koruyor.
 
-Yetki açıldığında birleştirme listesi hazırlanıp önce size gösterilir, onayınızdan sonra uygulanır. Hiçbir kayıt otomatik birleştirilmez.
+Bizden istenen, hangi kayıtların aynı kişiye ait olduğunu gösteren listedir. Liste çıkarılıp size verilir, birleştirme kararını kayıt kayıt siz verirsiniz. Ek bir yetki açılmasına gerek yok.
 
-**☐ Yetki açılacak**
+**☐ Liste hazırlansın**
 
-**☐ Şimdilik açılmasın**
+**☐ Şimdilik gerek yok**
 
 ## Bu hafta tamamlananlar
 
@@ -261,7 +261,7 @@ Aynı mailde bir noktayı açıklığa kavuşturmak gerekiyor: indirim butonunun
 
 ## Özet
 
-Bu belge, 8 Ekim'den bu yana hazırlanan raporlarda açık kalmış bütün kararları tek yere topluyor. Beş karar ve bir yetki talebi var.
+Bu belge, 8 Ekim'den bu yana hazırlanan raporlarda açık kalmış bütün kararları tek yere topluyor. Altı karar var.
 
 **1.** 150 aboneye hoş geldin hatırlatması gönderilsin mi.
 
@@ -273,7 +273,7 @@ Bu belge, 8 Ekim'den bu yana hazırlanan raporlarda açık kalmış bütün kara
 
 **5.** Yorum ödülünün oranı ne olsun.
 
-**6.** Müşteri kayıtlarını birleştirme yetkisi açılsın mı.
+**6.** Mükerrer müşteri kayıtlarının listesi çıkarılsın mı.
 
 İlk ikisi kurulu ve test edilmiş durumda, onay verdiğiniz gün çıkarlar. Üçüncüsü ve beşincisi tek birer ayar değişikliği. Dördüncüsü listeyi işaretlemenizi gerektiriyor ve aralarında en aceleli olanı odur, çünkü açık bugün de duruyor.
 

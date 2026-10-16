@@ -220,7 +220,7 @@ Kit kurulduktan sonra bir yazının hazırlanması yarım saati geçmez. Asıl z
 
 ## 7. Açık kalan kararlar
 
-8 Ekim'den bu yana raporlarda açık kalmış bütün kararlar tek belgeye toplandı: 16 Ekim tarihli Açık Kalan Kararlar. Beş karar ve bir yetki talebi var, hepsi bir oturumda kapatılabilir. İlk ikisi kurulu ve test edilmiş durumda.
+8 Ekim'den bu yana raporlarda açık kalmış bütün kararlar tek belgeye toplandı: 16 Ekim tarihli Açık Kalan Kararlar. Altı karar var, hepsi bir oturumda kapatılabilir. İlk ikisi kurulu ve test edilmiş durumda.
 
 **1.** Maile kayıtlı olup hiç sipariş vermemiş 150 aboneye hoş geldin indirimi hatırlatması.
 
@@ -232,7 +232,7 @@ Kit kurulduktan sonra bir yazının hazırlanması yarım saati geçmez. Asıl z
 
 **5.** Yorum ödülünün oranı. Mevcut yüzde 30, sepet başına 7,74 sterline mal oluyor ve sipariş başına 2,89 sterlin katkı bırakıyor. Yorum daveti onaylanırsa bu kod ilk kez ciddi biçimde kullanılmaya başlayacağı için oran kararının önce verilmesi gerekiyor.
 
-**6.** Müşteri kayıtlarını birleştirme yetkisi. Teknik bir izin, ticari sonucu yok.
+**6.** Mükerrer müşteri kayıtlarının listesinin çıkarılması. Birleştirme Shopify yönetim ekranından yapılıyor, ek bir yetki gerekmiyor.
 
 ---
 
@@ -246,7 +246,7 @@ Kit kurulduktan sonra bir yazının hazırlanması yarım saati geçmez. Asıl z
 
 **İndirim kodu düzeni.** Onay Talebi belgesindeki liste işaretlenip geri döndüğünde uygulanacak.
 
-**Mükerrer müşteri kayıtları.** Aynı kişiye ait bölünmüş kayıtlar var ve sipariş sayısına bağlı her kural bunların üzerinde yanlış çalışıyor. Birleştirme yetkisinin hâlâ kapalı olduğu bu rapor hazırlanırken yeniden ölçüldü. Talep Açık Kalan Kararlar belgesinde.
+**Mükerrer müşteri kayıtları.** Aynı kişiye ait bölünmüş kayıtlar var ve sipariş sayısına bağlı her kural bunların üzerinde yanlış çalışıyor. Birleştirme Shopify yönetim ekranındaki kendi özelliğiyle yapılabiliyor, bizden istenen hangi kayıtların eşleştiğini gösteren liste. Talep Açık Kalan Kararlar belgesinde.
 
 **Trustpilot alan adı.** Üst bardaki bağlantının hangi adrese gitmesi gerektiği teyit bekliyor. Ayrıntısı üçüncü bölümde.
 
