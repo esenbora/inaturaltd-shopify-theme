@@ -194,9 +194,9 @@ Kit kurulduktan sonra bir yazının hazırlanması yarım saati geçmez. Asıl z
 
 ---
 
-## 7. Onay bekleyen dört karar
+## 7. Açık kalan kararlar
 
-Dördünün ayrıntısı da 16 Ekim tarihli Onay Talebi belgesinde. İlk ikisi kurulu ve test edilmiş durumda.
+8 Ekim'den bu yana raporlarda açık kalmış bütün kararlar tek belgeye toplandı: 16 Ekim tarihli Açık Kalan Kararlar. Beş karar ve bir yetki talebi var, hepsi bir oturumda kapatılabilir. İlk ikisi kurulu ve test edilmiş durumda.
 
 **1.** Maile kayıtlı olup hiç sipariş vermemiş 150 aboneye hoş geldin indirimi hatırlatması.
 
@@ -205,6 +205,10 @@ Dördünün ayrıntısı da 16 Ekim tarihli Onay Talebi belgesinde. İlk ikisi k
 **3.** Ücretsiz kargo eşiğinin 30 sterline çıkarılması. 15 Ekim raporunda ölçülen en büyük tek kaldıraçtı.
 
 **4.** Yirmi isme özel indirim kodunun her biri için verilecek karar. Aralarında en aceleli olan budur, sebebi aşağıda.
+
+**5.** Yorum ödülünün oranı. Mevcut yüzde 30, sepet başına 7,74 sterline mal oluyor ve sipariş başına 2,89 sterlin katkı bırakıyor. Yorum daveti onaylanırsa bu kod ilk kez ciddi biçimde kullanılmaya başlayacağı için oran kararının önce verilmesi gerekiyor.
+
+**6.** Müşteri kayıtlarını birleştirme yetkisi. Teknik bir izin, ticari sonucu yok.
 
 ---
 
@@ -216,7 +220,7 @@ Dördünün ayrıntısı da 16 Ekim tarihli Onay Talebi belgesinde. İlk ikisi k
 
 **İndirim kodu düzeni.** Onay Talebi belgesindeki liste işaretlenip geri döndüğünde uygulanacak.
 
-**Mükerrer müşteri kayıtları.** Aynı kişiye ait bölünmüş kayıtlar var. Birleştirme için gereken yetki henüz açık değil.
+**Mükerrer müşteri kayıtları.** Aynı kişiye ait bölünmüş kayıtlar var ve sipariş sayısına bağlı her kural bunların üzerinde yanlış çalışıyor. Birleştirme yetkisinin kapalı olduğu doğrulandı, talep Açık Kalan Kararlar belgesinde.
 
 **Eski maillerin görünümü.** İki sepet maili ve karşılama dizisinin ikinci maili eski şablonda duruyor.
 

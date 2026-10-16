@@ -1,6 +1,6 @@
-# Onay Bekleyen Dört Karar
+# Açık Kalan Kararlar
 
-İki gönderim, bir eşik değişikliği ve yirmi indirim kodu. Hepsi ölçülmüş ve hazır, kararlar size ait
+8 Ekim'den bu yana açık kalmış bütün kararlar tek belgede. Hepsi ölçülmüş ve hazır, karar size ait
 
 **Tarih:** 16 Ekim 2026
 
@@ -8,7 +8,7 @@
 
 **Müşteri:** INATURE LIMITED
 
-**Kapsam:** Abone kampanyası, yorum daveti, ücretsiz kargo eşiği, isme özel indirim kodları
+**Kapsam:** Abone kampanyası, yorum daveti, kargo eşiği, indirim kodları, yorum ödülü, müşteri kayıtları
 
 ## Neden onay soruluyor
 
@@ -201,6 +201,46 @@ Listeyi işaretleyip geri gönderin, uygulaması kısa sürer. Hangi kodun ne ol
 
 Ayrıca bundan sonra verilecek her yeni kodun dört korumayla birlikte oluşturulmasını öneriyoruz. Mevcut kodlardan ikisi zaten bu kalıpta: THANKYOU30 ve BASKET20.
 
+## Onay 5: yorum ödülü oranı
+
+15 Ekim raporunda "gözden geçirilmeli" denmişti, karar maddesi haline getirilmemişti. Bu belgeye alınıyor.
+
+### Ölçülen durum
+
+Yorum bırakana verilen `THANKYOU30` kodu yüzde 30 indirim tanımlıyor, minimum sepet 30 sterlin. Kurulumu doğru: toplam 50 kullanım, kişi başı tek kullanım, 20 Mart 2027'de kapanıyor. Bugüne kadar hiç kullanılmamış.
+
+Sorun kurulumda değil, oranda. Sepet başına maliyeti 7,74 sterlin. Brüt marjın yüzde 43,5 olduğu bir yapıda bu, sipariş başına geriye 2,89 sterlin katkı bırakıyor.
+
+Karşılaştırma için: sadakat şemasında önerilen ödül 5 sterlindi ve sipariş başına katkının yaklaşık 6,10 sterlin olduğu hesabına dayanıyordu. Yorum ödülü, sadakat ödülünden pahalı durumda.
+
+### Seçenekler
+
+**Sabit tutar.** 30 sterlin üzerine 5 sterlin indirim. Yüzde 16,7'ye denk gelir, katkıyı yaklaşık 5,6 sterline çıkarır. Sabit tutarın avantajı öngörülebilir olması: sepet büyüdükçe maliyet artmaz.
+
+**Oranı düşürmek.** Yüzde 30 yerine yüzde 15. Maliyeti yarıya iner, yapı aynı kalır.
+
+**Aynı kalsın.** Henüz hiç kullanılmadığı için gerçek maliyeti test edilmemiş sayılır. Elli kullanımın tamamı dolarsa toplam maliyet yaklaşık 387 sterlin olur.
+
+Önerimiz sabit tutar. Yorum toplama daveti onaylanırsa bu kod ilk kez ciddi biçimde kullanılmaya başlayacak, yani oran kararının şimdi verilmesi gerekiyor.
+
+**☐ 30 sterlin üzerine 5 sterlin sabit indirim**
+
+**☐ Yüzde 15 indirim**
+
+**☐ Yüzde 30 kalsın**
+
+## Bir yetki talebi
+
+Mağazadaki müşteri kayıtlarında aynı kişiye ait bölünmüş kayıtlar var. Bunlar büyük ölçüde eski sistemden taşınırken oluştu. Bölünmüş kayıt iki şeyi bozuyor: müşterinin gerçek sipariş sayısı olduğundan düşük görünüyor, ve sipariş sayısına bağlı her kural yanlış çalışıyor. Sadakat şeması bunların başında geliyor.
+
+Birleştirme işlemi için uygulamanın `write_customers` yetkisine ihtiyacı var. Bu yetki şu anda kapalı. Açılması Shopify yönetim ekranından uygulama ayarları üzerinden yapılıyor ve geri alınabilir bir işlem.
+
+Yetki açıldığında birleştirme listesi hazırlanıp önce size gösterilir, onayınızdan sonra uygulanır. Hiçbir kayıt otomatik birleştirilmez.
+
+**☐ Yetki açılacak**
+
+**☐ Şimdilik açılmasın**
+
 ## Bu hafta tamamlananlar
 
 **Çift koleksiyon kaldırıldı.** Katalogda aynı ürünleri gösteren ikinci bir koleksiyon vardı ve arama motorları için iki ayrı sayfa gibi görünüyordu. Kaldırıldı, eski adresi yeni adrese yönlendiriliyor ve yönlendirmenin çalıştığı doğrulandı.
@@ -221,7 +261,7 @@ Aynı mailde bir noktayı açıklığa kavuşturmak gerekiyor: indirim butonunun
 
 ## Özet
 
-Bu belgenin sizden istediği dört şey var:
+Bu belge, 8 Ekim'den bu yana hazırlanan raporlarda açık kalmış bütün kararları tek yere topluyor. Beş karar ve bir yetki talebi var.
 
 **1.** 150 aboneye hoş geldin hatırlatması gönderilsin mi.
 
@@ -231,4 +271,10 @@ Bu belgenin sizden istediği dört şey var:
 
 **4.** Yirmi isme özel indirim kodunun her biri için üç seçenekten hangisi.
 
-İlk ikisi kurulu ve test edilmiş durumda, onay verdiğiniz gün çıkarlar. Üçüncüsü tek bir ayar değişikliği. Dördüncüsü listeyi işaretlemenizi gerektiriyor ve aralarında en aceleli olanı odur, çünkü açık bugün de duruyor.
+**5.** Yorum ödülünün oranı ne olsun.
+
+**6.** Müşteri kayıtlarını birleştirme yetkisi açılsın mı.
+
+İlk ikisi kurulu ve test edilmiş durumda, onay verdiğiniz gün çıkarlar. Üçüncüsü ve beşincisi tek birer ayar değişikliği. Dördüncüsü listeyi işaretlemenizi gerektiriyor ve aralarında en aceleli olanı odur, çünkü açık bugün de duruyor.
+
+Bu altı maddenin tamamı bir oturumda kapatılabilir. Bundan sonrası bizde.
