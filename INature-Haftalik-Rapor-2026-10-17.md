@@ -5,13 +5,13 @@
 
 ---
 
-**Dönem:** 3 - 16 Ekim 2026
+**Dönem:** 12 - 16 Ekim 2026
 
 **Müşteri:** INATURE LIMITED
 
 **Hazırlayan:** Stimilon LLC
 
-**Rapor tarihi:** 16 Ekim 2026
+**Rapor tarihi:** 17 Ekim 2026
 
 ---
 
@@ -21,7 +21,7 @@ Bu dönemde üç yeni sistem kuruldu ve çalışır hale getirildi: sepeti yarı
 
 Bunların yanında mağaza içinde biriken birkaç düzensizlik giderildi: katalogdaki çift koleksiyon kaldırıldı, ana sayfanın en görünür düğmeleri doğru katalog sayfasına çevrildi, karşılama mailinde yanlış ürünün görünmesine yol açan ayar düzeltildi, maillerin görünümü site tasarımıyla eşitlendi.
 
-Dönem içinde ayrıca dört ayrı ölçüm belgesi hazırlandı. Müşteri tabanı, brüt marj, sadakat programı ve indirim yapısı bu belgelerde ele alındı. İçerikleri burada tekrarlanmıyor.
+Ekim ayı içinde ayrıca dört ayrı ölçüm belgesi hazırlandı. Müşteri tabanı, brüt marj, sadakat programı ve indirim yapısı bu belgelerde ele alındı. İçerikleri burada tekrarlanmıyor.
 
 Raporun beşinci bölümü, kurulan sistemlerin sizin tarafınızdan nasıl kullanılacağını adım adım anlatıyor. Altıncı bölüm blog yazılarının arama motorlarındaki yerini ele alıyor.
 
@@ -178,7 +178,7 @@ Mail akışları kurulduktan sonra kendi başına çalışır, günlük müdahal
 
 ## 6. Blog yazılarının arama motorlarındaki yeri
 
-Mağazada 16 yayınlanmış blog yazısı var. Sonuncusu 20 Eylül'de yayınlandı. Bugün itibarıyla 26 gündür yeni yazı eklenmedi.
+Mağazada 16 yayınlanmış blog yazısı var. Sonuncusu 20 Eylül'de yayınlandı. Bugün itibarıyla 27 gündür yeni yazı eklenmedi.
 
 Panelde ayrıca yayınlanmayı bekleyen bir yazı duruyor: *Living With Eczema Prone Skin: My 6 Gentle Routine Tips*, 28 Eylül tarihli. Önceki sistemin hazırladığı son taslak. Blog articles bölümünde Hidden sekmesinde görünür. Okunup yayınlanırsa aradaki boşluk kapanmaya başlar.
 
