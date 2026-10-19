@@ -122,3 +122,53 @@ export interface ProductCreateInput {
   metaTitle?: string;
   metaDescription?: string;
 }
+
+/**
+ * A product variant reduced to the fields the store checks read.
+ *
+ * Kept separate from `Product` on purpose. `Product` is the editor-facing
+ * shape and the forms write it back; these fields are read-only here and
+ * adding them to `Product` would invite a form to start writing weights and
+ * barcodes it has no UI for.
+ */
+export interface AuditVariant {
+  id: string;
+  sku: string;
+  /** Manufacturer barcode (EAN/GTIN). Empty string when unset. */
+  barcode: string;
+  /** Shipping weight in grams. Shopify reports 0 for a blank field, so 0 and
+   * "unset" are indistinguishable and both land here as null. */
+  grams: number | null;
+  requiresShipping: boolean;
+}
+
+/** A product plus the variant detail the checks need. */
+export interface AuditProduct {
+  id: string;
+  title: string;
+  handle: string;
+  status: string;
+  metaDescription: string;
+  variants: AuditVariant[];
+}
+
+/** How a discount code limits its own use. Read-only; the checks only report. */
+export interface DiscountCode {
+  id: string;
+  title: string;
+  /** Shopify status: ACTIVE, EXPIRED or SCHEDULED. */
+  status: string;
+  /** ISO timestamp the code stops working, or null when it never expires. */
+  endsAt: string | null;
+  /** Total redemptions allowed across all customers, null when unlimited. */
+  usageLimit: number | null;
+  appliesOncePerCustomer: boolean;
+  /** Times the code has been used. */
+  usageCount: number;
+  /** Percentage off as a fraction (0.3 = 30%), null for fixed-amount codes. */
+  percentage: number | null;
+  /** Fixed amount off, null for percentage codes. */
+  fixedAmount: number | null;
+  /** Minimum basket subtotal required, null when there is no minimum. */
+  minimumSubtotal: number | null;
+}

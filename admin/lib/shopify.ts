@@ -20,6 +20,8 @@
 import type {
   Article,
   ArticleInput,
+  AuditProduct,
+  DiscountCode,
   Product,
   ProductCreateInput,
   ProductImage,
@@ -522,6 +524,11 @@ interface RawProductImage {
 interface RawVariant {
   readonly id: number;
   readonly price?: string;
+  readonly sku?: string | null;
+  readonly barcode?: string | null;
+  /** Shipping weight in grams. Shopify sends 0 when the field was left blank. */
+  readonly grams?: number;
+  readonly requires_shipping?: boolean;
 }
 
 interface RawProduct {
@@ -1067,3 +1074,389 @@ export async function reorderProductImages(
     product: { id: Number(productId), images },
   });
 }
+
+// ---------------------------------------------------------------------------
+// GraphQL (store checks)
+// ---------------------------------------------------------------------------
+
+/**
+ * GraphQL transport, alongside the REST `request()` above rather than replacing it.
+ *
+ * The rest of this file is REST because that is what the article and product
+ * editors need. The store checks are here instead for two reasons that are not
+ * a matter of taste:
+ *
+ * - Discounts are unreachable over REST with the scopes this app holds.
+ *   `/price_rules.json` answers 403 "requires merchant approval for
+ *   read_price_rules scope", while the GraphQL `codeDiscountNodes` field is
+ *   covered by `write_discounts`, which is granted.
+ * - The product checks need the SEO description, and REST only carries it as a
+ *   metafield fetched per product. That is one request per product on a page
+ *   that already reads the whole catalogue. GraphQL returns it inline.
+ *
+ * Token handling is shared with REST, so there is one auth path, not two.
+ */
+async function graphqlRequest<T>(
+  env: ShopifyEnv,
+  query: string,
+  variables: Record<string, unknown> = {},
+): Promise<T> {
+  const token = await getAccessToken();
+  if (token === null) {
+    throw new Error("Shopify access token unavailable — check credentials");
+  }
+
+  const response = await fetch(
+    `https://${env.shop}/admin/api/${API_VERSION}/graphql.json`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Shopify-Access-Token": token,
+      },
+      body: JSON.stringify({ query, variables }),
+      cache: "no-store",
+    },
+  );
+
+  if (!response.ok) {
+    const message = await extractErrorMessage(response);
+    throw new Error(`Shopify ${response.status}: ${message}`);
+  }
+
+  const payload = (await response.json()) as {
+    data?: T;
+    errors?: { message?: string }[];
+  };
+
+  // A GraphQL error arrives with HTTP 200, so the status check above misses it.
+  if (payload.errors && payload.errors.length > 0) {
+    const first = payload.errors[0]?.message ?? "unknown GraphQL error";
+    throw new Error(`Shopify GraphQL: ${first}`);
+  }
+  if (!payload.data) throw new Error("Shopify GraphQL: empty response");
+
+  return payload.data;
+}
+
+/** Shopify reports weight in the merchant's chosen unit; the checks want grams. */
+const WEIGHT_IN_GRAMS: Record<string, number> = {
+  GRAMS: 1,
+  KILOGRAMS: 1000,
+  OUNCES: 28.349523125,
+  POUNDS: 453.59237,
+};
+
+function toGrams(value: number, unit: string): number | null {
+  const factor = WEIGHT_IN_GRAMS[unit];
+  if (factor === undefined) return null;
+  const grams = value * factor;
+  // Shopify stores an unset weight as 0, so 0 and "blank" cannot be told apart.
+  return grams > 0 ? grams : null;
+}
+
+const AUDIT_PRODUCTS_QUERY = `
+  query AuditProducts($cursor: String) {
+    products(first: 100, after: $cursor, query: "status:active") {
+      pageInfo { hasNextPage endCursor }
+      nodes {
+        id
+        title
+        handle
+        status
+        seo { description }
+        variants(first: 50) {
+          nodes {
+            id
+            sku
+            barcode
+            inventoryItem {
+              requiresShipping
+              measurement { weight { value unit } }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+interface RawAuditProductsResponse {
+  readonly products: {
+    readonly pageInfo: { readonly hasNextPage: boolean; readonly endCursor: string | null };
+    readonly nodes: readonly {
+      readonly id: string;
+      readonly title?: string;
+      readonly handle?: string;
+      readonly status?: string;
+      readonly seo?: { readonly description?: string | null } | null;
+      readonly variants: {
+        readonly nodes: readonly {
+          readonly id: string;
+          readonly sku?: string | null;
+          readonly barcode?: string | null;
+          readonly inventoryItem?: {
+            readonly requiresShipping?: boolean;
+            readonly measurement?: {
+              readonly weight?: { readonly value?: number; readonly unit?: string } | null;
+            } | null;
+          } | null;
+        }[];
+      };
+    }[];
+  };
+}
+
+/** Pagination guard: 100 products a page, so this covers 1000 before giving up. */
+const MAX_PAGES = 10;
+
+/**
+ * Active products with the variant detail the store checks read.
+ *
+ * Only active products: a draft or archived product with a missing barcode is
+ * not a problem anyone needs to see on a dashboard, and including them would
+ * bury the live catalogue in noise.
+ */
+export async function listAuditProducts(): Promise<AuditProduct[]> {
+  const env = readEnv();
+  if (isMockMode(env)) {
+    warnMock();
+    return MOCK_AUDIT_PRODUCTS;
+  }
+
+  const collected: AuditProduct[] = [];
+  let cursor: string | null = null;
+
+  for (let page = 0; page < MAX_PAGES; page += 1) {
+    const data: RawAuditProductsResponse = await graphqlRequest<RawAuditProductsResponse>(
+      env,
+      AUDIT_PRODUCTS_QUERY,
+      { cursor },
+    );
+
+    for (const node of data.products.nodes) {
+      collected.push({
+        id: node.id,
+        title: node.title ?? "",
+        handle: node.handle ?? "",
+        status: node.status ?? "",
+        metaDescription: node.seo?.description ?? "",
+        variants: node.variants.nodes.map((variant) => {
+          const weight = variant.inventoryItem?.measurement?.weight;
+          return {
+            id: variant.id,
+            sku: variant.sku ?? "",
+            barcode: variant.barcode ?? "",
+            grams:
+              weight?.value !== undefined && weight.unit !== undefined
+                ? toGrams(weight.value, weight.unit)
+                : null,
+            requiresShipping: variant.inventoryItem?.requiresShipping ?? true,
+          };
+        }),
+      });
+    }
+
+    if (!data.products.pageInfo.hasNextPage) return collected;
+    cursor = data.products.pageInfo.endCursor;
+  }
+
+  return collected;
+}
+
+const DISCOUNT_CODES_QUERY = `
+  query DiscountCodes($cursor: String) {
+    codeDiscountNodes(first: 100, after: $cursor) {
+      pageInfo { hasNextPage endCursor }
+      nodes {
+        id
+        codeDiscount {
+          __typename
+          ... on DiscountCodeBasic {
+            title
+            status
+            endsAt
+            usageLimit
+            appliesOncePerCustomer
+            asyncUsageCount
+            customerGets {
+              value {
+                __typename
+                ... on DiscountPercentage { percentage }
+                ... on DiscountAmount { amount { amount } }
+              }
+            }
+            minimumRequirement {
+              __typename
+              ... on DiscountMinimumSubtotal {
+                greaterThanOrEqualToSubtotal { amount }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+interface RawDiscountValue {
+  readonly __typename?: string;
+  readonly percentage?: number;
+  readonly amount?: { readonly amount?: string };
+}
+
+interface RawCodeDiscount {
+  readonly __typename?: string;
+  readonly title?: string;
+  readonly status?: string;
+  readonly endsAt?: string | null;
+  readonly usageLimit?: number | null;
+  readonly appliesOncePerCustomer?: boolean;
+  readonly asyncUsageCount?: number;
+  readonly customerGets?: { readonly value?: RawDiscountValue } | null;
+  readonly minimumRequirement?: {
+    readonly __typename?: string;
+    readonly greaterThanOrEqualToSubtotal?: { readonly amount?: string };
+  } | null;
+}
+
+interface RawDiscountCodesResponse {
+  readonly codeDiscountNodes: {
+    readonly pageInfo: { readonly hasNextPage: boolean; readonly endCursor: string | null };
+    readonly nodes: readonly {
+      readonly id: string;
+      readonly codeDiscount: RawCodeDiscount;
+    }[];
+  };
+}
+
+function toNumber(value: string | undefined): number | null {
+  if (value === undefined) return null;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+/**
+ * Every code discount in the store, whatever its status.
+ *
+ * Expired and scheduled codes come back too. The checks filter to active ones,
+ * but the counts on the page read better when the total is known: "20 of 33
+ * active codes" says more than "20 codes".
+ *
+ * Only `DiscountCodeBasic` is unpacked. Free-shipping and buy-x-get-y codes
+ * come back as other types with no percentage or minimum to read, so they are
+ * skipped rather than reported with empty fields that would look like faults.
+ */
+export async function listDiscountCodes(): Promise<DiscountCode[]> {
+  const env = readEnv();
+  if (isMockMode(env)) {
+    warnMock();
+    return MOCK_DISCOUNT_CODES;
+  }
+
+  const collected: DiscountCode[] = [];
+  let cursor: string | null = null;
+
+  for (let page = 0; page < MAX_PAGES; page += 1) {
+    const data: RawDiscountCodesResponse = await graphqlRequest<RawDiscountCodesResponse>(
+      env,
+      DISCOUNT_CODES_QUERY,
+      { cursor },
+    );
+
+    for (const node of data.codeDiscountNodes.nodes) {
+      const discount = node.codeDiscount;
+      if (discount.__typename !== "DiscountCodeBasic") continue;
+
+      const value = discount.customerGets?.value;
+      collected.push({
+        id: node.id,
+        title: discount.title ?? "",
+        status: discount.status ?? "",
+        endsAt: discount.endsAt ?? null,
+        usageLimit: discount.usageLimit ?? null,
+        appliesOncePerCustomer: discount.appliesOncePerCustomer ?? false,
+        usageCount: discount.asyncUsageCount ?? 0,
+        percentage: value?.percentage ?? null,
+        fixedAmount: toNumber(value?.amount?.amount),
+        minimumSubtotal: toNumber(
+          discount.minimumRequirement?.greaterThanOrEqualToSubtotal?.amount,
+        ),
+      });
+    }
+
+    if (!data.codeDiscountNodes.pageInfo.hasNextPage) return collected;
+    cursor = data.codeDiscountNodes.pageInfo.endCursor;
+  }
+
+  return collected;
+}
+
+/**
+ * Mock fixtures for the store checks.
+ *
+ * Deliberately not a clean catalogue. Each of the checks has one offender here
+ * so the page can be seen doing its job without credentials, which is the only
+ * way to tell "no findings" from "the check never ran".
+ */
+const MOCK_AUDIT_PRODUCTS: AuditProduct[] = [
+  {
+    id: "gid://shopify/Product/1",
+    title: "INCIA Natural Baby Oil 110ml",
+    handle: "incia-natural-baby-oil",
+    status: "ACTIVE",
+    metaDescription: "A gentle baby oil for everyday use.",
+    variants: [
+      { id: "gid://shopify/ProductVariant/1", sku: "MINC-000033", barcode: "8680551230019", grams: 145, requiresShipping: true },
+    ],
+  },
+  {
+    // Weighs half what it claims to hold: the shape of a mistyped volume.
+    id: "gid://shopify/Product/2",
+    title: "INCIA Nourishing Gel for Dry Skin 150ml",
+    handle: "incia-cream-for-dry-skin-and-eczema",
+    status: "ACTIVE",
+    metaDescription: "A rich hydrating gel for very dry skin.",
+    variants: [
+      { id: "gid://shopify/ProductVariant/2", sku: "MINC-000112", barcode: "", grams: 75, requiresShipping: true },
+    ],
+  },
+  {
+    id: "gid://shopify/Product/3",
+    title: "INCIA Natural Toothpaste 50ml",
+    handle: "incia-natural-toothpaste",
+    status: "ACTIVE",
+    metaDescription: "",
+    variants: [
+      { id: "gid://shopify/ProductVariant/3", sku: "MINC-000118", barcode: "", grams: 100, requiresShipping: true },
+    ],
+  },
+];
+
+const MOCK_DISCOUNT_CODES: DiscountCode[] = [
+  {
+    id: "gid://shopify/DiscountCodeNode/1",
+    title: "WELCOME15",
+    status: "ACTIVE",
+    endsAt: "2027-03-31T23:00:00Z",
+    usageLimit: 500,
+    appliesOncePerCustomer: true,
+    usageCount: 12,
+    percentage: 0.15,
+    fixedAmount: null,
+    minimumSubtotal: 20,
+  },
+  {
+    // Open-ended, unlimited, no minimum: every guard missing at once.
+    id: "gid://shopify/DiscountCodeNode/2",
+    title: "FRIEND50",
+    status: "ACTIVE",
+    endsAt: null,
+    usageLimit: null,
+    appliesOncePerCustomer: false,
+    usageCount: 0,
+    percentage: 0.5,
+    fixedAmount: null,
+    minimumSubtotal: null,
+  },
+];

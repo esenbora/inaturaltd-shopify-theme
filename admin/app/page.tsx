@@ -1,8 +1,16 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { listArticles } from "@/lib/shopify";
+import { listArticles, listAuditProducts, listDiscountCodes } from "@/lib/shopify";
 import { getSalesSummary } from "@/lib/sales";
 import { assessBlogHealth, blogHealthMessage } from "@/lib/blog-health";
+import {
+  checkBarcodes,
+  checkDiscountGuards,
+  checkSearchDescriptions,
+  checkStatedSize,
+  checksMessage,
+  summarise,
+} from "@/lib/store-checks";
 
 /**
  * Content dashboard.
@@ -69,10 +77,13 @@ function Unavailable() {
 
 export default async function Home() {
   // One failing source must not take the whole dashboard down with it.
-  const [articlesResult, salesResult] = await Promise.allSettled([
-    listArticles(),
-    getSalesSummary(30),
-  ]);
+  const [articlesResult, salesResult, productsResult, discountsResult] =
+    await Promise.allSettled([
+      listArticles(),
+      getSalesSummary(30),
+      listAuditProducts(),
+      listDiscountCodes(),
+    ]);
 
   let blogStat: ReactNode = <Unavailable />;
   let blogTone: Tone = "neutral";
@@ -106,6 +117,30 @@ export default async function Home() {
     } else {
       salesStat = headline;
     }
+  }
+
+  // The card carries the count only. Which checks failed is the page's job;
+  // a dashboard that explains is a dashboard nobody skims.
+  let checksStat: ReactNode = <Unavailable />;
+  let checksTone: Tone = "neutral";
+  if (
+    productsResult.status === "fulfilled" ||
+    discountsResult.status === "fulfilled"
+  ) {
+    const summary = summarise([
+      ...(productsResult.status === "fulfilled"
+        ? [
+            checkStatedSize(productsResult.value),
+            checkBarcodes(productsResult.value),
+            checkSearchDescriptions(productsResult.value),
+          ]
+        : []),
+      ...(discountsResult.status === "fulfilled"
+        ? [checkDiscountGuards(discountsResult.value)]
+        : []),
+    ]);
+    checksStat = checksMessage(summary);
+    if (summary.high > 0) checksTone = "attention";
   }
 
   return (
@@ -144,6 +179,13 @@ export default async function Home() {
           href="/analytics"
           title="Analytics"
           description="Search rankings and traffic from Search Console and GA4."
+        />
+        <SectionCard
+          href="/checks"
+          title="Checks"
+          description="Sizes, barcodes and discount limits that have gone wrong quietly."
+          stat={checksStat}
+          tone={checksTone}
         />
       </div>
     </main>
