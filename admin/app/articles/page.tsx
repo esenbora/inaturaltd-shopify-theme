@@ -128,7 +128,7 @@ function ErrorState({ message }: { message: string }) {
 function ArticlesTable({ articles }: { articles: Article[] }) {
   return (
     <div className="card overflow-hidden">
-      <table className="min-w-full divide-y divide-line text-sm">
+      <div className="table-scroll"><table className="min-w-full divide-y divide-line text-sm">
         <thead className="bg-sand/50">
           <tr>
             <th className="px-4 py-3 text-left font-semibold text-muted">Title</th>
@@ -158,7 +158,7 @@ function ArticlesTable({ articles }: { articles: Article[] }) {
             </tr>
           ))}
         </tbody>
-      </table>
+      </table></div>
     </div>
   );
 }

@@ -150,7 +150,7 @@ export default async function SalesPage({ searchParams }: PageProps) {
         Where the orders come from
       </h2>
       <Panel title="Channel">
-        <table className="min-w-full divide-y divide-line text-sm">
+        <div className="table-scroll"><table className="min-w-full divide-y divide-line text-sm">
           <tbody className="divide-y divide-line">
             {channels.map((c) => (
               <tr key={c.channel}>
@@ -181,7 +181,7 @@ export default async function SalesPage({ searchParams }: PageProps) {
               </tr>
             ) : null}
           </tbody>
-        </table>
+        </table></div>
       </Panel>
 
       <div className="mt-4 grid gap-4 lg:grid-cols-2">
@@ -190,7 +190,7 @@ export default async function SalesPage({ searchParams }: PageProps) {
             What actually sells
           </h2>
           <Panel title="Units sold">
-            <table className="min-w-full divide-y divide-line text-sm">
+            <div className="table-scroll"><table className="min-w-full divide-y divide-line text-sm">
               <tbody className="divide-y divide-line">
                 {topSellers.map((s) => (
                   <tr key={s.title}>
@@ -218,7 +218,7 @@ export default async function SalesPage({ searchParams }: PageProps) {
                   </tr>
                 ) : null}
               </tbody>
-            </table>
+            </table></div>
           </Panel>
         </div>
 
@@ -227,7 +227,7 @@ export default async function SalesPage({ searchParams }: PageProps) {
             Left in the basket
           </h2>
           <Panel title={`${money(abandoned.value)} across ${abandoned.count} baskets`}>
-            <table className="min-w-full divide-y divide-line text-sm">
+            <div className="table-scroll"><table className="min-w-full divide-y divide-line text-sm">
               <tbody className="divide-y divide-line">
                 {abandoned.rows.map((r, i) => (
                   <tr key={`${r.createdAt}-${i}`}>
@@ -257,7 +257,7 @@ export default async function SalesPage({ searchParams }: PageProps) {
                   </tr>
                 ) : null}
               </tbody>
-            </table>
+            </table></div>
           </Panel>
           {abandoned.withEmail > 0 ? (
             <p className="mt-2 text-xs text-muted">

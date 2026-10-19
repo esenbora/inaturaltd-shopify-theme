@@ -34,8 +34,8 @@ export default function RootLayout({
     >
       <body className="flex min-h-full flex-col">
         <header className="sticky top-0 z-20 border-b border-line bg-cream/85 backdrop-blur">
-          <div className="mx-auto flex w-full max-w-5xl items-center gap-6 px-6 py-3">
-            <Link href="/" className="flex items-baseline gap-2">
+          <div className="mx-auto flex w-full max-w-5xl items-center gap-4 px-6 py-3 sm:gap-6">
+            <Link href="/" className="flex shrink-0 items-baseline gap-2">
               <span className="u-serif text-lg font-semibold text-ink">
                 INature
               </span>
@@ -44,7 +44,7 @@ export default function RootLayout({
               </span>
             </Link>
             <NavTabs />
-            <div className="ml-auto">
+            <div className="ml-auto shrink-0">
               <LogoutButton />
             </div>
           </div>

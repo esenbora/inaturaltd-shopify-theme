@@ -162,7 +162,7 @@ export default async function AnalyticsPage({ searchParams }: PageProps) {
               <p className="border-b border-line bg-sand/50 px-4 py-2 text-xs font-semibold text-muted">
                 Top queries
               </p>
-              <table className="min-w-full divide-y divide-line text-sm">
+              <div className="table-scroll"><table className="min-w-full divide-y divide-line text-sm">
                 <tbody className="divide-y divide-line">
                   {gsc.topQueries.slice(0, 10).map((q) => (
                     <tr key={q.query}>
@@ -176,14 +176,14 @@ export default async function AnalyticsPage({ searchParams }: PageProps) {
                     </tr>
                   ))}
                 </tbody>
-              </table>
+              </table></div>
             </div>
 
             <div className="card overflow-hidden">
               <p className="border-b border-line bg-sand/50 px-4 py-2 text-xs font-semibold text-muted">
                 Top pages
               </p>
-              <table className="min-w-full divide-y divide-line text-sm">
+              <div className="table-scroll"><table className="min-w-full divide-y divide-line text-sm">
                 <tbody className="divide-y divide-line">
                   {gsc.topPages.map((p) => (
                     <tr key={p.page}>
@@ -194,7 +194,7 @@ export default async function AnalyticsPage({ searchParams }: PageProps) {
                     </tr>
                   ))}
                 </tbody>
-              </table>
+              </table></div>
             </div>
           </div>
         </>
@@ -214,7 +214,7 @@ export default async function AnalyticsPage({ searchParams }: PageProps) {
               <p className="border-b border-line bg-sand/50 px-4 py-2 text-xs font-semibold text-muted">
                 Channels
               </p>
-              <table className="min-w-full divide-y divide-line text-sm">
+              <div className="table-scroll"><table className="min-w-full divide-y divide-line text-sm">
                 <tbody className="divide-y divide-line">
                   {ga4.channels.map((c) => (
                     <tr key={c.channel}>
@@ -225,14 +225,14 @@ export default async function AnalyticsPage({ searchParams }: PageProps) {
                     </tr>
                   ))}
                 </tbody>
-              </table>
+              </table></div>
             </div>
 
             <div className="card overflow-hidden">
               <p className="border-b border-line bg-sand/50 px-4 py-2 text-xs font-semibold text-muted">
                 Top landing pages
               </p>
-              <table className="min-w-full divide-y divide-line text-sm">
+              <div className="table-scroll"><table className="min-w-full divide-y divide-line text-sm">
                 <tbody className="divide-y divide-line">
                   {ga4.topPages.map((p) => (
                     <tr key={p.page}>
@@ -243,7 +243,7 @@ export default async function AnalyticsPage({ searchParams }: PageProps) {
                     </tr>
                   ))}
                 </tbody>
-              </table>
+              </table></div>
             </div>
           </div>
         </>

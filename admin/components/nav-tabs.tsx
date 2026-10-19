@@ -21,7 +21,7 @@ export function NavTabs() {
   if (pathname === "/login" || pathname.startsWith("/login/")) return null;
 
   return (
-    <nav className="flex items-center gap-1">
+    <nav className="nav-scroll flex items-center gap-1" aria-label="Sections">
       {TABS.map((tab) => {
         const active =
           pathname === tab.href || pathname.startsWith(`${tab.href}/`);

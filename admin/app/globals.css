@@ -32,6 +32,34 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/*
+ * Keyboard focus.
+ *
+ * Only `.input` carried a focus ring, so every button, link and tab was
+ * invisible to anyone navigating by keyboard: the focus moved but nothing on
+ * screen said where it had gone. The ring is drawn with `outline` rather than a
+ * box-shadow so it survives on elements that already set their own shadow, and
+ * `focus-visible` keeps it off mouse clicks, which is what stops teams removing
+ * it again.
+ */
+:where(a, button, [role="button"], summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-sage-dark);
+  outline-offset: 2px;
+  border-radius: 0.5rem;
+}
+
+/* Honour the system setting rather than animating regardless. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* Reusable component classes so pages stay readable and consistent. */
 @layer components {
   .u-serif {
@@ -213,4 +241,30 @@ body {
   pointer-events: none;
   float: left;
   height: 0;
+}
+
+/*
+ * A row of tabs that scrolls instead of breaking the header.
+ *
+ * The header is one flex row: wordmark, tabs, sign out. At six tabs it no
+ * longer fits a phone, and the overflow pushed the sign-out button off screen
+ * rather than wrapping. Letting the strip scroll keeps the header one line at
+ * every width, and the masked edge shows there is more to reach.
+ */
+.nav-scroll {
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.nav-scroll::-webkit-scrollbar {
+  display: none;
+}
+.nav-scroll > * {
+  flex-shrink: 0;
+}
+
+/* Tables are wider than a phone. Scroll the table, not the page. */
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
