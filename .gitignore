@@ -12,3 +12,7 @@ blog-engine/processed.json
 blog-engine/processed.json.tmp
 *.tsbuildinfo
 __pycache__/
+
+# Shopify galerisinden kaldirilan orijinal kapak gorselleri (120 MB).
+# Silinmeden once diske alindi; repoda tutulmaz, yedegi diskte.
+urun-gorselleri-arsiv/
