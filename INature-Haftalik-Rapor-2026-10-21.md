@@ -35,8 +35,8 @@ Bu bölüm dönemin tamamını tek sayfada özetler. Ayrıntılar sonraki bölü
 
 | Karar | Bizim yapacağımız | Ne zaman |
 |---|---|---|
-| Hoş geldin hatırlatması onaylandı | 150 aboneye gönderim | Gönderime hazır |
-| Yorum daveti onaylandı | Son 6 ayın müşterilerine davet | Gönderime hazır |
+| Hoş geldin hatırlatması onaylandı | 150 aboneye gönderildi | **Tamamlandı** |
+| Yorum daveti onaylandı | Toplu davet çalıştırıldı, 2 sipariş işlendi | **Tamamlandı**, ayrıntı 8. bölümde |
 | Kargo eşiği 25 sterline | Mağaza ayarı, site metinleri, sepet çubuğu | Tek işlemde |
 | Hediye eşiği 30 sterline | Otomatik indirim ve sepet çubuğu | Tek işlemde |
 | Mükerrer kayıtlar, aynı adres ölçütü | Eşleşen kayıt listesinin çıkarılması | Hazırlanıyor |
@@ -193,7 +193,7 @@ Bu rakamlar mevcut gösterim hacminden hesaplanmıştır, bir taahhüt değildir
 
 **Hoş geldin hatırlatması.** Onaylandı, gönderime hazır.
 
-**Yorum daveti.** Onaylandı. Yorumu olmayan ürünler öncelikli olacak şekilde son altı ayın müşterilerine gidecek.
+**Yorum daveti.** Onaylandı ve çalıştırıldı. Sonucu beklenenden farklı çıktı, 8. bölümde ayrıca anlatılıyor.
 
 **Kargo eşiği 25 sterline, hediye eşiği 30 sterline.** Bu değişiklik mağaza ayarı, sepetteki ilerleme çubuğu, otomatik hediye indirimi, kargo sayfası, sıkça sorulanlar ve ürün açıklamaları dâhil birden çok yerde aynı anda yapılmalıdır. Biri eksik kalırsa site bir eşik söyleyip başka bir eşikte davranır. Tek işlem olarak planlandı.
 
@@ -207,7 +207,38 @@ Bu rakamlar mevcut gösterim hacminden hesaplanmıştır, bir taahhüt değildir
 
 ---
 
-## 8. Sıradaki öncelikler
+## 8. Yorum daveti: sonuç ve bir düzeltme
+
+Toplu yorum daveti 22 Nisan tarihinden itibaren çalıştırıldı. Judge.me **2 sipariş** işledi ve ikisi de gönderilemedi, çünkü adresleri geçersizdi.
+
+Bu sonuç, daha önceki raporlarda kullanılan bir varsayımın yanlış olduğunu gösterdi. Önceki raporlarda "105 siparişe karşılık az yorum var, demek ki geçmiş müşterilere hiç sorulmamış" denmişti. **Sorulmuş.** Judge.me kurulduğunda geriye dönük tarama yapmış ve haziran ayından itibaren ulaşabildiği herkese sormuş. Bu yüzden toplu davet geriye işlenmemiş iş bulamadı.
+
+Ayrıca 105 rakamının kendisi yanıltıcı. Bu sayının içinde eski platformdan taşınan kayıtlar var. Mağaza Shopify'a geçerken önceki sitenin sipariş geçmişi de aktarılmış ve bunlar sipariş listesinde gerçek siparişlerle yan yana duruyor. Dolayısıyla Shopify üzerinde yapılmış gerçek sipariş sayısı daha düşük ve yorum oranı sanıldığı kadar kötü değil.
+
+### Asıl sorun: üç müşteriden birine ulaşılamıyor
+
+Sipariş vermiş 93 müşterinin e-posta adresleri tek tek sınıflandırıldı.
+
+| Grup | Kişi | Oran |
+|---|---|---|
+| Ulaşılabilir gerçek adres | 56 | yüzde 60 |
+| Anonim misafir kaydı | 27 | yüzde 29 |
+| Pazaryeri aktarma adresi | 8 | yüzde 9 |
+| Adres kayıtlı değil | 2 | yüzde 2 |
+
+**37 müşteriye hiçbir koşulda e-posta gönderilemez.** Bu bir ayar meselesi değil, o kayıtlarda kullanılabilir bir adres yok. Pazaryeri siparişleri mağazaya maskeli bir aktarma adresiyle geliyor, o adresler geri dönüyor ve pazaryeri kuralları da bu adreslere pazarlama yapılmasını yasaklıyor.
+
+Judge.me geçmişinde ayrıca geri dönen ve şikâyet işaretli adresler görüldü. Bunlar gönderen itibarını düşürür, yani diğer maillerin de ulaşmasını zorlaştırır. Bu adreslerin gönderim listelerinden çıkarılması gerekiyor.
+
+### Bundan sonrası
+
+Yorum sayısını artıracak olan şey daha fazla davet değil, **ulaşılabilirliği düzeltmek**. Pazaryerinden gelen müşteriye ulaşmanın tek yolu paket içine konacak karttır: üzerinde kare kod ve listeye katılma teşviki olan bir kart. Bu öneri ağustos ayında yapılmıştı ve kartın yönlendireceği adres hazır durumda. Baskı ve onay bekliyor.
+
+Ödeme adımındaki pazarlama izni kutusu kontrol edildi, doğru kurulu: kutu görünüyor, önceden işaretli değil, metni açık. Burada değişiklik gerekmiyor.
+
+---
+
+## 9. Sıradaki öncelikler
 
 1. Onaylanan iki gönderimin yapılması
 2. Kargo ve hediye eşiklerinin tek işlemde değiştirilmesi
