@@ -71,7 +71,22 @@
       {{ media | image_url: width: 1200 | prepend: 'https:' | json }}{%- unless forloop.last -%},{%- endunless -%}
     {%- endfor -%}
   ],
+  {%- comment -%}
+    sku ve gtin yalnizca doluyken basilir. Bos string Google icin gecersiz
+    bir deger: alan yokmus gibi degil, hatali doldurulmus gibi okunur.
+  {%- endcomment -%}
+  {%- if sku_value != blank -%}
   "sku": {{ sku_value | json }},
+  {%- endif -%}
+  {%- comment -%}
+    Uzunluga bagli gtin8/gtin12/gtin13 yerine tek gtin alani. Google 2024'ten
+    beri formattan bagimsiz okuyor, boylece 12 haneli bir UPC veya 8 haneli
+    bir EAN yeni bir uyari dogurmuyor. Set ve havlu gibi kendi barkodu
+    olmayan urunlerde alan hic cikmaz.
+  {%- endcomment -%}
+  {%- if variant.barcode != blank -%}
+  "gtin": {{ variant.barcode | json }},
+  {%- endif -%}
   "brand": {
     "@type": "Brand",
     "name": {{ p_vendor | json }}
@@ -92,6 +107,45 @@
     "worstRating": "{{ rating.scale_min }}"
   },
   {%- endif -%}
+  {%- comment -%}
+    Tekil yorumlar. Judge.me kendi JSON-LD cikttisini basarken bu dizi onda
+    duruyordu; uygulama tarafinda yapisal veri kapatildigi icin (28 Ekim 2026,
+    cift Product semasi uyarisi) buraya tasindi. Kaynak ayni metafield:
+    judgeme.review_widget_data, product-review-summary.liquid ile ayni veri.
+
+    Bes yorumla sinirli: Google daha fazlasini kullanmiyor ve her yorum
+    sayfanin HTML agirligina ekleniyor. Puan ve sayi aggregateRating'den
+    gelir, bu dizi onu tekrar etmez.
+  {%- endcomment -%}
+  {%- assign jm_schema = product.metafields.judgeme.review_widget_data.value -%}
+  {%- if jm_schema.reviews.size > 0 -%}
+  "review": [
+    {%- for r in jm_schema.reviews limit: 5 -%}
+    {
+      "@type": "Review",
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "{{ r.rating }}",
+        "bestRating": "5",
+        "worstRating": "1"
+      },
+      "author": {
+        "@type": "Person",
+        "name": {%- if r.reviewer_name != blank -%}{{ r.reviewer_name | json }}{%- else -%}"Anonymous"{%- endif -%}
+      }
+      {%- if r.created_at != blank -%},
+      "datePublished": "{{ r.created_at | date: '%Y-%m-%d' }}"
+      {%- endif -%}
+      {%- if r.title != blank -%},
+      "name": {{ r.title | strip_html | json }}
+      {%- endif -%}
+      {%- if r.body != blank -%},
+      "reviewBody": {{ r.body | strip_html | json }}
+      {%- endif -%}
+    }{%- unless forloop.last -%},{%- endunless -%}
+    {%- endfor -%}
+  ],
+  {%- endif -%}
   "offers": {
     "@type": "Offer",
     "url": {{ shop.url | append: product.url | json }},
@@ -100,7 +154,21 @@
     "availability": {{ availability_schema | json }},
     {%- comment -%} Tarih olmayinca Google fiyati bayat sayip gostermeyebiliyor; bir yil ileri yuvarlanan tarih. {%- endcomment -%}
     "priceValidUntil": "{{ 'now' | date: '%s' | plus: 31536000 | date: '%Y-%m-%d' }}",
-    "itemCondition": "https://schema.org/NewCondition"
+    "itemCondition": "https://schema.org/NewCondition",
+    {%- comment -%}
+      Iade politikasi. Shipping and Returns sayfasiyla ayni: 14 gun, kargo ile,
+      iade gonderim ucreti musteriye ait. ReturnFeesCustomerResponsibility
+      kullanildiginda returnShippingFeesAmount EKLENMEZ, Google o birlesimi
+      gecersiz sayar. Sayfa metni degisirse burasi da degismeli.
+    {%- endcomment -%}
+    "hasMerchantReturnPolicy": {
+      "@type": "MerchantReturnPolicy",
+      "applicableCountry": "GB",
+      "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+      "merchantReturnDays": 14,
+      "returnMethod": "https://schema.org/ReturnByMail",
+      "returnFees": "https://schema.org/ReturnFeesCustomerResponsibility"
+    }
   }
 }
 </script>

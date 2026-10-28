@@ -24,7 +24,22 @@
     "https://instagram.com/inatureuk",
     "https://www.ebay.co.uk/usr/inature",
     "https://uk.trustpilot.com/review/inatureltd.co.uk"
-  ]
+  ],
+  {%- comment -%}
+    Magaza genelinde gecerli iade politikasi. Urun semasindaki blokla ayni
+    bilgiyi tasir; Google ikisi birden varsa urun seviyesindekini kullanir,
+    bu blok urun disindaki sayfalar icin durur. merchantReturnLink politikanin
+    insan tarafindan okunabilir halini gosterir.
+  {%- endcomment -%}
+  "hasMerchantReturnPolicy": {
+    "@type": "MerchantReturnPolicy",
+    "applicableCountry": "GB",
+    "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+    "merchantReturnDays": 14,
+    "returnMethod": "https://schema.org/ReturnByMail",
+    "returnFees": "https://schema.org/ReturnFeesCustomerResponsibility",
+    "merchantReturnLink": "{{ shop.url }}/pages/shipping-returns"
+  }
 }
 </script>
 <script type="application/ld+json">
