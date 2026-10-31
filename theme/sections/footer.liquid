@@ -56,7 +56,7 @@
 
     <div class="site-footer__bottom">
       <span>© {{ 'now' | date: '%Y' }} {{ shop.name }} · Official UK distributor of INCIA</span>
-      <span>Free UK shipping over £20 · 14-day returns · info@inatureltd.com</span>
+      <span>Free UK shipping over £{{ settings.free_shipping_threshold | default: 25 }} · 14-day returns · info@inatureltd.com</span>
       <span>
         <a href="{{ shop.privacy_policy.url | default: '/policies/privacy-policy' }}">Privacy</a> ·
         <a href="/pages/terms-conditions">Terms</a> ·

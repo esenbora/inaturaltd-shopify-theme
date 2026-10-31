@@ -1,3 +1,5 @@
+{%- assign free_ship = settings.free_shipping_threshold | default: 25 -%}
+{%- assign flat_rate = settings.shipping_flat_rate | default: 3 -%}
 {%- comment -%}
   FAQ accordion, baked theme-side (no admin page body needed).
   Rendered by rich-text.liquid when page.handle == 'faq'.
@@ -68,11 +70,11 @@
     <div class="accordion">
       <details>
         <summary>How much is delivery, and how long does it take?</summary>
-        <div>Free UK shipping on orders over £20 (a flat £3 below that). We dispatch from the UK: orders placed before 23:00 are sent the same day (excluding weekends and holidays), and you'll get a track &amp; trace email. See our <a href="/pages/shipping-returns">Shipping &amp; Returns</a> page for full details.</div>
+        <div>Free UK shipping on orders over £{{ free_ship }} (a flat £{{ flat_rate }} below that). We dispatch from the UK: orders placed before 23:00 are sent the same day (excluding weekends and holidays), and you'll get a track &amp; trace email. See our <a href="/pages/shipping-returns">Shipping &amp; Returns</a> page for full details.</div>
       </details>
       <details>
         <summary>Do you offer any discounts?</summary>
-        <div>New customers get 15% off their first order when they join our mailing list. UK delivery is free on orders over £20.</div>
+        <div>New customers get 15% off their first order when they join our mailing list. UK delivery is free on orders over £{{ free_ship }}.</div>
       </details>
       <details>
         <summary>Can I return an item?</summary>

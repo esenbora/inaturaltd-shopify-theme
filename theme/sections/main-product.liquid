@@ -50,6 +50,21 @@
   endif
   assign price_amount = variant.price | divided_by: 100.00
   assign currency_code = cart.currency.iso_code | default: shop.currency
+  comment
+    Kargo ucreti teklifin kendi fiyatina gore. Google'in Merchant listings
+    icin belgeledigi alanlar shippingDestination, shippingRate ve deliveryTime;
+    esigi anlatan eligibleTransactionVolume listede yok. Iki ayri kargo blogu
+    (biri 0, biri 3) birbiriyle celisir ve tek bir ucretten kotu okunur, bu
+    yuzden urun tek basina alinsa ne odenecegi yaziliyor: esigin ustundeki
+    urunde 0, altindakinde sabit ucret. Rakamlar tema ayarindan gelir.
+  endcomment
+  assign free_ship = settings.free_shipping_threshold | default: 25
+  assign flat_rate = settings.shipping_flat_rate | default: 3
+  assign free_ship_pence = free_ship | times: 100
+  assign ship_cost = flat_rate | times: 100 | divided_by: 100.00
+  if variant.price >= free_ship_pence
+    assign ship_cost = 0
+  endif
 -%}
 
 <script type="application/ld+json">
@@ -154,7 +169,47 @@
     "availability": {{ availability_schema | json }},
     {%- comment -%} Tarih olmayinca Google fiyati bayat sayip gostermeyebiliyor; bir yil ileri yuvarlanan tarih. {%- endcomment -%}
     "priceValidUntil": "{{ 'now' | date: '%s' | plus: 31536000 | date: '%Y-%m-%d' }}",
+    {%- comment -%}
+      validFrom, priceValidUntil'in esi: teklifin ne zaman baslayip ne zaman
+      bayatladigini birlikte anlatirlar. Urunun yayin tarihi kullaniliyor;
+      taslak bir uründe bos kalabilecegi icin kosullu.
+    {%- endcomment -%}
+    {%- if product.published_at != blank -%}
+    "validFrom": "{{ product.published_at | date: '%Y-%m-%d' }}",
+    {%- endif -%}
     "itemCondition": "https://schema.org/NewCondition",
+    {%- comment -%}
+      Kargo. Ucret yukarida teklifin fiyatina gore hesaplandi. Teslim suresi
+      Shipping and Returns sayfasiyla ayni: 1-3 is gunu hazirlik, 1-3 is gunu
+      yolda. Sayfa degisirse burasi da degismeli.
+    {%- endcomment -%}
+    "shippingDetails": {
+      "@type": "OfferShippingDetails",
+      "shippingRate": {
+        "@type": "MonetaryAmount",
+        "value": "{{ ship_cost }}",
+        "currency": {{ currency_code | json }}
+      },
+      "shippingDestination": {
+        "@type": "DefinedRegion",
+        "addressCountry": "GB"
+      },
+      "deliveryTime": {
+        "@type": "ShippingDeliveryTime",
+        "handlingTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 1,
+          "maxValue": 3,
+          "unitCode": "DAY"
+        },
+        "transitTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 1,
+          "maxValue": 3,
+          "unitCode": "DAY"
+        }
+      }
+    },
     {%- comment -%}
       Iade politikasi. Shipping and Returns sayfasiyla ayni: 14 gun, kargo ile,
       iade gonderim ucreti musteriye ait. ReturnFeesCustomerResponsibility
@@ -451,7 +506,7 @@
 
       <!-- Perks -->
       <div class="pdp__perks">
-        <div class="perk">{% render 'icon', name: 'truck' %} <span><strong>Free UK shipping over £20</strong>, £3 below. Dispatched from the UK, usually 1-3 working days.</span></div>
+        <div class="perk">{% render 'icon', name: 'truck' %} <span><strong>Free UK shipping over £{{ settings.free_shipping_threshold | default: 25 }}</strong>, £{{ settings.shipping_flat_rate | default: 3 }} below. Dispatched from the UK, usually 1-3 working days.</span></div>
         <div class="perk">{% render 'icon', name: 'shield' %} <span><strong>14-day return policy.</strong> Unused, original packaging, we&apos;ll exchange or refund.</span></div>
         <div class="perk">{% render 'icon', name: 'heart' %} <span><strong>{% render 'social-proof-line' %}</strong>, from families across the UK.</span></div>
         <div class="perk">{% render 'icon', name: 'leaf' %} <span><strong>ETKO Cosmos · BioArge · Vegan · Cruelty-Free.</strong> 100% natural origin. Made in Türkiye.</span></div>
@@ -527,7 +582,7 @@
         {%- endif -%}
         <details>
           <summary>Shipping &amp; returns</summary>
-          <div>Dispatched from the UK. Free UK shipping on orders over £20 (£3 below). 14-day return policy on unused items in original packaging. International shipping available at checkout.{% if sku_value != blank %} SKU: {{ sku_value }}.{% endif %}</div>
+          <div>Dispatched from the UK. Free UK shipping on orders over £{{ settings.free_shipping_threshold | default: 25 }} (£{{ settings.shipping_flat_rate | default: 3 }} below). 14-day return policy on unused items in original packaging. International shipping available at checkout.{% if sku_value != blank %} SKU: {{ sku_value }}.{% endif %}</div>
         </details>
       </div>
     </div>

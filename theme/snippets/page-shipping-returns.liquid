@@ -1,10 +1,12 @@
+{%- assign free_ship = settings.free_shipping_threshold | default: 25 -%}
+{%- assign flat_rate = settings.shipping_flat_rate | default: 3 -%}
 <h2>Shipping</h2>
 
 <p>We dispatch all UK orders via <strong>Evri</strong> or <strong>Royal Mail</strong>.</p>
 
 <ul>
- <li><strong>Free UK shipping</strong> on orders over £20.</li>
- <li>Orders up to £20: a flat <strong>£3</strong> shipping fee.</li>
+ <li><strong>Free UK shipping</strong> on orders over £{{ free_ship }}.</li>
+ <li>Orders up to £{{ free_ship }}: a flat <strong>£{{ flat_rate }}</strong> shipping fee.</li>
  <li>Orders placed before <strong>23:00</strong> are dispatched the same day (except weekends, bank holidays and promotional days).</li>
  <li>You'll receive a track &amp; trace email so you can follow your parcel every step of the way.</li>
 </ul>

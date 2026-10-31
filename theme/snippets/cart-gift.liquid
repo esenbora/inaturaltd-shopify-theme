@@ -16,7 +16,9 @@
   [data-gift-block] instead, and the name field uses a wrapping label rather
   than a for/id pair.
 
-  One bar, two milestones: free UK shipping at £20, free gift at £25.
+  One bar, two milestones: free UK shipping and the free gift. Both figures
+  come from the theme settings (Shipping and gifts), never from a number
+  typed in here, so the bar, the picker and the schema cannot drift apart.
 
   Colours come from .ship-progress__* - the theme's own classes - rather than
   hardcoded hex, so the bar keeps matching if the palette ever changes.
@@ -151,8 +153,14 @@
   opens after it, because the name panel is what carries the confirm button.
 {%- endcomment -%}
 
-{%- assign ship_threshold = 2000 -%}
-{%- assign gift_threshold = 2500 -%}
+{%- comment -%}
+  Esikler tema ayarindan gelir (Shipping and gifts). Daha once burada iki
+  sabit duruyordu ve ayni rakam temada on dort yerde tekrar ediyordu;
+  esik degisince biri mutlaka geride kaliyordu. default filtresi, ayar
+  henuz kaydedilmemis bir temada barin bozulmamasi icin.
+{%- endcomment -%}
+{%- assign ship_threshold = settings.free_shipping_threshold | default: 25 | times: 100 -%}
+{%- assign gift_threshold = settings.gift_threshold | default: 25 | times: 100 -%}
 {%- assign qualifying_total = 0 -%}
 {%- assign gift_in_cart = false -%}
 {%- assign gift_charged = false -%}

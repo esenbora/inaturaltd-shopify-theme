@@ -168,5 +168,35 @@
         "info": "Found in Clarity under Settings > Overview > Project ID."
       }
     ]
+  },
+  {
+    "name": "Shipping and gifts",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "These two thresholds are the single source of truth. They drive the cart progress bar, the free-gift picker, every storefront line that quotes a figure, and the shipping data Google reads from product pages. Changing them here does NOT change Shopify itself: the rate in Settings > Shipping and delivery and the minimum on the automatic free-gift discount must be set to match by hand, or the page will promise something checkout does not honour."
+      },
+      {
+        "type": "number",
+        "id": "free_shipping_threshold",
+        "label": "Free UK shipping over (GBP)",
+        "default": 25,
+        "info": "Whole pounds. Must match the Shopify shipping rate condition."
+      },
+      {
+        "type": "number",
+        "id": "shipping_flat_rate",
+        "label": "Flat UK shipping fee below that (GBP)",
+        "default": 3,
+        "info": "Whole pounds. Must match the Shopify shipping rate."
+      },
+      {
+        "type": "number",
+        "id": "gift_threshold",
+        "label": "Free gift over (GBP)",
+        "default": 25,
+        "info": "Whole pounds. Must match the minimum on the automatic free-gift discount."
+      }
+    ]
   }
 ]

@@ -17,10 +17,10 @@
         {% for block in section.blocks %}
           <span class="announce__item">
             {% if block.settings.icon != blank %}{{ block.settings.icon }}{% endif %}
-            {{ block.settings.text | replace: '£5.95 off', '15% off' | replace: '£5.95 OFF', '15% OFF' | replace: '£5.95', '15%' | replace: ' with code "NEWLIFE"', '' | replace: ' with code NEWLIFE', '' | replace: 'NEWLIFE', '' | replace: ' or Diaper Rash Gel', '' | replace: '£12', '£20' }}
+            {{ block.settings.text | replace: '£5.95 off', '15% off' | replace: '£5.95 OFF', '15% OFF' | replace: '£5.95', '15%' | replace: ' with code "NEWLIFE"', '' | replace: ' with code NEWLIFE', '' | replace: 'NEWLIFE', '' | replace: ' or Diaper Rash Gel', '' | replace: '£12', '£25' | replace: 'over £20', 'over £25' | replace: 'at £20', 'at £25' }}
           </span>
         {% else %}
-          <span class="announce__item">✦ Free UK shipping over £20</span>
+          <span class="announce__item">✦ Free UK shipping over £25</span>
           <span class="announce__item">✦ Free gift of your choice over £25, one offer per order</span>
           <span class="announce__item">✦ Official UK distributor for INCIA Naturals</span>
           <span class="announce__item">✦ 15% off your first order for new customers</span>
@@ -31,7 +31,7 @@
     </div>
   </div>
   <p class="visually-hidden">
-    {% for block in section.blocks %}{{ block.settings.text | replace: '£5.95', '15%' }}. {% else %}Free UK shipping over £20. Free gift of your choice over £25, one offer per order. Official UK distributor for INCIA Naturals. 15% off your first order for new customers.{% endfor %}
+    {% for block in section.blocks %}{{ block.settings.text | replace: '£5.95', '15%' }}. {% else %}Free UK shipping over £25. Free gift of your choice over £25, one offer per order. Official UK distributor for INCIA Naturals. 15% off your first order for new customers.{% endfor %}
   </p>
 </section>
 
@@ -44,7 +44,7 @@
       "type": "message",
       "name": "Message",
       "settings": [
-        { "type": "text", "id": "text", "label": "Text", "default": "Free UK shipping over £20" },
+        { "type": "text", "id": "text", "label": "Text", "default": "Free UK shipping over £25" },
         { "type": "text", "id": "icon", "label": "Icon (emoji)", "default": "✦" }
       ]
     }

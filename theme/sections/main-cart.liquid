@@ -39,7 +39,7 @@
           <h3 class="h3 mb-4">Summary</h3>
           <div class="flow" style="--flow: var(--space-3);">
             <div class="cluster" style="justify-content: space-between;"><span class="muted">Subtotal</span><strong>{{ cart.total_price | money }}</strong></div>
-            <div class="cluster" style="justify-content: space-between;"><span class="muted">Shipping</span><strong>{% if cart.total_price >= 2000 %}Free{% else %}Calculated at checkout{% endif %}</strong></div>
+            <div class="cluster" style="justify-content: space-between;"><span class="muted">Shipping</span><strong>{% assign free_ship_pence = settings.free_shipping_threshold | default: 25 | times: 100 %}{% if cart.total_price >= free_ship_pence %}Free{% else %}Calculated at checkout{% endif %}</strong></div>
 
             {%- comment -%}
               Same block the drawer uses. This page used to carry its own
