@@ -4,11 +4,28 @@
   that cannot both apply will be read as one offer that does.
 
   The live example: Shopify will not let the Buy X Get Y free gift coexist
-  with a percentage discount code, so "15% off your first order" and the £25
-  free gift are mutually exclusive. The gift message carries "one offer per
-  order" for that reason - the same sentence the cart drawer and the product
-  page show. Do not drop that qualifier to shorten the line.
+  with a percentage discount code, so "15% off your first order" and the free
+  gift are mutually exclusive. The gift message carries "one offer per order"
+  for that reason - the same sentence the cart drawer and the product page
+  show. Do not drop that qualifier to shorten the line.
+
+  Iki esik artik AYRI: kargo £25, hediye £30. Esit olduklari surece sepet
+  cubugundaki iki etiket ust uste biniyordu ve ayni rakam mesajda iki kez
+  tekrarliyordu. Rakamlari buraya elle yazma, asagidaki ship_t / gift_t
+  degiskenleri tema ayarindan geliyor.
 {%- endcomment -%}
+{%- assign ship_t = settings.free_shipping_threshold | default: 25 -%}
+{%- assign gift_t = settings.gift_threshold | default: 30 -%}
+{%- comment -%}
+  Asagidaki replace zinciri, Admin'de kalmis eski blok metinlerini canlida
+  duzeltir. Hediye kurali kargodan AYRI tutuluyor: "over £25" diye genel bir
+  degistirme yazarsak kargo mesajini da £30 yapar.
+{%- endcomment -%}
+{%- capture ship_over -%}over £{{ ship_t }}{%- endcapture -%}
+{%- capture ship_at -%}at £{{ ship_t }}{%- endcapture -%}
+{%- capture ship_amount -%}£{{ ship_t }}{%- endcapture -%}
+{%- capture gift_old -%}gift of your choice over £{{ ship_t }}{%- endcapture -%}
+{%- capture gift_new -%}gift of your choice over £{{ gift_t }}{%- endcapture -%}
 <section class="announce" aria-label="Announcements">
   <div class="announce__marquee" aria-hidden="true">
     <div class="announce__track">
@@ -17,11 +34,11 @@
         {% for block in section.blocks %}
           <span class="announce__item">
             {% if block.settings.icon != blank %}{{ block.settings.icon }}{% endif %}
-            {{ block.settings.text | replace: '£5.95 off', '15% off' | replace: '£5.95 OFF', '15% OFF' | replace: '£5.95', '15%' | replace: ' with code "NEWLIFE"', '' | replace: ' with code NEWLIFE', '' | replace: 'NEWLIFE', '' | replace: ' or Diaper Rash Gel', '' | replace: '£12', '£25' | replace: 'over £20', 'over £25' | replace: 'at £20', 'at £25' }}
+            {{ block.settings.text | replace: '£5.95 off', '15% off' | replace: '£5.95 OFF', '15% OFF' | replace: '£5.95', '15%' | replace: ' with code "NEWLIFE"', '' | replace: ' with code NEWLIFE', '' | replace: 'NEWLIFE', '' | replace: ' or Diaper Rash Gel', '' | replace: '£12', ship_amount | replace: 'over £20', ship_over | replace: 'at £20', ship_at | replace: gift_old, gift_new }}
           </span>
         {% else %}
-          <span class="announce__item">✦ Free UK shipping over £25</span>
-          <span class="announce__item">✦ Free gift of your choice over £25, one offer per order</span>
+          <span class="announce__item">✦ Free UK shipping over £{{ ship_t }}</span>
+          <span class="announce__item">✦ Free gift of your choice over £{{ gift_t }}, one offer per order</span>
           <span class="announce__item">✦ Official UK distributor for INCIA Naturals</span>
           <span class="announce__item">✦ 15% off your first order for new customers</span>
           <span class="announce__item">✦ 14-day returns, no questions</span>
@@ -31,7 +48,7 @@
     </div>
   </div>
   <p class="visually-hidden">
-    {% for block in section.blocks %}{{ block.settings.text | replace: '£5.95', '15%' }}. {% else %}Free UK shipping over £25. Free gift of your choice over £25, one offer per order. Official UK distributor for INCIA Naturals. 15% off your first order for new customers.{% endfor %}
+    {% for block in section.blocks %}{{ block.settings.text | replace: '£5.95', '15%' }}. {% else %}Free UK shipping over £{{ ship_t }}. Free gift of your choice over £{{ gift_t }}, one offer per order. Official UK distributor for INCIA Naturals. 15% off your first order for new customers.{% endfor %}
   </p>
 </section>
 

@@ -34,9 +34,8 @@
   .reward-bar { position: relative; }
   .reward-bar__notch { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: #fff; opacity: .9; }
   .reward-bar__notch.is-passed { opacity: .55; }
-  .reward-scale { position: relative; height: 11px; font-size: .62rem; color: var(--primary-dark); opacity: .45; }
-  .reward-scale__mark { position: absolute; top: 0; transform: translateX(-100%); padding-right: 5px; white-space: nowrap; }
-  .reward-scale__mark--end { left: auto; right: 0; transform: none; padding-right: 0; }
+  .reward-scale { display: flex; justify-content: space-between; gap: 10px; height: 11px; font-size: .62rem; color: var(--primary-dark); opacity: .45; }
+  .reward-scale__mark { white-space: nowrap; }
   .reward-scale__mark.is-done { opacity: 1; font-weight: 600; }
   .gift-progress__msg { font-size: .85rem; margin: 0; }
   .gift-progress__msg--ok { color: var(--primary-dark); font-weight: 600; }

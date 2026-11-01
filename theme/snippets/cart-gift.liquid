@@ -31,17 +31,21 @@
   Below the threshold the gifts are still shown, disabled. "Add £2.00 more"
   on its own is an abstraction; seeing the towel you are £2 away from is not.
 
-  gift_threshold must match the 'Free Gift Over £25' AUTOMATIC discount.
+  gift_threshold must match the minimum on the AUTOMATIC free-gift discount
+  in Admin. It is £30 as of 1 November 2026, kept apart from the £25 shipping
+  threshold on purpose: while the two were equal the bar drew both labels in
+  the same spot and the message repeated the same figure twice.
 
-  WHAT COUNTS TOWARDS THE £25. Not the gift. Shopify needs £25 of other units
+  WHAT COUNTS TOWARDS IT. Not the gift. Shopify needs that much in other units
   before it will hand one over, which is why qualifying_total skips the
   free-gifts collection. Verified live:
 
+    (verified when the threshold was £25)
     £24 of products                      -> no gift
     £24 + one lip balm  (cart £29.95)    -> lip balm still charged
     £24 + two lip balms (cart £35.90)    -> one lip balm free
 
-  The middle row is the one shoppers trip over: the cart clears £25 on paper
+  The middle row is the one shoppers trip over: the cart clears the figure on paper
   but the only spare unit IS the gift. paid_gift_item spots that case and says
   so rather than leaving them to guess.
 
@@ -160,7 +164,7 @@
   henuz kaydedilmemis bir temada barin bozulmamasi icin.
 {%- endcomment -%}
 {%- assign ship_threshold = settings.free_shipping_threshold | default: 25 | times: 100 -%}
-{%- assign gift_threshold = settings.gift_threshold | default: 25 | times: 100 -%}
+{%- assign gift_threshold = settings.gift_threshold | default: 30 | times: 100 -%}
 {%- assign qualifying_total = 0 -%}
 {%- assign gift_in_cart = false -%}
 {%- assign gift_charged = false -%}
@@ -235,9 +239,16 @@
       <i class="reward-bar__notch{% if ship_unlocked %} is-passed{% endif %}" style="left: {{ notch_pct }}%;" aria-hidden="true"></i>
     </div>
 
+    {%- comment -%}
+      Iki etiket de mutlak konumluydu: biri centigin uzerinde, digeri sag ucta.
+      Esikler birbirine yaklastikca ust uste biniyorlardi ve ikisi esit oldugunda
+      "£2£25ft" gibi okunamaz bir yigin cikiyordu. Simdi flex: etiketler birbirini
+      iter, esikler ne olursa olsun cakisma matematiksel olarak imkansiz. Barin
+      uzerindeki centik kargo esiginin yerini gostermeye devam ediyor.
+    {%- endcomment -%}
     <div class="reward-scale" aria-hidden="true">
-      <span class="reward-scale__mark{% if ship_unlocked %} is-done{% endif %}" style="left: {{ notch_pct }}%;">{{ ship_threshold | money_without_trailing_zeros }}</span>
-      <span class="reward-scale__mark reward-scale__mark--end{% if gift_unlocked %} is-done{% endif %}">{{ gift_threshold | money_without_trailing_zeros }} gift</span>
+      <span class="reward-scale__mark{% if ship_unlocked %} is-done{% endif %}">{{ ship_threshold | money_without_trailing_zeros }} shipping</span>
+      <span class="reward-scale__mark{% if gift_unlocked %} is-done{% endif %}">{{ gift_threshold | money_without_trailing_zeros }} gift</span>
     </div>
   </div>
 
@@ -469,8 +480,8 @@
     {%- elsif paid_gift_item -%}
       {%- comment -%}
         They already have a lip balm or the towel in the bag at full price and
-        the cart may well read over £25, so "add more" looks wrong until we say
-        what the £25 is actually counted on.
+        the cart may well read over the threshold, so "add more" looks wrong
+        until we say what the threshold is actually counted on.
       {%- endcomment -%}
       <p class="gift-progress__note">Lip balms and the towel do not count towards the {{ gift_threshold | money_without_trailing_zeros }} - your free gift has to be an extra item.</p>
     {%- endif -%}

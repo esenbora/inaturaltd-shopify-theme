@@ -194,7 +194,7 @@
         "type": "number",
         "id": "gift_threshold",
         "label": "Free gift over (GBP)",
-        "default": 25,
+        "default": 30,
         "info": "Whole pounds. Must match the minimum on the automatic free-gift discount."
       }
     ]

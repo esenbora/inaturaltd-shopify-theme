@@ -14,14 +14,16 @@
   Shopify discount use. Add a product to Free Gifts and its page starts saying
   so; remove it and the note disappears. Nothing to keep in sync by hand.
 
-  gift_threshold must match cart-gift and the 'Free Gift Over £25' AUTOMATIC
-  discount. Three places, one number - change all three together.
+  gift_threshold comes from the theme setting (Shipping and gifts), the same
+  source cart-gift reads. It used to be a hardcoded 2500 here, which is how
+  this note kept saying £25 after the cart had moved on. The setting must
+  match the minimum on the AUTOMATIC free-gift discount in Admin.
 
   The wording is deliberate on two points:
 
-  "on other items" - Shopify needs £25 of OTHER units before it hands the gift
-  over, so a £23 bag plus this £3.95 towel reads as £26.95 and still does not
-  qualify. That surprised us in testing; it will surprise shoppers harder.
+  "on other items" - Shopify needs the full threshold in OTHER units before it
+  hands the gift over, so a bag £2 short plus this £3.95 towel reads as over
+  the line and still does not qualify. That surprised us in testing; it will surprise shoppers harder.
 
   "one offer per order" - Shopify will not combine a Buy X Get Y gift with a
   percentage discount code, and the site advertises 15% off a first order in
@@ -29,7 +31,7 @@
   discovering it at checkout.
 {%- endcomment -%}
 
-{%- assign gift_threshold = 2500 -%}
+{%- assign gift_threshold = settings.gift_threshold | default: 30 | times: 100 -%}
 {%- assign is_gift = false -%}
 {%- for g in collections['free-gifts'].products -%}
   {%- if g.id == product.id -%}
