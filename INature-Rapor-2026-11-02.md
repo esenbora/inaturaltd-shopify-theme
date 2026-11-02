@@ -6,7 +6,7 @@ Sepetteki hediye hesabının düzeltilmesi ve hediye seçicisindeki hata mesajı
 
 **Müşteri:** INATURE LIMITED
 
-**Tema sürümü:** v18
+**Tema sürümü:** v18, 2 Kasım 2026 itibarıyla yayında
 
 ---
 
@@ -113,4 +113,15 @@ Testler sırasında görüldü: INCIA Kids Lip Balm Orange 6g stoğunda 2 adet k
 
 # 3. Sürüm notu
 
-Bu sürüm v18 olarak hazırlandı. Yayın öncesi canlı tema ile dosya dosya karşılaştırıldı: aradaki tek fark bu raporda anlatılan dört dosya, dosya sayısı her iki tarafta 111. Uygulama eklentilerinde kayıp yok, Judge.me, Clarity ve Google yerinde.
+Bu sürüm v18 olarak adlandırıldı ve yayına alındı. Yayın öncesi canlı tema ile dosya dosya karşılaştırıldı: aradaki tek fark bu raporda anlatılan dört dosya, dosya sayısı her iki tarafta 111. Uygulama eklentilerinde kayıp yok, Judge.me, Clarity ve Google yerinde.
+
+Yayından sonra canlı sitede kontrol edildi:
+
+| Kontrol | Sonuç |
+|---|---|
+| Yorum ödülü sayfası | Yerinde ve dolu |
+| Ürün sayfasında yorum bölümü | Yerinde, Judge.me widget çalışıyor |
+| Ürün sayfasındaki hediye notu | Yeni metinle yayında |
+| "Shop with AI" rozeti | Gitti. Clarity'nin kendisi çalışmaya devam ediyor |
+| £31'lik sepet | İki ödül de açık, çubuk tam dolu, seçicide 9 seçenek, çentik yüzde 83 |
+| Seçiciden hediye alma | Hediye £0.00 geldi, toplam değişmedi, uyarı çıkmadı |
