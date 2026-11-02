@@ -35,12 +35,15 @@
   .reward-bar__notch { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: #fff; opacity: .9; }
   .reward-bar__notch.is-passed { opacity: .55; }
   .reward-scale { display: flex; justify-content: space-between; gap: 10px; height: 11px; font-size: .62rem; color: var(--primary-dark); opacity: .45; }
+  .reward-scale__lead { display: flex; justify-content: flex-end; min-width: 0; flex-shrink: 1; overflow: hidden; }
   .reward-scale__mark { white-space: nowrap; }
   .reward-scale__mark.is-done { opacity: 1; font-weight: 600; }
   .gift-progress__msg { font-size: .85rem; margin: 0; }
   .gift-progress__msg--ok { color: var(--primary-dark); font-weight: 600; }
   .gift-locked__title { font-weight: 600; opacity: .55; }
   .gift-progress__note { font-size: .72rem; line-height: 1.4; opacity: .68; margin: 0; }
+  .gift-progress__error { font-size: .72rem; line-height: 1.4; margin: 6px 0 0; color: var(--accent, #C97B5C); font-weight: 600; }
+  .gift-progress__error[hidden] { display: none; }
   .gift-alert { font-size: .74rem; line-height: 1.4; margin: 0; padding: 8px 10px; border: 1px solid rgba(179,38,30,.35); background: rgba(179,38,30,.05); border-radius: 8px; color: #8c1d18; }
   .gift-progress__options { display: flex; gap: 7px; flex-wrap: wrap; }
   .gift-progress__options.is-locked { opacity: .55; }
@@ -160,6 +163,38 @@
       setTimeout(function () { target.textContent = original; }, 1800);
     }
 
+    /*
+      Shopify refuses some gift adds, and the reason is in the response body.
+      The commonest one is a per-variant purchase limit: lip balms cap at two,
+      so a shopper holding two paid Orange balms cannot be given a third as the
+      gift. Before 2 November 2026 this threw away the body and flashed "Try
+      again" on the chip, which is the one thing that can never work - the limit
+      is still there on the retry. Nothing else on screen changed, so the chip
+      read as a dead button. Shopify's own sentence says exactly what happened,
+      so it is shown instead of being discarded.
+    */
+    function giftErrorFrom(body) {
+      var msg = (body && (body.description || body.message)) || '';
+      if (/maximum quantity/i.test(msg)) {
+        return { chip: 'Already in bag', line: 'You already have the most we can sell of that one. Please pick a different free gift.' };
+      }
+      return { chip: 'Try again', line: msg || 'That gift could not be added. Please try again.' };
+    }
+
+    function showGiftError(btn, detail) {
+      var own = blockOf(btn);
+      var line = own && own.querySelector('[data-gift-error]');
+      if (!line) return;
+      line.textContent = detail.line;
+      line.hidden = false;
+    }
+
+    function clearGiftError(btn) {
+      var own = blockOf(btn);
+      var line = own && own.querySelector('[data-gift-error]');
+      if (line) line.hidden = true;
+    }
+
     function addGift(variantId, properties, onFail) {
       fetch('/cart/add.js', {
         method: 'POST',
@@ -167,13 +202,19 @@
         credentials: 'same-origin',
         body: JSON.stringify({ items: [{ id: variantId, quantity: 1, properties: properties }] })
       }).then(function (r) {
-        if (!r.ok) throw new Error('gift add failed');
+        if (!r.ok) {
+          return r.json().catch(function () { return {}; }).then(function (body) {
+            throw giftErrorFrom(body);
+          });
+        }
         // Full reload rather than a partial re-render: the theme rebinds the
         // drawer's own remove and quantity handlers during its own refresh, and
         // we cannot reach that function from here without editing theme.js.
         try { sessionStorage.setItem(REOPEN, '1'); } catch (err) {}
         window.location.reload();
-      }).catch(function () { if (onFail) onFail(); });
+      }).catch(function (err) {
+        if (onFail) onFail(err && err.chip ? err : { chip: 'Try again', line: 'That gift could not be added. Please try again.' });
+      });
     }
 
     document.addEventListener('click', function (e) {
@@ -233,10 +274,10 @@
         props[pending.propertyName] = value;
         confirmBtn.disabled = true;
         confirmBtn.textContent = 'Adding...';
-        addGift(pending.variantId, props, function () {
+        addGift(pending.variantId, props, function (detail) {
           confirmBtn.disabled = false;
           confirmBtn.textContent = 'Add my free gift';
-          fail('Something went wrong - please try again.');
+          fail(detail && detail.line ? detail.line : 'Something went wrong - please try again.');
         });
         return;
       }
@@ -274,10 +315,12 @@
       // why the restore is paired with the failure branch rather than skipped.
       swapChipImage(btn);
       btn.disabled = true;
-      addGift(variantId, { _free_gift: 'yes' }, function () {
+      clearGiftError(btn);
+      addGift(variantId, { _free_gift: 'yes' }, function (detail) {
         btn.disabled = false;
         restoreChipImages(blockOf(btn));
-        flash(btn, 'Try again');
+        flash(btn, (detail && detail.chip) || 'Try again');
+        showGiftError(btn, detail || { line: 'That gift could not be added. Please try again.' });
       });
     });
 

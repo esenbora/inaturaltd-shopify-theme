@@ -21,9 +21,13 @@
 
   The wording is deliberate on two points:
 
-  "on other items" - Shopify needs the full threshold in OTHER units before it
-  hands the gift over, so a bag £2 short plus this £3.95 towel reads as over
-  the line and still does not qualify. That surprised us in testing; it will surprise shoppers harder.
+  It no longer says "on other items". That phrase described the theme's own
+  arithmetic, which excluded this whole collection from the threshold, and that
+  arithmetic was wrong - corrected 2 November 2026. Shopify counts a lip balm
+  or towel bought at full price like anything else and holds back only the line
+  it is giving away. So buying this product does help a shopper reach the
+  threshold, and the note must not tell them otherwise; the one thing that
+  cannot pay for itself is the free copy.
 
   "one offer per order" - Shopify will not combine a Buy X Get Y gift with a
   percentage discount code, and the site advertises 15% off a first order in
@@ -43,7 +47,7 @@
 {%- if is_gift -%}
   <div class="pdp-gift">
     <p class="pdp-gift__head">Free on orders over {{ gift_threshold | money_without_trailing_zeros }}</p>
-    <p class="pdp-gift__body">Spend {{ gift_threshold | money_without_trailing_zeros }} on other items and you can pick this as your free gift in your bag. One offer per order, so it cannot be used together with a discount code.</p>
+    <p class="pdp-gift__body">Spend {{ gift_threshold | money_without_trailing_zeros }} and you can pick this as your free gift in your bag. One offer per order, so it cannot be used together with a discount code.</p>
   </div>
 
   <style>
