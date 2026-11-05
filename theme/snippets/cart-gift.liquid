@@ -50,17 +50,24 @@
   against Shopify's £32.95. Shopify is the authority here; the bar has to agree
   with it or it drives abandonment on a basket that already qualified.
 
-  These three were verified live when the threshold was £25, and they hold
-  under the corrected rule for the same reasons:
+  These three were verified live when the threshold was £25. The first two
+  still hold at £30. The THIRD DOES NOT, and this comment claimed it did until
+  the client queried it on 3 November 2026:
 
     £24 of products                      -> no gift
     £24 + one lip balm  (cart £29.95)    -> lip balm still charged
-    £24 + two lip balms (cart £35.90)    -> one lip balm free
+    £24 + two lip balms (cart £35.90)    -> both still charged
 
   Read them as Shopify does: the line being given away leaves the sum, and what
   remains must clear the threshold on its own. One balm cannot be both the
-  spend and the reward, which is why the middle row fails while the third,
-  holding a second balm to carry the spend, passes.
+  spend and the reward. At £25 a second balm could carry the spend, because
+  £29.95 cleared £25 with the first balm held back. At £30 it cannot, so the
+  automatic discount never fires on that basket and both balms stay charged -
+  confirmed live on 2 November 2026.
+
+  The shopper is not left without a gift. Picking one in this snippet adds a
+  THIRD line, so the £35.90 of spend clears £30 with only the new line held
+  back. That is the path the picker exists for.
 
   THE DISCOUNT-CODE TRAP. Shopify will not let a Buy X Get Y discount coexist
   with a percentage code, and which one loses depends on the order:

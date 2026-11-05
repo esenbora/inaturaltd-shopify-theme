@@ -1316,6 +1316,10 @@ a.cart-line__title:hover { color: var(--primary-dark); }
   font-size: var(--fs-xs); color: var(--muted);
   margin: 0.25rem 0 0; max-width: 34ch;
 }
+.cart-line__limit[hidden] { display: none; }
+/* The standing limit is a muted aside. A reason given because a press of +
+   could not be honoured has to be read, or the button still looks broken. */
+.cart-line__limit.is-alert { color: var(--accent); font-weight: 600; }
 
 /* Personalisation field inside a product card's quick-add */
 .card-personalise { display: grid; gap: 0.3rem; margin-bottom: 0.4rem; }

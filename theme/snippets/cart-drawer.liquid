@@ -26,6 +26,20 @@
                 <input type="number" value="{{ item.quantity }}" min="0" max="{{ line_max }}" inputmode="numeric" data-drawer-qty-input aria-label="Quantity for {{ item.product.title | escape }}">
                 <button type="button" data-drawer-qty-inc aria-label="Increase quantity">+</button>
               </div>
+              {%- comment -%}
+                One element, two jobs. It states the standing per-order limit
+                when the line already sits at it, and the stepper writes into
+                it when a press of + cannot be honoured - a stock ceiling or
+                the cap - because this is the only place the shopper is
+                looking at that moment. Rendered even when it has nothing to
+                say so the stepper always has somewhere to write.
+              {%- endcomment -%}
+              <p class="cart-line__limit" data-line-note data-line-key="{{ item.key }}" role="status"{% unless item.quantity >= line_max %} hidden{% endunless %}>
+                {%- if item.quantity >= line_max -%}
+                  {%- if line_max <= 3 -%}Shipping weight limits this to {{ line_max }} per order.
+                  {%- else -%}Limited to {{ line_max }} per order.{%- endif -%}
+                {%- endif -%}
+              </p>
               <a href="#" data-cart-remove data-line-key="{{ item.key }}" class="cart-drawer__remove">Remove</a>
             </div>
             <div class="cart-line__price">{{ item.final_line_price | money }}</div>

@@ -22,12 +22,19 @@
                   <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" max="{{ line_max }}" inputmode="numeric" data-cart-qty-input aria-label="Quantity for {{ item.product.title | escape }}">
                   <button type="button" data-cart-qty-inc aria-label="Increase quantity">+</button>
                 </div>
-                {%- if item.quantity >= line_max -%}
-                  <p class="cart-line__limit">
+                {%- comment -%}
+                  Was rendered only when the line sat at its cap. It is now
+                  always present, because the stepper writes into it when a
+                  press of + cannot be honoured and needs somewhere to write.
+                  Hidden while it has nothing to say, so the standing limit
+                  still reads exactly as it did.
+                {%- endcomment -%}
+                <p class="cart-line__limit" data-line-note data-line-key="{{ item.key }}" role="status"{% unless item.quantity >= line_max %} hidden{% endunless %}>
+                  {%- if item.quantity >= line_max -%}
                     {%- if line_max <= 3 -%}Shipping weight limits this to {{ line_max }} per order.
                     {%- else -%}Limited to {{ line_max }} per order.{%- endif -%}
-                  </p>
-                {%- endif -%}
+                  {%- endif -%}
+                </p>
                 <button type="button" class="cart-line__remove" data-cart-line-remove data-line-key="{{ item.key }}">Remove</button>
               </div>
               <div class="cart-line__price">{{ item.final_line_price | money }}</div>

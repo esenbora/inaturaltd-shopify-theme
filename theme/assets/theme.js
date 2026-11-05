@@ -306,6 +306,74 @@
     }
   }
 
+  /*
+    WHY A QUANTITY CHANGE CAN LOOK LIKE A DEAD BUTTON, and what is done about
+    it. Reported live on 3 November 2026: a basket holding two Orange lip balms
+    and two toothpastes, both stocked at two, where pressing + did nothing at
+    all and read as broken.
+
+    Two separate ceilings, neither of which used to say anything:
+
+    STOCK is Shopify's. Asking /cart/change.js for more than it can fill comes
+    back 422 with the reason in the body - "Only 2 items were added to your
+    cart due to availability." - AND the cart is still modified, clamped to
+    what was available. The old `if (r.ok)` guard dropped both halves of that,
+    so the message was thrown away and the drawer was never re-rendered.
+    Measured on the live store, not assumed, and the figure is read out of
+    Shopify's own sentence rather than guessed from a stale stock count.
+
+    THE PER-ORDER CAP is ours - a metafield, default 5, 3 on the heavy items.
+    Shopify knows nothing about it, so a request that only breaches the cap
+    succeeds. The stepper used to clamp with Math.min and send the unchanged
+    number, which Shopify accepted as a no-op: a request, a re-render, and
+    nothing different on screen. It is now caught before the network, and says
+    so instead.
+  */
+  function stockNoteFrom(body) {
+    const msg = (body && (body.description || body.message)) || '';
+    const only = msg.match(/only\s+(\d+)\s+item/i);
+    if (only) return `Only ${only[1]} left in stock`;
+    // No figure to read: Shopify's own sentence beats one we invent.
+    return msg || 'That quantity is not available right now.';
+  }
+
+  // Writes a reason under the line that was pressed. The element may already
+  // be carrying the standing per-order limit, so that text is kept and put
+  // back when the transient reason has had its few seconds.
+  const noteTimers = new WeakMap();
+  function showLineNote(key, text) {
+    document.querySelectorAll('[data-line-note]').forEach((el) => {
+      if (el.dataset.lineKey !== key) return;
+      if (el.dataset.standing === undefined) el.dataset.standing = el.hidden ? '' : el.textContent.trim();
+      clearTimeout(noteTimers.get(el));
+      el.textContent = text;
+      el.hidden = false;
+      el.classList.add('is-alert');
+      noteTimers.set(el, setTimeout(() => {
+        const standing = el.dataset.standing;
+        el.textContent = standing;
+        el.hidden = !standing;
+        el.classList.remove('is-alert');
+      }, 6000));
+    });
+  }
+
+  // The cart page reloads after a change, so a note shown before the reload
+  // would never be seen. It is parked under the line key and picked up by the
+  // new document instead.
+  const LINE_NOTE_KEY = 'inature:line-note';
+  function parkLineNote(key, text) {
+    try { sessionStorage.setItem(LINE_NOTE_KEY, JSON.stringify({ key: key, text: text })); } catch (err) {}
+  }
+  function applyParkedLineNote() {
+    let parked = null;
+    try {
+      parked = JSON.parse(sessionStorage.getItem(LINE_NOTE_KEY) || 'null');
+      sessionStorage.removeItem(LINE_NOTE_KEY);
+    } catch (err) { return; }
+    if (parked && parked.key) showLineNote(parked.key, parked.text);
+  }
+
   // Cart DRAWER quantity steppers — AJAX update then re-render the drawer
   async function changeDrawerLine(key, quantity) {
     const r = await fetch('/cart/change.js', {
@@ -314,7 +382,16 @@
       credentials: 'same-origin',
       body: JSON.stringify({ id: key, quantity: quantity }),
     });
-    if (r.ok) { const cart = await r.json(); updateCount(cart.item_count); await refreshDrawer(); }
+    const body = await r.json().catch(() => null);
+    // A refused change still moves the cart, so the re-render happens either
+    // way; only the count comes off a successful body.
+    if (r.ok && body && typeof body.item_count === 'number') updateCount(body.item_count);
+    await refreshDrawer();
+    if (!r.ok) showLineNote(key, stockNoteFrom(body));
+    // Reported back so a caller that wants to add its OWN reason can wait for
+    // the re-render first, and can stay quiet when Shopify already gave a more
+    // specific one.
+    return r.ok;
   }
   function bindDrawerQty() {
     if (!drawer) return;
@@ -325,8 +402,29 @@
       // Cap increases at the product's per-order limit, same number the product
       // page enforces. Without this the basket is a way round the cap.
       const dMax = parseInt(wrap.dataset.max || '0', 10) || Infinity;
-      wrap.querySelector('[data-drawer-qty-inc]')?.addEventListener('click', () => changeDrawerLine(key, Math.min(dMax, parseInt(input.value || '1', 10) + 1)));
-      input?.addEventListener('change', () => changeDrawerLine(key, Math.max(0, parseInt(input.value || '0', 10))));
+      wrap.querySelector('[data-drawer-qty-inc]')?.addEventListener('click', () => {
+        const next = parseInt(input.value || '1', 10) + 1;
+        if (next > dMax) { showLineNote(key, `Max ${dMax} per order`); return; }
+        changeDrawerLine(key, next);
+      });
+      // Typing past the cap used to go straight through: this handler had no
+      // clamp at all, so the stepper's limit was one keystroke wide.
+      //
+      // The reason is written AFTER the change, not before. A clamped number
+      // is still a change, so the drawer re-renders - and a re-render replaces
+      // the very element the reason was written into. Said first, it was wiped
+      // within the second and the shopper saw their 9 become 5 with nothing to
+      // explain it. Said after, and only when Shopify did not already answer
+      // with something more specific.
+      input?.addEventListener('change', () => {
+        const typed = Math.max(0, parseInt(input.value || '0', 10));
+        if (typed > dMax) {
+          input.value = dMax;
+          changeDrawerLine(key, dMax).then((ok) => { if (ok) showLineNote(key, `Max ${dMax} per order`); });
+          return;
+        }
+        changeDrawerLine(key, typed);
+      });
     });
   }
 
@@ -536,14 +634,18 @@
   // Reloads after each change so line prices + the Summary totals stay in sync.
   const cartPage = document.querySelector('[data-cart-page]');
   if (cartPage) {
+    // Same two ceilings as the drawer, same reasons given. The reason is
+    // parked rather than written, because the reload that follows would wipe
+    // anything written to this document.
     const changeLine = async (key, quantity) => {
       try {
-        await fetch('/cart/change.js', {
+        const r = await fetch('/cart/change.js', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'same-origin',
           body: JSON.stringify({ id: key, quantity: quantity }),
         });
+        if (!r.ok) parkLineNote(key, stockNoteFrom(await r.json().catch(() => null)));
       } catch (err) { /* fall through to reload so the UI never desyncs */ }
       window.location.reload();
     };
@@ -552,11 +654,28 @@
       const input = wrap.querySelector('[data-cart-qty-input]');
       wrap.querySelector('[data-cart-qty-dec]')?.addEventListener('click', () => changeLine(key, Math.max(0, parseInt(input.value || '1', 10) - 1)));
       const cMax = parseInt(wrap.dataset.max || '0', 10) || Infinity;
-      wrap.querySelector('[data-cart-qty-inc]')?.addEventListener('click', () => changeLine(key, Math.min(cMax, parseInt(input.value || '1', 10) + 1)));
-      input?.addEventListener('change', () => changeLine(key, Math.max(0, parseInt(input.value || '0', 10))));
+      wrap.querySelector('[data-cart-qty-inc]')?.addEventListener('click', () => {
+        const next = parseInt(input.value || '1', 10) + 1;
+        if (next > cMax) { showLineNote(key, `Max ${cMax} per order`); return; }
+        changeLine(key, next);
+      });
+      input?.addEventListener('change', () => {
+        const typed = Math.max(0, parseInt(input.value || '0', 10));
+        if (typed > cMax) {
+          input.value = cMax;
+          parkLineNote(key, `Max ${cMax} per order`);
+          changeLine(key, cMax);
+          return;
+        }
+        changeLine(key, typed);
+      });
     });
     cartPage.querySelectorAll('[data-cart-line-remove]').forEach((btn) => btn.addEventListener('click', (e) => { e.preventDefault(); changeLine(btn.dataset.lineKey, 0); }));
   }
+  // Picks up a reason parked by the change that caused this load. Matched by
+  // line key, so a parked note left behind by a shopper who navigated away
+  // instead finds nothing and is simply dropped.
+  applyParkedLineNote();
   // Brand verb cycler (above leaf)
   const brandVerbs = ['am', 'love', 'protect', 'trust', 'choose', 'care for', 'embrace', 'return to'];
   document.querySelectorAll('[data-brand-verb]').forEach((el) => {

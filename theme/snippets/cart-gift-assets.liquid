@@ -34,9 +34,23 @@
   .reward-bar { position: relative; }
   .reward-bar__notch { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: #fff; opacity: .9; }
   .reward-bar__notch.is-passed { opacity: .55; }
-  .reward-scale { display: flex; justify-content: space-between; gap: 10px; height: 11px; font-size: .62rem; color: var(--primary-dark); opacity: .45; }
+  /*
+    Two faults fixed on 3 November 2026, both from this one rule set.
+
+    The row was 11px tall carrying ~10px text, so every descender was sliced
+    off: "£25 shipping" read with its p and g cut flat. The height is gone and
+    the line sizes itself.
+
+    The fade was on the ROW, which is why marking a threshold done never looked
+    any different. Opacity composites the whole group before a child is drawn,
+    so a child cannot climb back out of its parent's transparency - .is-done
+    was setting opacity: 1 inside a box already flattened to .45 and had no
+    visible effect at all. The fade now sits on each mark, where siblings
+    composite independently and a reached threshold really does go solid.
+  */
+  .reward-scale { display: flex; justify-content: space-between; gap: 10px; font-size: .62rem; line-height: 1.4; color: var(--primary-dark); }
   .reward-scale__lead { display: flex; justify-content: flex-end; min-width: 0; flex-shrink: 1; overflow: hidden; }
-  .reward-scale__mark { white-space: nowrap; }
+  .reward-scale__mark { white-space: nowrap; opacity: .45; }
   .reward-scale__mark.is-done { opacity: 1; font-weight: 600; }
   .gift-progress__msg { font-size: .85rem; margin: 0; }
   .gift-progress__msg--ok { color: var(--primary-dark); font-weight: 600; }
