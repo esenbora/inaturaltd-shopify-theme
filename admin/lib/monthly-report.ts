@@ -109,6 +109,18 @@ function searchSection(analytics: AnalyticsSummary | null): string[] {
     return ["Search Console verisi çekilemedi."];
   }
 
+  // Search Console bu pencerede hic satir dondurmediyse rakamlar "0" degil,
+  // "henuz veri yok" demektir. Sifir basmak musteriye olculmus bir basarisizlik
+  // gibi okunur; olculmemis olan olculmemis diye yazilir.
+  if (analytics.gsc.noDataInRange) {
+    const through = analytics.gsc.dataThrough;
+    return [
+      through
+        ? `Search Console bu pencere için henüz veri yayınlamadı. Google'ın yayınladığı son gün: ${through}. Rakamlar birkaç gün gecikmeyle gelir, bu yüzden bu bölüm bir sonraki raporda dolacaktır.`
+        : "Search Console bu mülk için henüz veri yayınlamadı. Yeni doğrulanan mülklerde ilk veri birkaç gün sonra görünmeye başlar.",
+    ];
+  }
+
   const { clicks, impressions, ctr, position } = analytics.gsc.totals;
   const lines = [
     `- Tıklama: **${int(clicks)}**`,

@@ -295,6 +295,15 @@ export async function request(
   return response.json();
 }
 
+/**
+ * Tek sayfada istenecek en fazla makale.
+ *
+ * REST Admin API bir sayfada en fazla 250 kayit veriyor. Blog bunu asarsa
+ * liste sessizce kesilir; `getBlogHealth` o durumda sayiyi "en az" olarak
+ * sunmali. Bugun blogda bir avuc makale var, tavan uzak.
+ */
+const ARTICLE_PAGE_LIMIT = 250;
+
 /** Resolve the numeric blog id whose handle matches SHOPIFY_BLOG_HANDLE. */
 async function resolveBlogId(env: ShopifyEnv): Promise<number> {
   const data = (await request(env, "GET", "/blogs.json")) as { blogs?: RawBlog[] };
@@ -418,10 +427,13 @@ export async function listArticles(): Promise<Article[]> {
   }
 
   const blogId = await resolveBlogId(env);
+  // Shopify'in varsayilani 50. Panel taslak sayisini "bekleyen is" olarak
+  // sunuyor, dolayisiyla eksik bir liste yanlis bir sayi demek; 250 REST'in
+  // tek sayfada verdigi tavan ve products.json ile ayni siniri kullaniyoruz.
   const data = (await request(
     env,
     "GET",
-    `/blogs/${blogId}/articles.json`,
+    `/blogs/${blogId}/articles.json?limit=${ARTICLE_PAGE_LIMIT}`,
   )) as { articles?: RawArticle[] };
   return (data.articles ?? []).map(toArticle);
 }
