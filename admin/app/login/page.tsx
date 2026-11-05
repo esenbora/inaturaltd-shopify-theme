@@ -23,7 +23,7 @@ export default function LoginPage() {
       <div className="w-full max-w-[22rem]">
         <div className="mb-7 text-center">
           <div className="flex items-baseline justify-center gap-2">
-            <span className="u-serif text-3xl font-semibold tracking-tight text-ink">
+            <span className="u-display text-[2.125rem] text-ink">
               INature
             </span>
             <span className="rounded-full bg-sage/15 px-2 py-0.5 text-[0.625rem] font-semibold uppercase tracking-[0.1em] text-sage-dark">

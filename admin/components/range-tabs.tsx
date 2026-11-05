@@ -7,6 +7,11 @@ import Link from "next/link";
  * server component can read, and a range stays shareable and bookmarkable.
  * Search Console data lags roughly two days, so very short ranges are noted as
  * unreliable rather than hidden: the number is real, it is just incomplete.
+ *
+ * The selected tab is sage-dark, not sage: white on `--color-sage` measures
+ * 2.96:1, under the 4.5:1 WCAG AA floor for text, while sage-dark reaches
+ * 4.53:1. These tabs are the only control on the dashboard, so the selected
+ * one has to be readable rather than merely tinted.
  */
 
 export const RANGE_OPTIONS = [
@@ -53,7 +58,7 @@ export function RangeTabs({
             aria-current={isActive ? "page" : undefined}
             className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
               isActive
-                ? "bg-sage text-white"
+                ? "bg-sage-dark text-white"
                 : "text-muted hover:bg-sand hover:text-ink"
             }`}
           >

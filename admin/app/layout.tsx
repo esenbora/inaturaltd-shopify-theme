@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter } from "next/font/google";
+import { Fraunces, Instrument_Serif, Inter } from "next/font/google";
 import "./globals.css";
 import { AppHeader } from "@/components/app-header";
 import { AppFooter } from "@/components/app-footer";
@@ -16,6 +16,22 @@ const fraunces = Fraunces({
   display: "swap",
 });
 
+/*
+ * The brand lockup has a face of its own.
+ *
+ * It used to borrow Fraunces, the same face the page titles and the stat
+ * figures wear, so the word "INature" read as one more heading rather than as
+ * a mark. Instrument Serif is a display face at a single weight: higher
+ * contrast, narrower, and nothing else on the screen uses it, which is what
+ * makes it read as a signature instead of a title.
+ */
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-instrument",
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "INature Admin",
   description: "Content management for the INature UK Shopify store.",
@@ -29,7 +45,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${fraunces.variable} h-full`}
+      className={`${inter.variable} ${fraunces.variable} ${instrumentSerif.variable} h-full`}
     >
       <body className="flex min-h-full flex-col">
         <AppHeader />

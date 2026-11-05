@@ -56,6 +56,32 @@ export interface AbandonedRow {
   itemTitles: string[];
 }
 
+/** One calendar day inside the window, in UTC. Days with no orders are present with zeros. */
+export interface DailyPoint {
+  /** `YYYY-MM-DD`, UTC. */
+  date: string;
+  orders: number;
+  revenue: number;
+}
+
+/**
+ * The same measures over the window immediately before this one, for a
+ * period-over-period comparison.
+ *
+ * Only ever present for short ranges. Shopify withholds orders older than
+ * roughly two months without the `read_all_orders` scope, so on a 90-day or
+ * 12-month view the previous window would come back near-empty and a naive
+ * delta would read as a catastrophic collapse in trade rather than as missing
+ * permission. Showing nothing is the honest answer there.
+ */
+export interface PeriodComparison {
+  orders: number;
+  revenue: number;
+  aov: number;
+  /** Day count of the compared window; equal to the current window. */
+  rangeDays: number;
+}
+
 export interface SalesSummary {
   /** The look-back window actually used, in days. */
   rangeDays: number;
@@ -79,6 +105,14 @@ export interface SalesSummary {
   /** orders / (orders + abandoned.count) as a 0..1 fraction; 0 when neither. */
   checkoutCompletionRate: number;
   /**
+   * One entry per calendar day in the window, oldest first, zero-filled. Feeds
+   * the dashboard column charts, which need a continuous series: skipping empty
+   * days would compress the gaps and draw a trend that never happened.
+   */
+  daily: DailyPoint[];
+  /** The preceding window of equal length, or null when it cannot be read. */
+  previous: PeriodComparison | null;
+  /**
    * Present only when one or more fetches failed. Each entry is a
    * human-readable message prefixed by its source (e.g. "Orders: ...").
    */
@@ -95,6 +129,12 @@ const REST_PAGE_LIMIT = 250;
 const TOP_SELLER_LIMIT = 8;
 const ABANDONED_ROW_LIMIT = 15;
 const ABANDONED_TITLE_LIMIT = 3;
+/**
+ * Longest range that still gets a period-over-period comparison. A 30-day view
+ * needs 60 days of history, which `read_orders` reliably returns; a 90-day view
+ * would need 180 and come back short, so those ranges get no delta at all.
+ */
+const COMPARISON_MAX_RANGE_DAYS = 30;
 const FALLBACK_CURRENCY = "GBP";
 
 /** Channel labels — kept as constants so the UI can match on them safely. */
@@ -356,12 +396,70 @@ function buildAbandoned(checkouts: RawCheckout[]): SalesSummary["abandoned"] {
  * Assemble the full summary from raw orders + checkouts. Shared by the real and
  * mock paths so mock numbers can never drift out of internal agreement.
  */
+/** `YYYY-MM-DD` (UTC) for a date `daysAgo` days before today. */
+function utcDayKey(daysAgo: number): string {
+  const date = new Date();
+  date.setUTCDate(date.getUTCDate() - daysAgo);
+  return date.toISOString().slice(0, 10);
+}
+
+/**
+ * Orders bucketed into one entry per calendar day, oldest first, zero-filled
+ * across the whole window.
+ *
+ * Zero-filling is the point. A column chart drawn from only the days that had
+ * orders puts an even gap between 2 Nov and 19 Oct, which reads as steady
+ * trade through a seventeen-day drought.
+ */
+function buildDailySeries(orders: RawOrder[], rangeDays: number): DailyPoint[] {
+  const buckets = new Map<string, { orders: number; revenue: number }>();
+  for (let i = rangeDays - 1; i >= 0; i -= 1) {
+    buckets.set(utcDayKey(i), { orders: 0, revenue: 0 });
+  }
+
+  for (const order of orders) {
+    const created = order.created_at;
+    if (typeof created !== "string" || created.length < 10) continue;
+    const bucket = buckets.get(created.slice(0, 10));
+    // Orders outside the window are ignored rather than clamped to an edge
+    // day, which would pile a previous-period spike onto the first column.
+    if (!bucket) continue;
+    bucket.orders += 1;
+    bucket.revenue += toAmount(order.total_price);
+  }
+
+  return [...buckets].map(([date, totals]) => ({ date, ...totals }));
+}
+
+/**
+ * Totals for the window before this one. Returns null when no comparison can
+ * be made honestly: see `PeriodComparison`.
+ */
+function buildComparison(
+  previousOrders: RawOrder[] | null,
+  rangeDays: number,
+): PeriodComparison | null {
+  if (previousOrders === null) return null;
+  const orders = previousOrders.length;
+  const revenue = previousOrders.reduce(
+    (sum, order) => sum + toAmount(order.total_price),
+    0,
+  );
+  return {
+    orders,
+    revenue,
+    aov: orders > 0 ? revenue / orders : 0,
+    rangeDays,
+  };
+}
+
 function buildSummary(
   rangeDays: number,
   orders: RawOrder[],
   checkouts: RawCheckout[],
   currency: string,
   errors: string[],
+  previousOrders: RawOrder[] | null = null,
 ): SalesSummary {
   const orderCount = orders.length;
   const revenue = orders.reduce(
@@ -383,6 +481,8 @@ function buildSummary(
     abandoned,
     checkoutCompletionRate:
       startedCheckouts > 0 ? orderCount / startedCheckouts : 0,
+    daily: buildDailySeries(orders, rangeDays),
+    previous: buildComparison(previousOrders, rangeDays),
     ...(errors.length > 0 ? { errors } : {}),
   };
 }
@@ -399,6 +499,7 @@ function buildSummary(
 async function fetchOrders(
   env: ShopifyEnv,
   createdAtMin: string,
+  createdAtMax?: string,
 ): Promise<RawOrder[]> {
   const fields = [
     "created_at",
@@ -408,9 +509,16 @@ async function fetchOrders(
     "referring_site",
     "line_items",
   ].join(",");
+  // The previous period is fetched as its own request rather than widening the
+  // current one and splitting the result, so each window gets its own page of
+  // 250. A single doubled request could spend the whole page on older orders
+  // and under-report the window that is actually on screen.
   const path =
     `/orders.json?limit=${REST_PAGE_LIMIT}&status=any` +
     `&created_at_min=${encodeURIComponent(createdAtMin)}` +
+    (createdAtMax === undefined
+      ? ""
+      : `&created_at_max=${encodeURIComponent(createdAtMax)}`) +
     `&fields=${fields}`;
 
   const data = (await request(env, "GET", path)) as { orders?: RawOrder[] };
@@ -483,9 +591,18 @@ async function fetchShopCurrency(env: ShopifyEnv): Promise<string> {
  * (recognised via the `srsltid` landing-URL parameter). `handle` is omitted to
  * match real Shopify order line items, which do not carry one.
  */
+/*
+ * Mock dates are relative, not fixed.
+ *
+ * They used to be literal July timestamps, which meant that as the calendar
+ * moved past them the mock window reported zero orders and the screen a
+ * developer sees without Shopify credentials went blank — the opposite of what
+ * mock data is for. Anchoring them to `isoDaysAgo` keeps the sample inside
+ * whatever window is being viewed.
+ */
 const MOCK_ORDERS: RawOrder[] = [
   {
-    created_at: "2026-07-02T11:14:00Z",
+    created_at: isoDaysAgo(26),
     total_price: "24.00",
     source_name: "ebay",
     landing_site: null,
@@ -493,7 +610,7 @@ const MOCK_ORDERS: RawOrder[] = [
     line_items: [{ title: "Rose & Hyaluronic Acid Serum", quantity: 1 }],
   },
   {
-    created_at: "2026-07-04T09:41:00Z",
+    created_at: isoDaysAgo(21),
     total_price: "29.00",
     source_name: "ebay",
     landing_site: null,
@@ -501,7 +618,7 @@ const MOCK_ORDERS: RawOrder[] = [
     line_items: [{ title: "INCIA SOS Stick", quantity: 2 }],
   },
   {
-    created_at: "2026-07-08T16:02:00Z",
+    created_at: isoDaysAgo(14),
     total_price: "38.50",
     source_name: "ebay",
     landing_site: null,
@@ -512,7 +629,7 @@ const MOCK_ORDERS: RawOrder[] = [
     ],
   },
   {
-    created_at: "2026-07-09T20:37:00Z",
+    created_at: isoDaysAgo(6),
     total_price: "16.00",
     source_name: "web",
     landing_site:
@@ -521,7 +638,7 @@ const MOCK_ORDERS: RawOrder[] = [
     line_items: [{ title: "Gentle Cleansing Gel", quantity: 1 }],
   },
   {
-    created_at: "2026-07-11T08:19:00Z",
+    created_at: isoDaysAgo(2),
     total_price: "40.50",
     source_name: "web",
     landing_site:
@@ -535,16 +652,33 @@ const MOCK_ORDERS: RawOrder[] = [
 ];
 
 /** Mock abandoned checkouts — one with a recoverable email, one without. */
+/**
+ * The window before the mock window.
+ *
+ * `buildComparison` only counts these and sums their totals, so they need no
+ * dates or line items. Without them mock mode showed no comparison at all,
+ * which made a working feature look broken to anyone running the panel
+ * without Shopify credentials.
+ */
+const MOCK_PREVIOUS_ORDERS: RawOrder[] = [
+  { total_price: "24.50" },
+  { total_price: "18.00" },
+  { total_price: "31.90" },
+  { total_price: "12.00" },
+  { total_price: "22.00" },
+  { total_price: "10.00" },
+];
+
 const MOCK_CHECKOUTS: RawCheckout[] = [
   {
-    created_at: "2026-07-09T18:22:00Z",
+    created_at: isoDaysAgo(5),
     total_price: "24.00",
     email: "shopper@example.com",
     customer: null,
     line_items: [{ title: "Rose & Hyaluronic Acid Serum", quantity: 1 }],
   },
   {
-    created_at: "2026-07-11T10:05:00Z",
+    created_at: isoDaysAgo(1),
     total_price: "45.50",
     email: null,
     customer: null,
@@ -583,16 +717,26 @@ export async function getSalesSummary(
       MOCK_CHECKOUTS,
       FALLBACK_CURRENCY,
       [],
+      // Withheld past the same range ceiling as the live path, so the mock
+      // screen shows "no comparison" on a 90-day view exactly where Shopify
+      // would. A mock that compares where production cannot teaches the wrong
+      // thing about the product.
+      rangeDays <= COMPARISON_MAX_RANGE_DAYS ? MOCK_PREVIOUS_ORDERS : null,
     );
   }
 
   const createdAtMin = isoDaysAgo(rangeDays);
 
-  const [ordersResult, checkoutsResult, currencyResult] =
+  const comparable = rangeDays <= COMPARISON_MAX_RANGE_DAYS;
+
+  const [ordersResult, checkoutsResult, currencyResult, previousResult] =
     await Promise.allSettled([
       fetchOrders(env, createdAtMin),
       fetchCheckouts(env, createdAtMin),
       fetchShopCurrency(env),
+      comparable
+        ? fetchOrders(env, isoDaysAgo(rangeDays * 2), createdAtMin)
+        : Promise.resolve(null),
     ]);
 
   const errors: string[] = [];
@@ -629,14 +773,33 @@ export async function getSalesSummary(
     return min === null || created < min ? created : min;
   }, null);
   const windowStart = isoDaysAgo(rangeDays);
+  let historyWithheld = false;
   if (oldest !== null && oldest.slice(0, 10) > windowStart) {
     const total = await fetchAllTimeOrderCount();
     if (total !== null && total > orders.length) {
+      historyWithheld = true;
       errors.push(
         `History limit: showing the ${orders.length} readable orders of ${total} all time. Older orders need the read_all_orders scope, so ranges beyond about two months are not complete.`,
       );
     }
   }
 
-  return buildSummary(rangeDays, orders, checkouts, currency, errors);
+  // A failed comparison fetch is not reported in `errors`. The comparison is a
+  // secondary reading, and the dashboard says "no comparison" in its place; a
+  // red banner over an otherwise healthy screen would misrepresent that. When
+  // history is being withheld the previous window is unreadable by definition,
+  // so a delta computed from it would invent a collapse.
+  const previousOrders =
+    historyWithheld || previousResult.status !== "fulfilled"
+      ? null
+      : previousResult.value;
+
+  return buildSummary(
+    rangeDays,
+    orders,
+    checkouts,
+    currency,
+    errors,
+    previousOrders,
+  );
 }

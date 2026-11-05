@@ -26,7 +26,7 @@ export function AppHeader() {
           className="flex shrink-0 items-baseline gap-2"
           aria-label="INature Admin, dashboard"
         >
-          <span className="u-serif text-xl font-semibold tracking-tight text-ink">
+          <span className="u-display text-[1.375rem] text-ink">
             INature
           </span>
           <span className="rounded-full bg-sage/15 px-2 py-0.5 text-[0.625rem] font-semibold uppercase tracking-[0.1em] text-sage-dark">

@@ -31,6 +31,7 @@
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-display: var(--font-instrument), ui-serif, Georgia, serif;
 }
 
 html {
@@ -92,6 +93,14 @@ body {
 
 /* Reusable component classes so pages stay readable and consistent. */
 @layer components {
+  /* The brand mark only. Instrument Serif carries no bold cut, so weight is
+     left alone and the tightened tracking does the work a semibold used to. */
+  .u-display {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.015em;
+  }
+
   .u-serif {
     font-family: var(--font-serif);
     letter-spacing: -0.01em;

@@ -57,7 +57,6 @@ export const TTL = {
 
 /** Cache keys, in one place so an invalidation cannot misspell one. */
 export const KEY = {
-  sales: "sales:30",
   analytics: "analytics:30",
   indexCoverage: "index-coverage:sample",
   /** The raw active-product listing. Both the stock figures and the store
@@ -146,9 +145,22 @@ export function summariseStock(products: AuditProduct[]): StockSummary {
  * say how old the number is instead of implying it is live.
  * ------------------------------------------------------------------ */
 
-export function salesMetrics(): Promise<CacheRead<SalesSummary>> {
-  return cached(KEY.sales, TTL.sales, () =>
-    getSalesSummary(DASHBOARD_RANGE_DAYS),
+/**
+ * Cache key for a sales window.
+ *
+ * Sales is the one source the dashboard lets the reader re-scope, so it is
+ * held per range rather than under a single key: switching to 7 days must not
+ * serve the 30-day figures from cache, and switching back must not re-fetch.
+ */
+export function salesKey(rangeDays: number): string {
+  return `sales:${rangeDays}`;
+}
+
+export function salesMetrics(
+  rangeDays: number = DASHBOARD_RANGE_DAYS,
+): Promise<CacheRead<SalesSummary>> {
+  return cached(salesKey(rangeDays), TTL.sales, () =>
+    getSalesSummary(rangeDays),
   );
 }
 
