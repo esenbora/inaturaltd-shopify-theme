@@ -160,23 +160,45 @@ export function clearLoginFailures(ip: string): void {
 /**
  * The client address, as far as it can be trusted behind Railway's proxy.
  *
- * A client can send any `x-forwarded-for` it likes, so the leftmost entries
- * are attacker-controlled. Each proxy APPENDS the address it actually saw,
- * which makes the LAST entry the only one written by infrastructure we run
- * behind. Taking the first entry here, the usual mistake, would hand every
- * attacker a free way to reset their own rate limit on each request.
+ * `x-real-ip` FIRST, and this order is the whole point.
+ *
+ * The obvious reading of a forwarded chain is that each proxy appends the
+ * address it saw, which makes the last entry the only one written by
+ * infrastructure we run behind. That is the right rule in general and it is
+ * wrong here, which was found the hard way: on Railway the last entry is
+ * Railway's own POP (a handful of addresses in one datacentre, rotating
+ * between requests), not the caller. Keying the login limiter on it counted
+ * Railway's proxies instead of the people hitting the panel, so five guesses
+ * per address became five per POP address, and every audit line recorded the
+ * same proxy rather than who did the thing.
+ *
+ * Railway's edge OVERWRITES `x-real-ip` and `x-forwarded-for` and discards
+ * whatever the caller sent, so `x-real-ip` is a single trustworthy address and
+ * the first entry of the chain is the caller rather than an attacker-supplied
+ * prefix. Confirmed against Railway's own answer of 2026-09-29; it is their
+ * contract, not an inference from the shape of the headers.
+ *
+ * Off Railway, where neither header is set, every request keys to "unknown":
+ * one shared bucket. That is correct for local development, where the only
+ * caller is the developer, and it fails closed rather than open if the panel is
+ * ever put behind a proxy that sets nothing.
  */
 export function clientAddress(headers: Headers): string {
+  const real = headers.get("x-real-ip")?.trim();
+  if (real) return real;
+
   const forwarded = headers.get("x-forwarded-for");
   if (forwarded) {
-    const hops = forwarded
+    // The FIRST entry: see above. Only safe because the edge rewrites the
+    // header; on a host that appends instead, this would be caller-controlled.
+    const first = forwarded
       .split(",")
       .map((part) => part.trim())
-      .filter(Boolean);
-    const last = hops.at(-1);
-    if (last) return last;
+      .find(Boolean);
+    if (first) return first;
   }
-  return headers.get("x-real-ip")?.trim() || "unknown";
+
+  return "unknown";
 }
 
 /**
