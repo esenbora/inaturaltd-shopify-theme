@@ -1,46 +1,23 @@
-"use client";
+import { LoginForm } from "./login-form";
+import { StimilonSignature } from "@/components/stimilon-signature";
 
-import { useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
+export const metadata = {
+  title: "Sign in · INature Admin",
+};
+
+/*
+ * Rendered per request, not prerendered.
+ *
+ * The CSP in `proxy.ts` carries a per-request nonce, and Next can only put
+ * that nonce on the script tags of a page it renders at request time. Left
+ * static, the sign-in page would be served as build-time HTML whose scripts
+ * carry no nonce, the browser would refuse to run them, and the form would
+ * never submit: a dead page with a CSP error in the console and nothing at
+ * all in the server log.
+ */
+export const dynamic = "force-dynamic";
 
 export default function LoginPage() {
-  const router = useRouter();
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
-
-  async function handleSubmit(event: FormEvent<HTMLFormElement>): Promise<void> {
-    event.preventDefault();
-    if (submitting) return;
-
-    setSubmitting(true);
-    setError(null);
-
-    try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
-      });
-
-      if (response.ok) {
-        router.push("/");
-        router.refresh();
-        return;
-      }
-
-      if (response.status === 401) {
-        setError("Invalid password. Please try again.");
-      } else {
-        setError("Something went wrong. Please try again.");
-      }
-    } catch {
-      setError("Couldn't reach the server. Check your connection and retry.");
-    } finally {
-      setSubmitting(false);
-    }
-  }
-
   return (
     <main className="flex min-h-full flex-1 items-center justify-center px-6 py-16">
       <div className="w-full max-w-sm">
@@ -58,39 +35,11 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="card p-6">
-          <label htmlFor="password" className="label">
-            Team password
-          </label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            autoComplete="current-password"
-            autoFocus
-            required
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            disabled={submitting}
-            aria-invalid={error !== null}
-            aria-describedby={error !== null ? "password-error" : undefined}
-            className="input"
-          />
+        <LoginForm />
 
-          {error !== null ? (
-            <p id="password-error" role="alert" className="mt-3 text-sm text-terracotta-dark">
-              {error}
-            </p>
-          ) : null}
-
-          <button
-            type="submit"
-            disabled={submitting}
-            className="btn btn-primary mt-5 w-full"
-          >
-            {submitting ? "Signing in…" : "Sign in"}
-          </button>
-        </form>
+        <div className="mt-8">
+          <StimilonSignature variant="auth" />
+        </div>
       </div>
     </main>
   );

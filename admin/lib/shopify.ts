@@ -1170,8 +1170,10 @@ const AUDIT_PRODUCTS_QUERY = `
             id
             sku
             barcode
+            inventoryQuantity
             inventoryItem {
               requiresShipping
+              tracked
               measurement { weight { value unit } }
             }
           }
@@ -1195,8 +1197,10 @@ interface RawAuditProductsResponse {
           readonly id: string;
           readonly sku?: string | null;
           readonly barcode?: string | null;
+          readonly inventoryQuantity?: number | null;
           readonly inventoryItem?: {
             readonly requiresShipping?: boolean;
+            readonly tracked?: boolean;
             readonly measurement?: {
               readonly weight?: { readonly value?: number; readonly unit?: string } | null;
             } | null;
@@ -1252,6 +1256,13 @@ export async function listAuditProducts(): Promise<AuditProduct[]> {
                 ? toGrams(weight.value, weight.unit)
                 : null,
             requiresShipping: variant.inventoryItem?.requiresShipping ?? true,
+            // Shopify still reports a quantity for an untracked variant, and
+            // it is meaningless there, so untracked is normalised to null
+            // rather than letting a stray 0 read as "out of stock".
+            inventoryQuantity:
+              variant.inventoryItem?.tracked === true
+                ? variant.inventoryQuantity ?? 0
+                : null,
           };
         }),
       });
@@ -1407,7 +1418,7 @@ const MOCK_AUDIT_PRODUCTS: AuditProduct[] = [
     status: "ACTIVE",
     metaDescription: "A gentle baby oil for everyday use.",
     variants: [
-      { id: "gid://shopify/ProductVariant/1", sku: "MINC-000033", barcode: "8680551230019", grams: 145, requiresShipping: true },
+      { id: "gid://shopify/ProductVariant/1", sku: "MINC-000033", barcode: "8680551230019", grams: 145, requiresShipping: true, inventoryQuantity: 24 },
     ],
   },
   {
@@ -1418,7 +1429,7 @@ const MOCK_AUDIT_PRODUCTS: AuditProduct[] = [
     status: "ACTIVE",
     metaDescription: "A rich hydrating gel for very dry skin.",
     variants: [
-      { id: "gid://shopify/ProductVariant/2", sku: "MINC-000112", barcode: "", grams: 75, requiresShipping: true },
+      { id: "gid://shopify/ProductVariant/2", sku: "MINC-000112", barcode: "", grams: 75, requiresShipping: true, inventoryQuantity: 0 },
     ],
   },
   {
@@ -1428,7 +1439,7 @@ const MOCK_AUDIT_PRODUCTS: AuditProduct[] = [
     status: "ACTIVE",
     metaDescription: "",
     variants: [
-      { id: "gid://shopify/ProductVariant/3", sku: "MINC-000118", barcode: "", grams: 100, requiresShipping: true },
+      { id: "gid://shopify/ProductVariant/3", sku: "MINC-000118", barcode: "", grams: 100, requiresShipping: true, inventoryQuantity: 3 },
     ],
   },
 ];

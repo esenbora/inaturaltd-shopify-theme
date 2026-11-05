@@ -1,192 +1,89 @@
-import Link from "next/link";
-import type { ReactNode } from "react";
-import { listArticles, listAuditProducts, listDiscountCodes } from "@/lib/shopify";
-import { getSalesSummary } from "@/lib/sales";
-import { assessBlogHealth, blogHealthMessage } from "@/lib/blog-health";
-import {
-  checkBarcodes,
-  checkDiscountGuards,
-  checkSearchDescriptions,
-  checkStatedSize,
-  checksMessage,
-  summarise,
-} from "@/lib/store-checks";
+import { Suspense } from "react";
+import { SalesCard } from "@/components/dashboard/sales-card";
+import { StockCard } from "@/components/dashboard/stock-card";
+import { BlogCard, ChecksCard } from "@/components/dashboard/content-cards";
+import { TrafficCard } from "@/components/dashboard/traffic-card";
+import { IndexCard } from "@/components/dashboard/index-card";
+import { CardSkeleton } from "@/components/dashboard/shell";
+import { DASHBOARD_RANGE_DAYS } from "@/lib/metrics";
 
 /**
- * Content dashboard.
+ * Store dashboard.
  *
- * This page used to be four static links, so nothing about the store's state
- * was visible until you clicked into a section. Drafts piled up for a month
- * unnoticed that way. Each card now carries the one number you would act on.
+ * This used to be five links with two figures between them, and the reason
+ * given was honest: search rankings and index coverage sit behind per-URL
+ * Google calls that are slow and quota-limited, which is the wrong cost to pay
+ * on a landing page. That reason has been answered rather than accepted. Every
+ * source now has a cache lifetime matched to how fast it actually moves (see
+ * `lib/metrics.ts`), so opening this page twice in a minute costs one read,
+ * and each card streams in behind its own Suspense boundary, so Shopify's
+ * figures appear immediately and Search Console's arrive when they arrive
+ * instead of holding the screen.
  *
- * Only blog and sales get live figures. Search rankings and index coverage are
- * behind per-URL Google API calls that are slow and rate-limited, which is the
- * wrong cost to pay on a landing page — those stay plain links.
+ * Every card therefore handles all four states: loading is the skeleton the
+ * boundary shows, error and empty are the card's own branches, and each card
+ * says how old its figures are rather than implying they are live.
  */
 
+export const metadata = {
+  title: "Dashboard · INature Admin",
+};
+
+/**
+ * Rendered per request, not prerendered.
+ *
+ * The CSP in `proxy.ts` carries a per-request nonce, and Next can only put
+ * that nonce on the script tags of a page it renders at request time. The
+ * cache lifetimes in `lib/metrics.ts` are what keep that affordable.
+ */
 export const dynamic = "force-dynamic";
 
-// Matches the local helpers on the Sales and Analytics pages.
-function money(n: number): string {
-  return `£${n.toFixed(2)}`;
-}
-
-type Tone = "neutral" | "attention";
-
-function SectionCard({
-  href,
-  title,
-  description,
-  stat,
-  tone = "neutral",
-}: {
-  href: string;
-  title: string;
-  description: string;
-  stat?: ReactNode;
-  tone?: Tone;
-}) {
+export default function Home() {
   return (
-    <Link
-      href={href}
-      className="card group flex flex-col p-6 transition-colors hover:border-sage/50"
-    >
-      <h2 className="u-serif text-xl font-semibold text-ink">{title}</h2>
-      <p className="mt-1 text-sm text-muted">{description}</p>
-      {stat && (
-        <p
-          className={`mt-4 text-sm font-medium ${
-            tone === "attention" ? "text-terracotta-dark" : "text-ink"
-          }`}
-        >
-          {stat}
-        </p>
-      )}
-      <span className="mt-6 inline-flex items-center gap-1 text-sm font-medium text-sage-dark transition-transform group-hover:translate-x-0.5">
-        Open
-        <span aria-hidden>&rarr;</span>
-      </span>
-    </Link>
-  );
-}
-
-/** Shown in place of a figure when its source could not be reached. */
-function Unavailable() {
-  return <span className="text-muted">Figures unavailable right now.</span>;
-}
-
-export default async function Home() {
-  // One failing source must not take the whole dashboard down with it.
-  const [articlesResult, salesResult, productsResult, discountsResult] =
-    await Promise.allSettled([
-      listArticles(),
-      getSalesSummary(30),
-      listAuditProducts(),
-      listDiscountCodes(),
-    ]);
-
-  let blogStat: ReactNode = <Unavailable />;
-  let blogTone: Tone = "neutral";
-  if (articlesResult.status === "fulfilled") {
-    const articles = articlesResult.value;
-    const health = assessBlogHealth(articles);
-    if (health.pendingDrafts > 0 || health.level !== "ok") {
-      blogStat = blogHealthMessage(health);
-      blogTone = "attention";
-    } else {
-      blogStat = `${articles.length} articles published.`;
-    }
-  }
-
-  let salesStat: ReactNode = <Unavailable />;
-  let salesTone: Tone = "neutral";
-  if (salesResult.status === "fulfilled") {
-    const sales = salesResult.value;
-    const headline = `${sales.orders} orders · ${money(sales.revenue)} in 30 days.`;
-    if (sales.abandoned.count > 0) {
-      salesStat = (
-        <>
-          {headline}{" "}
-          <span className="block">
-            {money(sales.abandoned.value)} left in {sales.abandoned.count}{" "}
-            baskets, {sales.abandoned.withEmail} with an email address.
-          </span>
-        </>
-      );
-      salesTone = "attention";
-    } else {
-      salesStat = headline;
-    }
-  }
-
-  // The card carries the count only. Which checks failed is the page's job;
-  // a dashboard that explains is a dashboard nobody skims.
-  let checksStat: ReactNode = <Unavailable />;
-  let checksTone: Tone = "neutral";
-  if (
-    productsResult.status === "fulfilled" ||
-    discountsResult.status === "fulfilled"
-  ) {
-    const summary = summarise([
-      ...(productsResult.status === "fulfilled"
-        ? [
-            checkStatedSize(productsResult.value),
-            checkBarcodes(productsResult.value),
-            checkSearchDescriptions(productsResult.value),
-          ]
-        : []),
-      ...(discountsResult.status === "fulfilled"
-        ? [checkDiscountGuards(discountsResult.value)]
-        : []),
-    ]);
-    checksStat = checksMessage(summary);
-    if (summary.high > 0) checksTone = "attention";
-  }
-
-  return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-14">
-      <header className="mb-10">
+    <main className="mx-auto w-full max-w-5xl px-6 py-10">
+      <header className="mb-8">
         <p className="text-sm font-medium text-terracotta">INature UK</p>
         <h1 className="u-serif mt-1 text-3xl font-semibold text-ink">
-          Content dashboard
+          Store dashboard
         </h1>
-        <p className="mt-2 text-muted">
-          Manage the storefront content for the INature UK Shopify store.
+        <p className="mt-2 max-w-2xl text-muted">
+          Sales, stock, traffic, search and content for the last{" "}
+          {DASHBOARD_RANGE_DAYS} days. Each card carries the age of its own
+          figures, because the five sources behind this screen refresh at
+          different rates.
         </p>
       </header>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <SectionCard
-          href="/articles"
-          title="Blog articles"
-          description="Write, edit and publish Shopify blog articles."
-          stat={blogStat}
-          tone={blogTone}
-        />
-        <SectionCard
-          href="/sales"
-          title="Sales"
-          description="Orders, revenue, where they come from, and baskets left behind."
-          stat={salesStat}
-          tone={salesTone}
-        />
-        <SectionCard
-          href="/products"
-          title="Products"
-          description="Edit product descriptions and manage product photos."
-        />
-        <SectionCard
-          href="/analytics"
-          title="Analytics"
-          description="Search rankings and traffic from Search Console and GA4."
-        />
-        <SectionCard
-          href="/checks"
-          title="Checks"
-          description="Sizes, barcodes and discount limits that have gone wrong quietly."
-          stat={checksStat}
-          tone={checksTone}
-        />
+        <Suspense fallback={<CardSkeleton title="Sales" lines={4} />}>
+          <SalesCard />
+        </Suspense>
+
+        <Suspense fallback={<CardSkeleton title="Stock" lines={4} />}>
+          <StockCard />
+        </Suspense>
+
+        <div className="sm:col-span-2">
+          <Suspense
+            fallback={<CardSkeleton title="Traffic &amp; search" lines={4} />}
+          >
+            <TrafficCard />
+          </Suspense>
+        </div>
+
+        <Suspense fallback={<CardSkeleton title="Blog" lines={3} />}>
+          <BlogCard />
+        </Suspense>
+
+        <Suspense fallback={<CardSkeleton title="Checks" lines={3} />}>
+          <ChecksCard />
+        </Suspense>
+
+        <div className="sm:col-span-2">
+          <Suspense fallback={<CardSkeleton title="Google index" lines={3} />}>
+            <IndexCard />
+          </Suspense>
+        </div>
       </div>
     </main>
   );

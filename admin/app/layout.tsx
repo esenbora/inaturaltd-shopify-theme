@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { Fraunces, Inter } from "next/font/google";
-import Link from "next/link";
 import "./globals.css";
-import { LogoutButton } from "@/components/logout-button";
-import { NavTabs } from "@/components/nav-tabs";
+import { AppHeader } from "@/components/app-header";
+import { AppFooter } from "@/components/app-footer";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -33,23 +32,9 @@ export default function RootLayout({
       className={`${inter.variable} ${fraunces.variable} h-full`}
     >
       <body className="flex min-h-full flex-col">
-        <header className="sticky top-0 z-20 border-b border-line bg-cream/85 backdrop-blur">
-          <div className="mx-auto flex w-full max-w-5xl items-center gap-4 px-6 py-3 sm:gap-6">
-            <Link href="/" className="flex shrink-0 items-baseline gap-2">
-              <span className="u-serif text-lg font-semibold text-ink">
-                INature
-              </span>
-              <span className="rounded-full bg-sage/15 px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider text-sage-dark">
-                Admin
-              </span>
-            </Link>
-            <NavTabs />
-            <div className="ml-auto shrink-0">
-              <LogoutButton />
-            </div>
-          </div>
-        </header>
+        <AppHeader />
         <div className="flex flex-1 flex-col">{children}</div>
+        <AppFooter environment={process.env.NODE_ENV} />
       </body>
     </html>
   );

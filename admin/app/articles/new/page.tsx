@@ -1,5 +1,16 @@
 import ArticleForm from "@/components/article-form";
 
+/*
+ * Rendered per request, not prerendered.
+ *
+ * The CSP in `proxy.ts` carries a per-request nonce, and Next can only put
+ * that nonce on the script tags of a page it renders at request time. Left
+ * static, this page would be served with build-time HTML whose scripts carry
+ * no nonce, and the browser would refuse to run them: a blank screen with a
+ * CSP error in the console and nothing in the server log.
+ */
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "New article · INature Admin",
 };

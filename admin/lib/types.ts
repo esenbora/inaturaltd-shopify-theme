@@ -140,6 +140,12 @@ export interface AuditVariant {
    * "unset" are indistinguishable and both land here as null. */
   grams: number | null;
   requiresShipping: boolean;
+  /**
+   * Units Shopify believes are on hand, or null when this variant's inventory
+   * is not tracked. Null and 0 mean opposite things: untracked sells freely,
+   * zero refuses the sale, so they must not collapse into one number.
+   */
+  inventoryQuantity: number | null;
 }
 
 /** A product plus the variant detail the checks need. */

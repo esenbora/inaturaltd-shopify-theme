@@ -9,13 +9,14 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@tiptap/extension-link": "^3.27.4",
-    "@tiptap/pm": "^3.27.4",
-    "@tiptap/react": "^3.27.4",
-    "@tiptap/starter-kit": "^3.27.4",
-    "next": "16.2.10",
+    "@tiptap/extension-link": "^3.32.2",
+    "@tiptap/pm": "^3.32.2",
+    "@tiptap/react": "^3.32.2",
+    "@tiptap/starter-kit": "^3.32.2",
+    "next": "^16.4.5",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -23,7 +24,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.2.10",
+    "eslint-config-next": "^16.4.5",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
