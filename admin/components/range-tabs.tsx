@@ -56,7 +56,7 @@ export function RangeTabs({
             key={option.days}
             href={`${basePath}?range=${option.days}`}
             aria-current={isActive ? "page" : undefined}
-            className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+            className={`rounded-md px-3 py-1.5 max-sm:py-2.5 text-sm font-medium transition-colors ${
               isActive
                 ? "bg-sage-dark text-white"
                 : "text-muted hover:bg-sand hover:text-ink"

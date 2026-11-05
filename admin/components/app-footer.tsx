@@ -32,7 +32,7 @@ export function AppFooter({ environment }: AppFooterProps) {
       </div>
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-6 py-7 sm:flex-row sm:items-center sm:justify-between">
         <StimilonSignature />
-        <p className="text-[0.7rem] text-muted">
+        <p className="text-xs text-muted sm:text-[0.7rem]">
           INature UK admin
           {environment !== "production" ? (
             <>

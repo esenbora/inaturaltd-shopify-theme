@@ -102,7 +102,7 @@ function ShowTabs({
             key={o.value}
             href={`/products?show=${o.value}`}
             aria-current={isActive ? "page" : undefined}
-            className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+            className={`rounded-md px-3 py-1.5 max-sm:py-2.5 text-sm font-medium transition-colors ${
               isActive
                 ? "bg-sage text-white"
                 : "text-muted hover:bg-sand hover:text-ink"

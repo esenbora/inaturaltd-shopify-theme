@@ -30,7 +30,7 @@ export function StimilonSignature({ variant = "footer" }: StimilonSignatureProps
         centred ? "justify-center" : "justify-start",
       ].join(" ")}
     >
-      <span className="text-[0.7rem] text-muted">Built and maintained by</span>
+      <span className="text-xs text-muted sm:text-[0.7rem]">Built and maintained by</span>
       {/*
         A plain <img> rather than next/image: the asset is an SVG, so there is
         nothing for the image optimiser to do, and routing it through

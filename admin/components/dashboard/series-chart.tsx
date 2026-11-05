@@ -99,6 +99,24 @@ export function SeriesChart({ points }: { points: DailyPoint[] }) {
 
   const active = hover !== null ? points[hover] : null;
 
+  /**
+   * Pick the day under the pointer.
+   *
+   * This used to be thirty invisible rects, one per day, which works with a
+   * mouse and fails completely on a phone: the plot is about 230px wide there,
+   * so a day is eight pixels and no fingertip can land on one. One plate over
+   * the whole plot, resolving to the nearest day, is both the touch fix and a
+   * better mouse target.
+   */
+  const pick = (event: React.PointerEvent<SVGRectElement>) => {
+    const box = event.currentTarget.getBoundingClientRect();
+    if (box.width === 0) return;
+    const index = Math.floor(
+      ((event.clientX - box.left) / box.width) * points.length,
+    );
+    setHover(Math.min(points.length - 1, Math.max(0, index)));
+  };
+
   return (
     <div>
       <div className="mb-4 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
@@ -115,7 +133,7 @@ export function SeriesChart({ points }: { points: DailyPoint[] }) {
               type="button"
               onClick={() => setMeasure(m)}
               aria-pressed={measure === m}
-              className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+              className={`rounded-md px-3 py-1.5 max-sm:py-2.5 text-sm font-medium transition-colors ${
                 measure === m
                   ? "bg-sage-dark text-white"
                   : "text-muted hover:bg-sand hover:text-ink"
@@ -201,20 +219,23 @@ export function SeriesChart({ points }: { points: DailyPoint[] }) {
               );
             })}
 
-            {/* Hit targets: the whole slot, full height, so a one-order day
-                three pixels tall is still reachable with a mouse. */}
-            {points.map((p, i) => (
-              <rect
-                key={p.date}
-                x={i * slot}
-                y={0}
-                width={slot}
-                height={VIEW_H}
-                fill="transparent"
-                onMouseEnter={() => setHover(i)}
-                onMouseLeave={() => setHover(null)}
-              />
-            ))}
+            {/* `pan-y` so a vertical drag still scrolls the page while a
+                horizontal one walks the series. */}
+            <rect
+              x={0}
+              y={0}
+              width={VIEW_W}
+              height={VIEW_H}
+              fill="transparent"
+              style={{ touchAction: "pan-y" }}
+              onPointerDown={pick}
+              onPointerMove={pick}
+              onPointerLeave={(event) => {
+                // A touch ends by leaving, so obeying that here would close
+                // the tooltip in the same instant the tap opened it.
+                if (event.pointerType === "mouse") setHover(null);
+              }}
+            />
           </svg>
 
           {active && (

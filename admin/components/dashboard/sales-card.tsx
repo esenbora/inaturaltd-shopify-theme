@@ -80,7 +80,7 @@ export async function TradeStrip({ rangeDays }: { rangeDays: number }) {
           </span>
           <Link
             href={`/sales?range=${rangeDays}`}
-            className="group/link shrink-0 text-sm font-medium text-sage-dark transition-colors hover:text-ink"
+            className="group/link -my-3 shrink-0 py-3 text-sm font-medium text-sage-dark transition-colors hover:text-ink"
           >
             Sales
             <span

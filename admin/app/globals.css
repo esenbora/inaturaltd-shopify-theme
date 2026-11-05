@@ -345,11 +345,20 @@ body {
     color: var(--color-ink);
     font-weight: 600;
   }
+  /*
+   * The active marker sits inside its own tab, not on the header's border.
+   *
+   * It was written at `bottom: -0.78rem` to land on that border, and on a wide
+   * screen it never once rendered: `.nav-scroll` is `overflow-x: auto`, which
+   * the spec turns into `overflow-y: auto` as well, so the strip clipped the
+   * 2px it was told to draw thirteen pixels outside itself. The scrollbar is
+   * hidden, so there was nothing to see and nothing to scroll to either.
+   */
   .tab-active::after {
     content: "";
     position: absolute;
     inset-inline: 0.7rem;
-    bottom: -0.78rem;
+    bottom: 0.25rem;
     height: 2px;
     border-radius: 999px;
     background: var(--color-sage-dark);
@@ -500,4 +509,63 @@ body {
 .table-scroll {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+}
+
+/*
+ * Phone.
+ *
+ * Nothing here is a layout rescue: every page already fits 390px without a
+ * horizontal scrollbar. These are the three things a 390px render showed that
+ * a desktop one cannot.
+ *
+ * The section strip carries 568px of tabs in roughly a hundred, and its
+ * scrollbar is hidden by design, so six of seven sections were invisible with
+ * nothing saying they existed. The header now gives the strip its own row and
+ * the mask below fades its right edge, which is the one honest signal that
+ * content continues: it appears only while there is something to scroll to,
+ * because a strip that fits is never masked.
+ *
+ * Tabs and buttons measured 32-35px tall. That clears the WCAG 2.5.8 floor of
+ * 24px but sits under the 44px a fingertip actually wants, and this panel is
+ * read standing up in a stockroom as often as at a desk.
+ *
+ * The two eyebrow classes read at 11px, which is legible on a laptop at arm's
+ * length and marginal on a phone, so both take the next step up. They are
+ * byte-identical declarations under two names, which is its own problem and
+ * not this change's to fix.
+ */
+/*
+ * The fade belongs to the strip, not to a width. Below `lg` the strip is
+ * always scrolled; at `lg` and above its slot runs on to the log out button,
+ * so the faded 36px falls on empty space and nothing is dimmed.
+ */
+.nav-scroll {
+  mask-image: linear-gradient(
+    to right,
+    #000 calc(100% - 2.25rem),
+    transparent 100%
+  );
+}
+
+/* A 35px tab clears the WCAG floor and misses the fingertip. Tied to the
+   two-row header, which ends at `lg`, rather than to the phone: a tablet in
+   landscape is still a touch screen. */
+@media (max-width: 1023px) {
+  .tab {
+    padding-block: 0.75rem;
+  }
+}
+
+@media (max-width: 639px) {
+  .stat-label,
+  .card-subhead {
+    font-size: 0.75rem;
+  }
+}
+
+/* Touch, at any width: a coarse pointer has no hover to aim with. */
+@media (pointer: coarse) {
+  .btn {
+    min-height: 2.75rem;
+  }
 }

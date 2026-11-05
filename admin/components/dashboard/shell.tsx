@@ -85,7 +85,11 @@ export function Card({
         {href && (
           <Link
             href={href}
-            className="group/link shrink-0 text-sm font-medium text-sage-dark transition-colors hover:text-ink"
+            /* The padding makes a 44px target of a 20px line; the matching
+               negative margin keeps it from pushing the card header open, and
+               a baseline-aligned flex item does not move when the two
+               cancel. */
+            className="group/link -my-3 shrink-0 py-3 text-sm font-medium text-sage-dark transition-colors hover:text-ink"
           >
             {linkLabel}
             <span
