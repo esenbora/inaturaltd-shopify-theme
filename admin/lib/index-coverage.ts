@@ -7,7 +7,7 @@
  * `https://<site>/sitemap.xml` (a Shopify sitemap *index* pointing at child
  * sitemaps), then calls the URL Inspection API once per discovered page.
  *
- * Auth is entirely delegated to `lib/google.ts` — `getGoogleAccessToken()` mints
+ * Auth is entirely delegated to `lib/google-auth.ts` — `getGoogleAccessToken()` mints
  * the service-account JWT, so this module adds no new credentials and no new
  * dependencies. Because that helper uses Node's `crypto.createSign`, any route
  * importing this module must run on the Node.js runtime, not Edge.
@@ -20,14 +20,14 @@
  *      whole report — each row carries its own `error`, mirroring the
  *      partial-failure philosophy of `getAnalyticsSummary()`.
  *
- * Env vars (all shared with `lib/google.ts`, none new):
+ * Env vars (all shared with `lib/google-auth.ts`, none new):
  *   - GOOGLE_SERVICE_ACCOUNT_JSON — service-account key (raw JSON or base64).
  *   - GSC_SITE_URL — e.g. "sc-domain:inatureltd.co.uk"; doubles as the
  *     `siteUrl` sent to the API *and* the source of the sitemap origin.
  *   - GA4_PROPERTY_ID — not used here, but `isAnalyticsConfigured()` requires
  *     it, so the Google integration is configured as one unit.
  */
-import { getGoogleAccessToken, isAnalyticsConfigured } from "@/lib/google";
+import { getGoogleAccessToken, isAnalyticsConfigured } from "@/lib/google-auth";
 
 // ---------------------------------------------------------------------------
 // Public result types (the contract the UI consumes)

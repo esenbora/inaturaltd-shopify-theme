@@ -27,6 +27,43 @@ export function percent(fraction: number): string {
   return `${(fraction * 100).toFixed(1)}%`;
 }
 
+/**
+ * A full URL reduced to its path, for a table of pages.
+ *
+ * Every row shares the same origin, so printing it on each one spends the
+ * column's width saying the same thing six times.
+ */
+export function shortPath(url: string): string {
+  try {
+    return new URL(url).pathname || url;
+  } catch {
+    return url;
+  }
+}
+
+/** Status shown as a glyph and a word, never the colour alone. */
+export function StatusBadge({
+  kind,
+  children,
+}: {
+  kind: "ok" | "wait" | "fail";
+  children: ReactNode;
+}) {
+  const style =
+    kind === "ok"
+      ? "badge-visible"
+      : kind === "wait"
+        ? "badge-hidden"
+        : "bg-terracotta/10 text-terracotta-dark";
+  const glyph = kind === "ok" ? "✓" : kind === "wait" ? "–" : "✕";
+  return (
+    <span className={`badge gap-1 ${style}`}>
+      <span aria-hidden>{glyph}</span>
+      {children}
+    </span>
+  );
+}
+
 /* ------------------------------------------------------------------ */
 
 interface CardProps {

@@ -1,18 +1,21 @@
 import { Suspense } from "react";
 import { getAnalyticsSummary, isAnalyticsConfigured } from "@/lib/google";
-import type { Ga4Summary, GscSummary } from "@/lib/google";
+import type { Ga4Summary } from "@/lib/google";
 import { getSalesSummary } from "@/lib/sales";
 import { RangeTabs, rangeLabel, resolveRange } from "@/components/range-tabs";
 import { ShareBar } from "@/components/dashboard/chart";
+import { SearchBlock } from "@/components/analytics/search-block";
 import {
   Card,
   CardError,
   CardSkeleton,
   Empty,
   Stat,
+  StatusBadge,
   count,
   money,
   percent,
+  shortPath,
 } from "@/components/dashboard/shell";
 
 /**
@@ -23,12 +26,19 @@ import {
  * for the range chosen here rather than the dashboard's fixed 30 days.
  *
  * It used to render one setup form and nothing else whenever the Google
- * credentials were absent, which is the state this store is in today. That
- * left four fifths of the screen empty and said nothing about what the store
- * does know. The unconnected branch is now its own screen: what will be
- * connected, what it will show, and the Shopify figures that already answer
- * part of the same question. No chart is drawn for Google data that does not
- * exist.
+ * credentials were absent. That left four fifths of the screen empty and said
+ * nothing about what the store does know. The unconnected branch is now its
+ * own screen: what will be connected, what it will show, and the Shopify
+ * figures that already answer part of the same question. No chart is drawn for
+ * Google data that does not exist. Both credentials are in place on the live
+ * panel, so that branch is now the fallback rather than the normal state.
+ *
+ * The search half used to show the top fifty queries by clicks and nothing
+ * else. Google sorts by clicks unless told otherwise, so on a store with eight
+ * clicking searches those fifty rows were mostly one-impression noise, and the
+ * search shown four hundred times and clicked never could not appear at all.
+ * The three query tables below are cut from the whole window instead, and the
+ * two that lead are the ones nobody can act on from the old list.
  *
  * Three states are kept apart on purpose, because they mean different things
  * and are fixed by different people: not connected (a setup task), connected
@@ -40,28 +50,11 @@ export const metadata = {
   title: "Analytics · INature Admin",
 };
 
-// Live query on each visit (data changes daily; nothing to cache).
+// Rendered per visit rather than at build time, because the range comes from
+// the query string and GA4 is read live. The Search Console half is cached for
+// half an hour inside `lib/google.ts`, since one read of it costs seven
+// requests against a daily property-wide quota; the card states its own age.
 export const dynamic = "force-dynamic";
-
-/** "2026-09-29" -> "29 Sep". */
-function gscDate(iso: string): string {
-  const d = new Date(`${iso}T00:00:00Z`);
-  return Number.isNaN(d.getTime())
-    ? iso
-    : d.toLocaleDateString("en-GB", {
-        day: "numeric",
-        month: "short",
-        timeZone: "UTC",
-      });
-}
-
-function shortPath(url: string): string {
-  try {
-    return new URL(url).pathname || url;
-  } catch {
-    return url;
-  }
-}
 
 function SectionHead({ title, note }: { title: string; note: string }) {
   return (
@@ -71,29 +64,6 @@ function SectionHead({ title, note }: { title: string; note: string }) {
       </h2>
       <p className="text-xs text-muted">{note}</p>
     </div>
-  );
-}
-
-/** Status shown as a glyph and a word, never the colour alone. */
-function StatusBadge({
-  kind,
-  children,
-}: {
-  kind: "ok" | "wait" | "fail";
-  children: React.ReactNode;
-}) {
-  const style =
-    kind === "ok"
-      ? "badge-visible"
-      : kind === "wait"
-        ? "badge-hidden"
-        : "bg-terracotta/10 text-terracotta-dark";
-  const glyph = kind === "ok" ? "✓" : kind === "wait" ? "–" : "✕";
-  return (
-    <span className={`badge gap-1 ${style}`}>
-      <span aria-hidden>{glyph}</span>
-      {children}
-    </span>
   );
 }
 
@@ -331,159 +301,6 @@ function NotConnected({ rangeDays }: { rangeDays: number }) {
 /* Connected                                                           */
 /* ------------------------------------------------------------------ */
 
-function SearchBlock({ gsc }: { gsc: GscSummary | null }) {
-  if (gsc === null) {
-    return (
-      <CardError title="Search Console" source="Search Console" />
-    );
-  }
-
-  if (gsc.noDataInRange) {
-    return (
-      <Card
-        title="Search Console"
-        description="Searches that showed the site on Google, and the ones that led to a click."
-      >
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-          <StatusBadge kind="wait">No data yet</StatusBadge>
-          <Empty>
-            Google has not published search data for this range. That is a
-            delay on Google&rsquo;s side, not a drop in traffic.
-          </Empty>
-        </div>
-      </Card>
-    );
-  }
-
-  return (
-    <div className="grid gap-5">
-      <Card
-        title="Search Console"
-        tone="calm"
-        description={`Searches that showed the site on Google, and the ones that led to a click.${
-          gsc.dataThrough
-            ? ` Figures run to ${gscDate(gsc.dataThrough)}; Google reports a few days behind, so the latest days are not in yet.`
-            : ""
-        }`}
-      >
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-          <Stat
-            label="Clicks"
-            size="lead"
-            value={count(gsc.totals.clicks)}
-            note="Visits that began on Google"
-          />
-          <Stat
-            label="Impressions"
-            value={count(gsc.totals.impressions)}
-            note="Times the site was shown"
-          />
-          <Stat
-            label="Click rate"
-            value={percent(gsc.totals.ctr)}
-            note="Clicks per impression"
-          />
-          <Stat
-            label="Average position"
-            value={gsc.totals.position.toFixed(1)}
-            note="1 is the top of the results"
-          />
-        </div>
-      </Card>
-
-      <div className="grid gap-5 lg:grid-cols-2">
-        <Card
-          title="Queries"
-          description="What people typed before seeing or clicking the site, most clicks first."
-        >
-          {gsc.topQueries.length === 0 ? (
-            <Empty>No queries were returned for this range.</Empty>
-          ) : (
-            <div className="table-scroll">
-              <table className="min-w-full text-sm">
-                <thead>
-                  <tr className="border-b border-line text-left">
-                    <th className="pb-2 pr-3 font-medium text-muted">Query</th>
-                    <th className="pb-2 pr-3 text-right font-medium text-muted">
-                      Clicks
-                    </th>
-                    <th className="pb-2 pr-3 text-right font-medium text-muted">
-                      Shown
-                    </th>
-                    <th className="pb-2 text-right font-medium text-muted">
-                      Position
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-line">
-                  {gsc.topQueries.map((q) => (
-                    <tr key={q.query}>
-                      <td className="py-2 pr-3 text-ink">{q.query}</td>
-                      <td className="py-2 pr-3 text-right tabular-nums font-medium text-ink">
-                        {count(q.clicks)}
-                      </td>
-                      <td className="py-2 pr-3 text-right tabular-nums text-muted">
-                        {count(q.impressions)}
-                      </td>
-                      <td className="py-2 text-right tabular-nums text-muted">
-                        {q.position.toFixed(1)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </Card>
-
-        <Card
-          title="Pages"
-          description="The pages Google sent people to, most clicks first."
-        >
-          {gsc.topPages.length === 0 ? (
-            <Empty>No pages were returned for this range.</Empty>
-          ) : (
-            <div className="table-scroll">
-              <table className="min-w-full text-sm">
-                <thead>
-                  <tr className="border-b border-line text-left">
-                    <th className="pb-2 pr-3 font-medium text-muted">Page</th>
-                    <th className="pb-2 pr-3 text-right font-medium text-muted">
-                      Clicks
-                    </th>
-                    <th className="pb-2 pr-3 text-right font-medium text-muted">
-                      Shown
-                    </th>
-                    <th className="pb-2 text-right font-medium text-muted">
-                      Position
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-line">
-                  {gsc.topPages.map((p) => (
-                    <tr key={p.page}>
-                      <td className="py-2 pr-3 text-ink">{shortPath(p.page)}</td>
-                      <td className="py-2 pr-3 text-right tabular-nums font-medium text-ink">
-                        {count(p.clicks)}
-                      </td>
-                      <td className="py-2 pr-3 text-right tabular-nums text-muted">
-                        {count(p.impressions)}
-                      </td>
-                      <td className="py-2 text-right tabular-nums text-muted">
-                        {p.position.toFixed(1)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </Card>
-      </div>
-    </div>
-  );
-}
-
 function TrafficBlock({ ga4 }: { ga4: Ga4Summary | null }) {
   if (ga4 === null) {
     return <CardError title="Google Analytics" source="Google Analytics" />;
@@ -622,7 +439,12 @@ async function ConnectedBody({ rangeDays }: { rangeDays: number }) {
         title="Search"
         note="Search Console · runs a few days behind"
       />
-      <SearchBlock gsc={gsc} />
+      <SearchBlock
+        gsc={gsc}
+        rangeDays={rangeDays}
+        ageMs={data.gscAgeMs}
+        stale={data.gscStale}
+      />
     </>
   );
 }

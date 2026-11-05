@@ -188,7 +188,23 @@ export default async function SalesPage({ searchParams }: PageProps) {
           title="Day by day"
           description="Each column is one calendar day in UTC, scaled from zero so a quiet day reads as quiet rather than as a dip. Hover a column for that day's figures."
         >
-          <SeriesChart points={daily} />
+          <SeriesChart
+            points={daily}
+            measures={[
+              {
+                field: "revenue",
+                label: "Revenue",
+                unit: "currency",
+                dayNote: "took money",
+              },
+              {
+                field: "orders",
+                label: "Orders",
+                unit: "count",
+                dayNote: "took an order",
+              },
+            ]}
+          />
         </Card>
       </div>
 
