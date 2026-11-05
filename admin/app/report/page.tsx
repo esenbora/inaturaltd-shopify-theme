@@ -46,13 +46,11 @@ export default async function ReportPage({ searchParams }: PageProps) {
   ].filter((name): name is string => name !== null);
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-10">
+    <main className="mx-auto w-full max-w-6xl px-6 py-10">
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="u-serif text-2xl font-semibold text-ink">
-            Monthly report
-          </h1>
-          <p className="mt-1 text-sm text-muted">
+          <h1 className="page-title">Monthly report</h1>
+          <p className="page-standfirst mt-2">
             Sales, traffic and search figures for {rangeLabel(range)}, assembled
             ready to send. Sections 4 to 6 are yours to write.
           </p>

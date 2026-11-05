@@ -26,8 +26,11 @@ export function AppFooter({ environment }: AppFooterProps) {
   if (pathname === "/login" || pathname.startsWith("/login/")) return null;
 
   return (
-    <footer className="mt-auto border-t border-line">
-      <div className="mx-auto flex w-full max-w-5xl flex-col gap-3 px-6 py-6 sm:flex-row sm:items-center sm:justify-between">
+    <footer className="mt-auto">
+      <div className="mx-auto w-full max-w-6xl px-6">
+        <hr className="rule-soft" />
+      </div>
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-6 py-7 sm:flex-row sm:items-center sm:justify-between">
         <StimilonSignature />
         <p className="text-[0.7rem] text-muted">
           INature UK admin

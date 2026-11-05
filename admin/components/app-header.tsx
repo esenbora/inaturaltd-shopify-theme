@@ -19,16 +19,28 @@ export function AppHeader() {
   if (pathname === "/login" || pathname.startsWith("/login/")) return null;
 
   return (
-    <header className="sticky top-0 z-20 border-b border-line bg-cream/85 backdrop-blur">
-      <div className="mx-auto flex w-full max-w-5xl items-center gap-4 px-6 py-3 sm:gap-6">
-        <Link href="/" className="flex shrink-0 items-baseline gap-2">
-          <span className="u-serif text-lg font-semibold text-ink">
+    <header className="sticky top-0 z-20 border-b border-line bg-cream/80 shadow-[0_1px_0_rgba(255,255,255,0.6)_inset] backdrop-blur-md">
+      <div className="mx-auto flex w-full max-w-6xl items-center gap-4 px-6 py-3 sm:gap-5">
+        <Link
+          href="/"
+          className="flex shrink-0 items-baseline gap-2"
+          aria-label="INature Admin, dashboard"
+        >
+          <span className="u-serif text-xl font-semibold tracking-tight text-ink">
             INature
           </span>
-          <span className="rounded-full bg-sage/15 px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider text-sage-dark">
+          <span className="rounded-full bg-sage/15 px-2 py-0.5 text-[0.625rem] font-semibold uppercase tracking-[0.1em] text-sage-dark">
             Admin
           </span>
         </Link>
+
+        {/* Separates the brand from the sections, so the bar reads as two
+            things rather than one undifferentiated row of text. */}
+        <span
+          aria-hidden
+          className="hidden h-5 w-px shrink-0 bg-line sm:block"
+        />
+
         <NavTabs />
         <div className="ml-auto shrink-0">
           <LogoutButton />

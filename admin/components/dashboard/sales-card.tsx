@@ -29,16 +29,28 @@ export async function SalesCard() {
   const sales = read.value;
   const partial = sales.errors !== undefined && sales.errors.length > 0;
 
+  // Money sitting in baskets with an email on them is the one thing on this
+  // card a person can still act on, so it is what sets the card's rail.
+  const recoverable = sales.abandoned.withEmail > 0;
+
   return (
-    <Card title="Sales" href="/sales" ageMs={read.ageMs} stale={read.stale}>
+    <Card
+      title="Sales"
+      href="/sales"
+      ageMs={read.ageMs}
+      stale={read.stale}
+      tone={recoverable ? "attention" : "calm"}
+    >
       <div className="grid grid-cols-2 gap-4">
         <Stat
           label="Orders"
+          size="lead"
           value={count(sales.orders)}
           note={`Last ${sales.rangeDays || DASHBOARD_RANGE_DAYS} days`}
         />
         <Stat
           label="Revenue"
+          size="lead"
           value={money(sales.revenue)}
           note={sales.orders > 0 ? `${money(sales.aov)} average` : "No orders yet"}
         />
@@ -77,7 +89,7 @@ export async function SalesCard() {
       </div>
 
       <div className="mt-5 border-t border-line pt-4">
-        <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted">
+        <p className="card-subhead mb-2 block">
           Best sellers
         </p>
         <Rows

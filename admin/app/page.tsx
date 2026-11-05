@@ -40,21 +40,21 @@ export const dynamic = "force-dynamic";
 
 export default function Home() {
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-10">
+    <main className="mx-auto w-full max-w-6xl px-6 py-10 sm:py-12">
       <header className="mb-8">
-        <p className="text-sm font-medium text-terracotta">INature UK</p>
-        <h1 className="u-serif mt-1 text-3xl font-semibold text-ink">
-          Store dashboard
-        </h1>
-        <p className="mt-2 max-w-2xl text-muted">
+        <p className="page-eyebrow">INature UK</p>
+        <h1 className="page-title mt-2">Store dashboard</h1>
+        <p className="page-standfirst mt-3">
           Sales, stock, traffic, search and content for the last{" "}
           {DASHBOARD_RANGE_DAYS} days. Each card carries the age of its own
           figures, because the five sources behind this screen refresh at
-          different rates.
+          different rates. A terracotta edge marks a card that is asking for
+          someone.
         </p>
+        <hr className="rule-soft mt-7" />
       </header>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-5 sm:grid-cols-2">
         <Suspense fallback={<CardSkeleton title="Sales" lines={4} />}>
           <SalesCard />
         </Suspense>

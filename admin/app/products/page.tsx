@@ -73,18 +73,18 @@ export default async function ProductsPage() {
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
     return (
-      <main className="mx-auto w-full max-w-5xl px-6 py-10">
-        <h1 className="u-serif mb-8 text-2xl font-semibold text-ink">Products</h1>
+      <main className="mx-auto w-full max-w-6xl px-6 py-10">
+        <h1 className="page-title mb-8">Products</h1>
         <ErrorState message={message} />
       </main>
     );
   }
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-10">
+    <main className="mx-auto w-full max-w-6xl px-6 py-10">
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="u-serif text-2xl font-semibold text-ink">Products</h1>
+          <h1 className="page-title">Products</h1>
           <p className="mt-1 text-sm text-muted">
             Edit descriptions, photos and SEO, or add a product. {products.length}{" "}
             product{products.length === 1 ? "" : "s"}.

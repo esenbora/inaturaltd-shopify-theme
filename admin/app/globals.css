@@ -17,6 +17,18 @@
   --color-terracotta-dark: #b26849;
   --color-sand: #efe8db;
 
+  /*
+   * Elevation. Three steps, not one: the panel's surfaces sat on a single
+   * 1px shadow, so a card, a header and a popover all read as the same plane
+   * and the eye had nothing to rank. Each step keeps the same warm ink so a
+   * shadow never turns grey against the cream.
+   */
+  --shadow-raise: 0 1px 2px rgba(42, 45, 42, 0.05);
+  --shadow-card: 0 1px 2px rgba(42, 45, 42, 0.04),
+    0 8px 24px -12px rgba(42, 45, 42, 0.16);
+  --shadow-lift: 0 2px 4px rgba(42, 45, 42, 0.05),
+    0 16px 36px -14px rgba(42, 45, 42, 0.22);
+
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-fraunces), ui-serif, Georgia, serif;
 }
@@ -26,7 +38,25 @@ html {
 }
 
 body {
-  background: var(--color-cream);
+  /*
+   * Flat cream read as a blank wall behind white cards. Two very wide, very
+   * faint washes give the page a top-left light source, so the cards sit on
+   * something rather than float on nothing. Both are under 4% alpha: this is
+   * meant to be felt, not seen, and it must never compete with the one piece
+   * of real colour on screen, which is a figure that needs attention.
+   */
+  background-color: var(--color-cream);
+  background-image: radial-gradient(
+      70rem 40rem at 12% -10%,
+      rgba(123, 159, 126, 0.07),
+      transparent 60%
+    ),
+    radial-gradient(
+      55rem 35rem at 95% 0%,
+      rgba(201, 123, 92, 0.05),
+      transparent 55%
+    );
+  background-attachment: fixed;
   color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -68,10 +98,57 @@ body {
   }
 
   .card {
+    position: relative;
     background: var(--color-card);
     border: 1px solid var(--color-line);
-    border-radius: 0.875rem;
-    box-shadow: 0 1px 2px rgba(42, 45, 42, 0.04);
+    border-radius: 1rem;
+    box-shadow: var(--shadow-card);
+    transition: box-shadow 0.2s ease, transform 0.2s ease,
+      border-color 0.2s ease;
+  }
+
+  /*
+   * A card the pointer is over lifts slightly.
+   *
+   * Only on a device that actually has a pointer: on a phone `:hover` sticks
+   * after a tap, leaving one card raised for no reason. The movement is 1px
+   * because the point is to confirm the card is a thing you can open, not to
+   * animate the dashboard.
+   */
+  @media (hover: hover) {
+    .card:hover {
+      box-shadow: var(--shadow-lift);
+      transform: translateY(-1px);
+    }
+  }
+
+  /*
+   * The status rail.
+   *
+   * Every card was the same white rectangle, so "two products cannot be
+   * bought" and "the blog is on schedule" carried identical visual weight and
+   * the screen had to be read word by word. A 3px rail down the leading edge
+   * ranks them at a glance: terracotta where a person is needed, sage where
+   * nothing is. Colour is never the only signal — the figure it belongs to is
+   * already recoloured and captioned — so this stays readable to anyone who
+   * cannot separate the two hues.
+   */
+  .card-rail::before {
+    content: "";
+    position: absolute;
+    inset-block: 1.25rem;
+    inset-inline-start: -1px;
+    width: 3px;
+    border-radius: 999px;
+    background: var(--color-sage);
+  }
+  .card-rail-attention::before {
+    background: var(--color-terracotta);
+  }
+
+  /* The rail owns the leading edge, so the content clears it. */
+  .card-rail > * {
+    padding-inline-start: 0.25rem;
   }
 
   .btn {
@@ -165,6 +242,138 @@ body {
   .badge-hidden {
     background: var(--color-sand);
     color: var(--color-muted);
+  }
+
+  /*
+   * Figures.
+   *
+   * A metrics panel whose numbers are set at the same size as its prose is a
+   * panel you have to read rather than scan. These are the thing the screen
+   * exists to show, so they are set in the display face, at a size that
+   * carries from arm's length, and in tabular figures so a column of them
+   * lines up instead of jittering.
+   */
+  .stat-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .stat-value {
+    font-family: var(--font-serif);
+    font-size: 1.875rem;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-ink);
+  }
+  .stat-value-lg {
+    font-size: 2.5rem;
+  }
+  .stat-value-attention {
+    color: var(--color-terracotta-dark);
+  }
+  .stat-note {
+    font-size: 0.75rem;
+    line-height: 1.4;
+    color: var(--color-muted);
+  }
+
+  /*
+   * Section heading inside a card: "Best sellers", "Top search terms".
+   *
+   * Written out because the same four utility classes were repeated at six
+   * call sites and drifted apart by a tracking step between two of them.
+   */
+  .card-subhead {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  /*
+   * Section tab.
+   *
+   * The active tab was a white pill on a cream bar, which is a difference of
+   * about 3% luminance: on the client's laptop in daylight you genuinely
+   * could not tell which section you were in. It now carries the ink colour,
+   * the weight and a sage underline that sits on the header's own bottom
+   * border, so the current section is legible before anything else in the bar.
+   */
+  .tab {
+    position: relative;
+    border-radius: 0.5rem;
+    padding: 0.45rem 0.7rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-muted);
+    transition: color 0.15s ease, background-color 0.15s ease;
+  }
+  .tab:hover {
+    color: var(--color-ink);
+    background: rgba(239, 232, 219, 0.7);
+  }
+  .tab-active {
+    color: var(--color-ink);
+    font-weight: 600;
+  }
+  .tab-active::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0.7rem;
+    bottom: -0.78rem;
+    height: 2px;
+    border-radius: 999px;
+    background: var(--color-sage-dark);
+  }
+
+  /*
+   * Page heading block: eyebrow, title, standfirst.
+   *
+   * Shared so the dashboard, sales, analytics and checks screens open the
+   * same way instead of each inventing its own heading size.
+   */
+  .page-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-terracotta-dark);
+  }
+  .page-title {
+    font-family: var(--font-serif);
+    font-size: 2.25rem;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    color: var(--color-ink);
+  }
+  .page-standfirst {
+    max-width: 44rem;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--color-muted);
+  }
+
+  /*
+   * A hairline that carries a little warmth, used to close a page heading and
+   * to separate the footer. A flat 1px line across a cream page reads as a
+   * seam; this fades out at both ends so it reads as a rule.
+   */
+  .rule-soft {
+    height: 1px;
+    border: 0;
+    background: linear-gradient(
+      to right,
+      transparent,
+      var(--color-line) 12%,
+      var(--color-line) 88%,
+      transparent
+    );
   }
 }
 

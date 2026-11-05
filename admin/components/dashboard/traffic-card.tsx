@@ -54,10 +54,12 @@ export async function TrafficCard() {
       href="/analytics"
       ageMs={read.ageMs}
       stale={read.stale}
+      tone="calm"
     >
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <Stat
           label="Sessions"
+          size="lead"
           value={ga4 ? count(ga4.totals.sessions) : "—"}
           note={ga4 ? `${count(ga4.totals.users)} visitors` : "GA4 unavailable"}
         />
@@ -84,7 +86,7 @@ export async function TrafficCard() {
 
       <div className="mt-5 grid gap-5 border-t border-line pt-4 sm:grid-cols-2">
         <div>
-          <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted">
+          <p className="card-subhead mb-2 block">
             Top search terms
           </p>
           <Rows
@@ -105,7 +107,7 @@ export async function TrafficCard() {
           />
         </div>
         <div>
-          <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted">
+          <p className="card-subhead mb-2 block">
             Where visitors come from
           </p>
           <Rows

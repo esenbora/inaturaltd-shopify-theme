@@ -60,10 +60,12 @@ export async function IndexCard() {
       linkLabel="Full sweep"
       ageMs={read.ageMs}
       stale={read.stale}
+      tone={missing > 0 ? "attention" : "calm"}
     >
       <div className="grid grid-cols-2 gap-4">
         <Stat
           label="Indexed"
+          size="lead"
           value={`${count(coverage.indexed)}/${count(coverage.total)}`}
           note={`Sample of the first ${INDEX_SAMPLE_SIZE} sitemap URLs`}
         />

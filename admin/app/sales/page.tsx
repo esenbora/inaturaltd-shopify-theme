@@ -47,13 +47,13 @@ function Metric({
         : "border-l-line";
   return (
     <div className={`card border-l-[3px] px-4 py-3 ${rail}`}>
-      <p className="text-xs font-medium uppercase tracking-wide text-muted">
+      <p className="card-subhead">
         {label}
       </p>
-      <p className="u-serif mt-1 text-2xl font-semibold tabular-nums text-ink">
+      <p className="stat-value mt-1">
         {value}
       </p>
-      {note ? <p className="text-xs text-muted">{note}</p> : null}
+      {note ? <p className="stat-note mt-1">{note}</p> : null}
     </div>
   );
 }
@@ -106,9 +106,9 @@ export default async function SalesPage({ searchParams }: PageProps) {
   );
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-10">
-      <h1 className="u-serif text-2xl font-semibold text-ink">Sales</h1>
-      <p className="mb-4 text-sm text-muted">
+    <main className="mx-auto w-full max-w-6xl px-6 py-10">
+      <h1 className="page-title">Sales</h1>
+      <p className="page-standfirst mb-6 mt-2">
         {rangeDays === 1
           ? "Today so far"
           : `${rangeLabel(rangeDays)}, the last ${rangeDays} days`}
@@ -146,7 +146,7 @@ export default async function SalesPage({ searchParams }: PageProps) {
         />
       </div>
 
-      <h2 className="u-serif mb-3 mt-10 text-lg font-semibold text-ink">
+      <h2 className="u-serif mb-3 mt-10 text-[1.0625rem] font-semibold tracking-tight text-ink">
         Where the orders come from
       </h2>
       <Panel title="Channel">
@@ -186,7 +186,7 @@ export default async function SalesPage({ searchParams }: PageProps) {
 
       <div className="mt-4 grid gap-4 lg:grid-cols-2">
         <div>
-          <h2 className="u-serif mb-3 text-lg font-semibold text-ink">
+          <h2 className="u-serif mb-3 text-[1.0625rem] font-semibold tracking-tight text-ink">
             What actually sells
           </h2>
           <Panel title="Units sold">
@@ -223,7 +223,7 @@ export default async function SalesPage({ searchParams }: PageProps) {
         </div>
 
         <div>
-          <h2 className="u-serif mb-3 text-lg font-semibold text-ink">
+          <h2 className="u-serif mb-3 text-[1.0625rem] font-semibold tracking-tight text-ink">
             Left in the basket
           </h2>
           <Panel title={`${money(abandoned.value)} across ${abandoned.count} baskets`}>

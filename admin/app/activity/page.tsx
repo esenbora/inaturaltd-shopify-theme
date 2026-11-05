@@ -52,10 +52,10 @@ export default function ActivityPage() {
   const total = auditCount();
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-10">
+    <main className="mx-auto w-full max-w-6xl px-6 py-10">
       <div className="mb-6">
-        <h1 className="u-serif text-2xl font-semibold text-ink">Activity</h1>
-        <p className="mt-1 max-w-2xl text-sm text-muted">
+        <h1 className="page-title">Activity</h1>
+        <p className="page-standfirst mt-2">
           Sign-ins and every change made through this panel, newest first. Each
           entry is also written to the server log, which is the copy that
           survives: this list is held in memory and starts empty after a

@@ -55,7 +55,7 @@ export default async function EditProductPage({ params }: Params) {
       </div>
 
       <section className="mb-10">
-        <h2 className="u-serif mb-3 text-lg font-semibold text-ink">Photos</h2>
+        <h2 className="u-serif mb-3 text-[1.0625rem] font-semibold tracking-tight text-ink">Photos</h2>
         <ProductImageManager
           productId={product.id}
           initialImages={product.images}
@@ -63,7 +63,7 @@ export default async function EditProductPage({ params }: Params) {
       </section>
 
       <section>
-        <h2 className="u-serif mb-3 text-lg font-semibold text-ink">Details</h2>
+        <h2 className="u-serif mb-3 text-[1.0625rem] font-semibold tracking-tight text-ink">Details</h2>
         <ProductForm product={product} mode="edit" />
       </section>
 

@@ -52,13 +52,13 @@ function Metric({
         : "border-l-line";
   return (
     <div className={`card border-l-[3px] px-4 py-3 ${rail}`}>
-      <p className="text-xs font-medium uppercase tracking-wide text-muted">
+      <p className="card-subhead">
         {label}
       </p>
-      <p className="u-serif mt-1 text-2xl font-semibold tabular-nums text-ink">
+      <p className="stat-value mt-1">
         {value}
       </p>
-      {note ? <p className="text-xs text-muted">{note}</p> : null}
+      {note ? <p className="stat-note mt-1">{note}</p> : null}
     </div>
   );
 }
@@ -95,7 +95,7 @@ function FailedCheck({ result }: { result: CheckResult }) {
           <h2 className="u-serif text-lg font-semibold text-ink">
             {result.title}
           </h2>
-          <p className="text-xs font-medium uppercase tracking-wide text-muted">
+          <p className="card-subhead">
             {count} {count === 1 ? "item" : "items"} ·{" "}
             {SEVERITY_LABEL[result.severity]}
           </p>
@@ -195,9 +195,9 @@ export default async function ChecksPage() {
   );
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-10">
-      <h1 className="u-serif text-2xl font-semibold text-ink">Checks</h1>
-      <p className="mb-6 text-sm text-muted">
+    <main className="mx-auto w-full max-w-6xl px-6 py-10">
+      <h1 className="page-title">Checks</h1>
+      <p className="page-standfirst mb-8 mt-2">
         Things that go wrong quietly: a size that contradicts itself, a discount
         with no limit, a field left empty. Read fresh from the store each time
         this page opens.

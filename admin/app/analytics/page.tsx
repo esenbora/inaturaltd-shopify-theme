@@ -42,17 +42,17 @@ function shortPath(url: string): string {
 function Metric({ label, value }: { label: string; value: string }) {
   return (
     <div className="card px-4 py-3">
-      <p className="text-xs font-medium uppercase tracking-wide text-muted">
+      <p className="card-subhead">
         {label}
       </p>
-      <p className="u-serif mt-1 text-2xl font-semibold text-ink">{value}</p>
+      <p className="stat-value mt-1">{value}</p>
     </div>
   );
 }
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="u-serif mb-3 mt-10 text-lg font-semibold text-ink">
+    <h2 className="u-serif mb-3 mt-10 text-[1.0625rem] font-semibold tracking-tight text-ink">
       {children}
     </h2>
   );
@@ -99,11 +99,11 @@ export default async function AnalyticsPage({ searchParams }: PageProps) {
 
   if (!data.configured) {
     return (
-      <main className="mx-auto w-full max-w-5xl px-6 py-10">
-        <h1 className="u-serif mb-2 text-2xl font-semibold text-ink">
+      <main className="mx-auto w-full max-w-6xl px-6 py-10">
+        <h1 className="page-title mb-2">
           Analytics
         </h1>
-        <p className="mb-8 text-sm text-muted">
+        <p className="page-standfirst mb-8 mt-2">
           Search Console and GA4 performance for inatureltd.co.uk.
         </p>
         <NotConfigured />
@@ -115,8 +115,8 @@ export default async function AnalyticsPage({ searchParams }: PageProps) {
   const shown = rangeDays ?? range;
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-10">
-      <h1 className="u-serif text-2xl font-semibold text-ink">Analytics</h1>
+    <main className="mx-auto w-full max-w-6xl px-6 py-10">
+      <h1 className="page-title">Analytics</h1>
       <p className="mb-4 text-sm text-muted">
         {rangeLabel(shown)} · inatureltd.co.uk
       </p>

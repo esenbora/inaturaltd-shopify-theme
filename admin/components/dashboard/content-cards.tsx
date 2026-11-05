@@ -23,7 +23,13 @@ export async function BlogCard() {
   const needsAttention = drafts > 0 || health.level !== "ok";
 
   return (
-    <Card title="Blog" href="/articles" ageMs={read.ageMs} stale={read.stale}>
+    <Card
+      title="Blog"
+      href="/articles"
+      ageMs={read.ageMs}
+      stale={read.stale}
+      tone={needsAttention ? "attention" : "calm"}
+    >
       <div className="grid grid-cols-2 gap-4">
         <Stat
           label="Published"
@@ -32,6 +38,7 @@ export async function BlogCard() {
         />
         <Stat
           label="Awaiting publication"
+          size="lead"
           value={count(drafts)}
           note={drafts > 0 ? "Hidden from the storefront" : "Queue is clear"}
           tone={drafts > 0 ? "attention" : "neutral"}
@@ -71,10 +78,17 @@ export async function ChecksCard() {
   const { summary } = read;
 
   return (
-    <Card title="Checks" href="/checks" ageMs={read.ageMs} stale={read.stale}>
+    <Card
+      title="Checks"
+      href="/checks"
+      ageMs={read.ageMs}
+      stale={read.stale}
+      tone={summary.failing > 0 ? "attention" : "calm"}
+    >
       <div className="grid grid-cols-2 gap-4">
         <Stat
           label="Failing"
+          size="lead"
           value={`${count(summary.failing)}/${count(summary.total)}`}
           note={summary.failing === 0 ? "All clear" : "Checks with findings"}
           tone={summary.failing > 0 ? "attention" : "neutral"}

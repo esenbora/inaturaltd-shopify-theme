@@ -42,8 +42,8 @@ function PageHeader() {
   return (
     <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
       <div>
-        <h1 className="u-serif text-2xl font-semibold text-ink">Blog articles</h1>
-        <p className="mt-1 text-sm text-muted">
+        <h1 className="page-title">Blog articles</h1>
+        <p className="page-standfirst mt-2">
           Manage the INature UK Shopify blog.
         </p>
       </div>
@@ -177,7 +177,7 @@ export default async function ArticlesPage({ searchParams }: PageProps) {
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
     return (
-      <main className="mx-auto w-full max-w-5xl px-6 py-10">
+      <main className="mx-auto w-full max-w-6xl px-6 py-10">
         <PageHeader />
         <ErrorState message={message} />
       </main>
@@ -186,7 +186,7 @@ export default async function ArticlesPage({ searchParams }: PageProps) {
 
   if (articles.length === 0) {
     return (
-      <main className="mx-auto w-full max-w-5xl px-6 py-10">
+      <main className="mx-auto w-full max-w-6xl px-6 py-10">
         <PageHeader />
         <EmptyState />
       </main>
@@ -207,7 +207,7 @@ export default async function ArticlesPage({ searchParams }: PageProps) {
         : articles.filter((article) => article.visible);
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-10">
+    <main className="mx-auto w-full max-w-6xl px-6 py-10">
       <PageHeader />
       <HealthBanner health={assessBlogHealth(articles)} />
       <VisibilityTabs basePath="/articles" active={filter} counts={counts} />

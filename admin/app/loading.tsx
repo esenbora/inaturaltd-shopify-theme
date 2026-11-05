@@ -12,7 +12,7 @@
  */
 export default function Loading() {
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-10" aria-busy="true">
+    <main className="mx-auto w-full max-w-6xl px-6 py-10" aria-busy="true">
       <div className="h-4 w-32 rounded bg-sand" />
       <div className="mt-3 h-8 w-64 rounded bg-sand" />
       <div className="mt-8 grid gap-4 sm:grid-cols-2">

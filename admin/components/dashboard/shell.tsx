@@ -39,6 +39,15 @@ interface CardProps {
   ageMs?: number;
   /** True when the source failed and these are the last figures held. */
   stale?: boolean;
+  /**
+   * Whether this card is asking for a person.
+   *
+   * Drives the rail down the card's leading edge: terracotta when something
+   * needs doing, sage when it does not. Omitted on a card with nothing to
+   * rank (one that is not configured, or has no figures yet), which leaves it
+   * railless rather than claiming everything is fine.
+   */
+  tone?: "calm" | "attention";
   children: ReactNode;
 }
 
@@ -48,24 +57,39 @@ export function Card({
   linkLabel = "Open",
   ageMs,
   stale,
+  tone,
   children,
 }: CardProps) {
+  const rail =
+    tone === undefined
+      ? ""
+      : tone === "attention"
+        ? "card-rail card-rail-attention"
+        : "card-rail";
+
   return (
-    <section className="card flex flex-col p-5">
+    <section className={`card flex flex-col p-5 sm:p-6 ${rail}`}>
       <div className="flex items-baseline justify-between gap-3">
-        <h2 className="u-serif text-lg font-semibold text-ink">{title}</h2>
+        <h2 className="u-serif text-[1.0625rem] font-semibold tracking-tight text-ink">
+          {title}
+        </h2>
         {href && (
           <Link
             href={href}
-            className="shrink-0 text-sm font-medium text-sage-dark hover:text-ink"
+            className="group/link shrink-0 text-sm font-medium text-sage-dark transition-colors hover:text-ink"
           >
             {linkLabel}
-            <span aria-hidden> &rarr;</span>
+            <span
+              aria-hidden
+              className="ml-0.5 inline-block transition-transform group-hover/link:translate-x-0.5"
+            >
+              &rarr;
+            </span>
           </Link>
         )}
       </div>
 
-      <div className="mt-4 flex-1">{children}</div>
+      <div className="mt-5 flex-1">{children}</div>
 
       {ageMs !== undefined && (
         <p className="mt-4 border-t border-line pt-3 text-xs text-muted">
@@ -84,31 +108,37 @@ export function Card({
   );
 }
 
-/** One figure with its label and an optional line of context beneath. */
+/**
+ * One figure with its label and an optional line of context beneath.
+ *
+ * `size="lead"` is for the one or two figures a card is actually about, so a
+ * card has a reading order instead of four equal numbers. Everything else
+ * stays at the default: promote every figure and none of them is promoted.
+ */
 export function Stat({
   label,
   value,
   note,
   tone = "neutral",
+  size = "default",
 }: {
   label: string;
   value: ReactNode;
   note?: ReactNode;
   tone?: "neutral" | "attention";
+  size?: "default" | "lead";
 }) {
   return (
     <div>
-      <p className="text-xs font-medium uppercase tracking-wide text-muted">
-        {label}
-      </p>
+      <p className="stat-label">{label}</p>
       <p
-        className={`u-serif mt-1 text-2xl font-semibold tabular-nums ${
-          tone === "attention" ? "text-terracotta-dark" : "text-ink"
+        className={`stat-value mt-1.5 ${size === "lead" ? "stat-value-lg" : ""} ${
+          tone === "attention" ? "stat-value-attention" : ""
         }`}
       >
         {value}
       </p>
-      {note && <p className="mt-0.5 text-xs text-muted">{note}</p>}
+      {note && <p className="stat-note mt-1">{note}</p>}
     </div>
   );
 }
@@ -125,9 +155,12 @@ export function Rows({
     return <p className="text-sm text-muted">{empty}</p>;
   }
   return (
-    <ul className="space-y-1.5 text-sm">
+    <ul className="divide-y divide-line/70 text-sm">
       {items.map((item) => (
-        <li key={item.key} className="flex items-baseline justify-between gap-3">
+        <li
+          key={item.key}
+          className="flex items-baseline justify-between gap-3 py-1.5 first:pt-0 last:pb-0"
+        >
           <span className="min-w-0 truncate text-ink">{item.left}</span>
           <span className="shrink-0 tabular-nums text-muted">
             {item.right}
@@ -153,13 +186,15 @@ export function CardSkeleton({
   lines?: number;
 }) {
   return (
-    <section className="card flex flex-col p-5" aria-busy="true">
-      <h2 className="u-serif text-lg font-semibold text-ink">{title}</h2>
-      <div className="mt-5 flex-1 space-y-3">
+    <section className="card flex flex-col p-5 sm:p-6" aria-busy="true">
+      <h2 className="u-serif text-[1.0625rem] font-semibold tracking-tight text-ink">
+        {title}
+      </h2>
+      <div className="mt-6 flex-1 space-y-3.5">
         {Array.from({ length: lines }, (_, index) => (
           <div
             key={index}
-            className="h-3 rounded bg-sand"
+            className="h-3 rounded-full bg-sand"
             style={{ width: `${90 - index * 15}%` }}
           />
         ))}
@@ -188,7 +223,7 @@ export function CardError({
   href?: string;
 }) {
   return (
-    <Card title={title} href={href}>
+    <Card title={title} href={href} tone="attention">
       <p className="text-sm text-terracotta-dark">
         {source} could not be reached.
       </p>

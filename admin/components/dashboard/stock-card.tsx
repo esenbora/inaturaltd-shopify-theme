@@ -21,10 +21,17 @@ export async function StockCard() {
   const settled = stock.outOfStock.length === 0 && stock.low.length === 0;
 
   return (
-    <Card title="Stock" href="/products" ageMs={read.ageMs} stale={read.stale}>
+    <Card
+      title="Stock"
+      href="/products"
+      ageMs={read.ageMs}
+      stale={read.stale}
+      tone={settled ? "calm" : "attention"}
+    >
       <div className="grid grid-cols-3 gap-4">
         <Stat
           label="Out of stock"
+          size="lead"
           value={count(stock.outOfStock.length)}
           note={stock.outOfStock.length > 0 ? "Cannot be bought" : "None"}
           tone={stock.outOfStock.length > 0 ? "attention" : "neutral"}

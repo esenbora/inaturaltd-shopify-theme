@@ -16,6 +16,11 @@ const TABS = [
 /**
  * Primary section nav. Hidden on the login screen so the sign-in page stays
  * clean. Highlights the active section (matches the section root or any child).
+ *
+ * The active state is carried by `.tab-active` in `globals.css`: ink colour,
+ * heavier weight and a sage underline sitting on the header's own border.
+ * `aria-current` says the same thing to a screen reader, which the old white
+ * pill never did.
  */
 export function NavTabs() {
   const pathname = usePathname();
@@ -30,11 +35,8 @@ export function NavTabs() {
           <Link
             key={tab.href}
             href={tab.href}
-            className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
-              active
-                ? "bg-card text-ink shadow-sm ring-1 ring-line"
-                : "text-muted hover:text-ink"
-            }`}
+            aria-current={active ? "page" : undefined}
+            className={`tab ${active ? "tab-active" : ""}`}
           >
             {tab.label}
           </Link>
