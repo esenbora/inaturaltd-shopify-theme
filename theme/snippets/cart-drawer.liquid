@@ -21,7 +21,20 @@
                 {%- endunless -%}
               {%- endfor -%}
               {%- assign line_max = item.product.metafields.custom.max_per_order.value | default: 5 -%}
-              <div class="qty cart-drawer__qty" data-drawer-qty data-line-key="{{ item.key }}" data-max="{{ line_max }}">
+              {%- comment -%}
+                An automatic discount that reaches only some of a line's
+                units makes Shopify split it, so one product can hold two
+                lines here. The cap is the PRODUCT's, so the quantity it
+                is measured against is the product's across the cart, not
+                this line's. theme.js reads the same sum off the steppers.
+              {%- endcomment -%}
+              {%- assign product_total = 0 -%}
+              {%- for other in cart.items -%}
+                {%- if other.product_id == item.product_id -%}
+                  {%- assign product_total = product_total | plus: other.quantity -%}
+                {%- endif -%}
+              {%- endfor -%}
+              <div class="qty cart-drawer__qty" data-drawer-qty data-line-key="{{ item.key }}" data-product-id="{{ item.product_id }}" data-max="{{ line_max }}">
                 <button type="button" data-drawer-qty-dec aria-label="Decrease quantity">&minus;</button>
                 <input type="number" value="{{ item.quantity }}" min="0" max="{{ line_max }}" inputmode="numeric" data-drawer-qty-input aria-label="Quantity for {{ item.product.title | escape }}">
                 <button type="button" data-drawer-qty-inc aria-label="Increase quantity">+</button>
@@ -34,8 +47,8 @@
                 looking at that moment. Rendered even when it has nothing to
                 say so the stepper always has somewhere to write.
               {%- endcomment -%}
-              <p class="cart-line__limit" data-line-note data-line-key="{{ item.key }}" role="status"{% unless item.quantity >= line_max %} hidden{% endunless %}>
-                {%- if item.quantity >= line_max -%}
+              <p class="cart-line__limit" data-line-note data-line-key="{{ item.key }}" role="status"{% unless product_total >= line_max %} hidden{% endunless %}>
+                {%- if product_total >= line_max -%}
                   {%- if line_max <= 3 -%}Shipping weight limits this to {{ line_max }} per order.
                   {%- else -%}Limited to {{ line_max }} per order.{%- endif -%}
                 {%- endif -%}

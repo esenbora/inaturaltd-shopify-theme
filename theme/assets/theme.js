@@ -10,6 +10,12 @@
   function setDrawer(open) {
     if (!drawer) return;
     drawer.classList.toggle('is-open', open);
+    // The markup ships aria-hidden="true" and only the class was ever toggled,
+    // so to a screen reader the bag stayed shut the whole time it was open on
+    // screen: the lines, the totals and the gift picker were all unreachable.
+    // setMobileMenu alongside has always done this; the drawer was the one
+    // that forgot.
+    drawer.setAttribute('aria-hidden', open ? 'false' : 'true');
     document.body.style.overflow = open ? 'hidden' : '';
   }
   openBtns.forEach((b) => b.addEventListener('click', (e) => { e.preventDefault(); setDrawer(true); }));
@@ -358,6 +364,37 @@
     });
   }
 
+  /*
+    WHY THE CAP HAS TO COUNT THE PRODUCT AND NOT THE LINE.
+
+    Shopify splits a cart line whenever an automatic discount reaches only
+    some of its units. The free gift takes one lip balm to zero and leaves
+    the rest charged; the first-order percentage does the same thing. One
+    product then sits on two lines, each with its own stepper, each reading
+    only its own quantity and each believing it is the whole order. Capped
+    per line, "max 5 per order" quietly allowed ten. Seen on a GBP 60 basket
+    where five eyelash serums came back as a line of 2 and a line of 3,
+    neither of them wrong and both of them at liberty to climb to 5.
+
+    So the sum is taken across every stepper in the same cart carrying the
+    same product id, and the cap is measured against that. The inputs are
+    read rather than any rendered total, because the drawer re-renders from
+    the server after every change and the inputs are what the shopper is
+    looking at when they press the button.
+  */
+  function productQtyTotal(wrap, excludeSelf) {
+    const scope = wrap.closest('[data-cart-drawer]') || wrap.closest('[data-cart-page]') || document;
+    const id = wrap.dataset.productId;
+    let total = 0;
+    scope.querySelectorAll('[data-drawer-qty][data-product-id], [data-cart-qty][data-product-id]').forEach((other) => {
+      if (other.dataset.productId !== id) return;
+      if (excludeSelf && other === wrap) return;
+      const field = other.querySelector('input');
+      total += Math.max(0, parseInt((field && field.value) || '0', 10));
+    });
+    return total;
+  }
+
   // The cart page reloads after a change, so a note shown before the reload
   // would never be seen. It is parked under the line key and picked up by the
   // new document instead.
@@ -400,11 +437,13 @@
       const input = wrap.querySelector('[data-drawer-qty-input]');
       wrap.querySelector('[data-drawer-qty-dec]')?.addEventListener('click', () => changeDrawerLine(key, Math.max(0, parseInt(input.value || '1', 10) - 1)));
       // Cap increases at the product's per-order limit, same number the product
-      // page enforces. Without this the basket is a way round the cap.
+      // page enforces. Without this the basket is a way round the cap. The
+      // other lines holding the same product count towards it - see
+      // productQtyTotal.
       const dMax = parseInt(wrap.dataset.max || '0', 10) || Infinity;
       wrap.querySelector('[data-drawer-qty-inc]')?.addEventListener('click', () => {
         const next = parseInt(input.value || '1', 10) + 1;
-        if (next > dMax) { showLineNote(key, `Max ${dMax} per order`); return; }
+        if (productQtyTotal(wrap, true) + next > dMax) { showLineNote(key, `Max ${dMax} per order`); return; }
         changeDrawerLine(key, next);
       });
       // Typing past the cap used to go straight through: this handler had no
@@ -418,9 +457,14 @@
       // with something more specific.
       input?.addEventListener('change', () => {
         const typed = Math.max(0, parseInt(input.value || '0', 10));
-        if (typed > dMax) {
-          input.value = dMax;
-          changeDrawerLine(key, dMax).then((ok) => { if (ok) showLineNote(key, `Max ${dMax} per order`); });
+        // What is left of the cap once the product's other lines have taken
+        // their share. Never below 1: a typed number is a request to change
+        // the quantity, not to delete the line, and 0 would remove it.
+        const allowed = Math.max(1, dMax - productQtyTotal(wrap, true));
+        if (typed > allowed) {
+          input.value = allowed;
+          if (allowed === parseInt(input.defaultValue || '0', 10)) { showLineNote(key, `Max ${dMax} per order`); return; }
+          changeDrawerLine(key, allowed).then((ok) => { if (ok) showLineNote(key, `Max ${dMax} per order`); });
           return;
         }
         changeDrawerLine(key, typed);
@@ -656,15 +700,17 @@
       const cMax = parseInt(wrap.dataset.max || '0', 10) || Infinity;
       wrap.querySelector('[data-cart-qty-inc]')?.addEventListener('click', () => {
         const next = parseInt(input.value || '1', 10) + 1;
-        if (next > cMax) { showLineNote(key, `Max ${cMax} per order`); return; }
+        if (productQtyTotal(wrap, true) + next > cMax) { showLineNote(key, `Max ${cMax} per order`); return; }
         changeLine(key, next);
       });
       input?.addEventListener('change', () => {
         const typed = Math.max(0, parseInt(input.value || '0', 10));
-        if (typed > cMax) {
-          input.value = cMax;
+        const allowed = Math.max(1, cMax - productQtyTotal(wrap, true));
+        if (typed > allowed) {
+          input.value = allowed;
+          if (allowed === parseInt(input.defaultValue || '0', 10)) { showLineNote(key, `Max ${cMax} per order`); return; }
           parkLineNote(key, `Max ${cMax} per order`);
-          changeLine(key, cMax);
+          changeLine(key, allowed);
           return;
         }
         changeLine(key, typed);
