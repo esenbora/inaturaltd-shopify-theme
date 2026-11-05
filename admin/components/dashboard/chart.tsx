@@ -4,23 +4,28 @@ import type { DailyPoint } from "@/lib/sales";
  * The dashboard's chart marks: a daily column series, a period-over-period
  * delta, and a share bar.
  *
- * Both are deliberately small and both refuse to draw rather than mislead.
- * Colour choices here are constrained by a measurement, not a preference: the
- * brand's sage (#7b9f7e) and terracotta (#c97b5c) sit at a CVD separation of
- * ΔE 4.9 for deuteranopia and 13.7 for normal vision, well under the ΔE 15
- * floor at which two hues can be told apart at all. So they are never used as
- * two series in one chart. Sage is the single series colour; terracotta is
- * reserved for status, and every status mark carries a glyph and a label so
- * colour is never the only signal.
- *
- * Sage at #7b9f7e also fails 3:1 against white, so marks use sage-dark
- * (#5e7e61, 4.53:1).
+ * All three are deliberately small and all three refuse to draw rather than
+ * mislead. Colour here is constrained by a measurement, not a preference. The
+ * re-stepped palette (Pine Green #3a795e, Baked Clay #9c5642) separates at
+ * ΔE 15.8 for normal vision, which clears the ΔE 15 floor the old pair failed
+ * at 13.7, but only ΔE 5.0 under deuteranopia. So they are still never two
+ * series in one chart: green is the single series colour, clay is reserved for
+ * status, and every status mark carries a glyph and a label, so colour is
+ * never the only signal carrying meaning.
  */
 
-/** Series colour, matching `--color-sage-dark`. */
-const SERIES = "#5e7e61";
-/** The baseline under the columns, matching `--color-line`. */
+/** Series colour, matching `--color-sage` (4.70:1 on cream). */
+const SERIES = "#3a795e";
+/** The baseline and the empty-day stubs, matching `--color-line`. */
 const SERIES_WASH_LINE = "#e7e0d4";
+/**
+ * The height an empty day still occupies.
+ *
+ * Tall enough to be a mark, short enough that it can never be mistaken for a
+ * small figure, and in the baseline's colour rather than the series' so the
+ * distinction is carried by hue as well as height.
+ */
+const EMPTY_H = 2;
 
 const VIEW_W = 100;
 const VIEW_H = 32;
@@ -72,9 +77,16 @@ export function DailyBars({
   const peak = values.reduce((max, v) => (v > max ? v : max), 0);
   const plotH = VIEW_H - PAD;
   const slot = VIEW_W / values.length;
-  // Six tenths of the slot, so the gap between columns stays readable at a
-  // 30-day window where each slot is barely three pixels wide.
-  const barW = slot * 0.6;
+  /*
+   * Nearly the whole slot.
+   *
+   * At six tenths the columns read as scattered ticks rather than a series:
+   * on a quiet 30-day window, five orders became five thin marks adrift in
+   * white space with nothing tying them to the same period. Leaving only a
+   * hairline between neighbours restores the sense of a continuous strip,
+   * which is what a trend mark is for.
+   */
+  const barW = slot * 0.88;
 
   const first = points[0]?.date ?? "";
   const final = points[points.length - 1]?.date ?? "";
@@ -92,19 +104,33 @@ export function DailyBars({
       aria-label={`${label}, ${first} to ${final}. Peak ${peak.toLocaleString("en-GB")} on ${active} of ${values.length} days.`}
     >
       {values.map((value, i) => {
-        if (value <= 0 || peak <= 0) return null;
-        // Two units minimum, so the smallest real figure is still a mark
-        // rather than a hairline indistinguishable from the baseline.
-        const h = Math.max((value / peak) * plotH, 2);
+        const x = i * slot + (slot - barW) / 2;
+        /*
+         * A day with no trade still gets a slot.
+         *
+         * Drawing nothing was what made these charts look scattered: a window
+         * where the shop traded on five days out of thirty showed five marks
+         * and no period. The stub gives the strip its rhythm back and says
+         * "this day was counted and was nought", which is a different claim
+         * from "this day is missing".
+         */
+        if (value <= 0 || peak <= 0) {
+          return (
+            <rect
+              key={i}
+              x={x}
+              y={VIEW_H - EMPTY_H}
+              width={barW}
+              height={EMPTY_H}
+              fill={SERIES_WASH_LINE}
+            />
+          );
+        }
+        // Three units minimum, so the smallest real figure still stands clear
+        // of the empty-day stubs beside it.
+        const h = Math.max((value / peak) * plotH, 3);
         return (
-          <rect
-            key={i}
-            x={i * slot + (slot - barW) / 2}
-            y={VIEW_H - h}
-            width={barW}
-            height={h}
-            fill={SERIES}
-          />
+          <rect key={i} x={x} y={VIEW_H - h} width={barW} height={h} fill={SERIES} />
         );
       })}
       {/* The floor. Without it a window with two active days reads as two

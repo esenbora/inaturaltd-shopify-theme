@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Instrument_Serif, Inter } from "next/font/google";
+import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { AppHeader } from "@/components/app-header";
 import { AppFooter } from "@/components/app-footer";
@@ -10,28 +10,21 @@ const inter = Inter({
   display: "swap",
 });
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+const heading = Space_Grotesk({
+  variable: "--font-heading",
   subsets: ["latin"],
   display: "swap",
 });
 
 /*
- * The brand lockup has a face of its own.
+ * Headings and the brand mark share one face, at different weights.
  *
- * It used to borrow Fraunces, the same face the page titles and the stat
- * figures wear, so the word "INature" read as one more heading rather than as
- * a mark. Instrument Serif is a display face at a single weight: higher
- * contrast, narrower, and nothing else on the screen uses it, which is what
- * makes it read as a signature instead of a title.
+ * Fraunces used to carry both, which made the word "INature" read as one more
+ * heading rather than as a mark. Space Grotesk is a grotesk with enough
+ * character to hold a lockup and enough plainness to set a column of figures:
+ * the mark takes the bold cut and tightened tracking, headings take semibold,
+ * and nothing on the screen needs a third family to tell them apart.
  */
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-instrument",
-  subsets: ["latin"],
-  weight: "400",
-  display: "swap",
-});
-
 export const metadata: Metadata = {
   title: "INature Admin",
   description: "Content management for the INature UK Shopify store.",
@@ -45,7 +38,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${fraunces.variable} ${instrumentSerif.variable} h-full`}
+      className={`${inter.variable} ${heading.variable} h-full`}
     >
       <body className="flex min-h-full flex-col">
         <AppHeader />

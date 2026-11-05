@@ -48,6 +48,14 @@ interface CardProps {
    * railless rather than claiming everything is fine.
    */
   tone?: "calm" | "attention";
+  /**
+   * One plain sentence saying what the block counts and where it comes from.
+   *
+   * A heading like "Where it came from" tells a reader who already knows the
+   * shop what they are looking at and tells everyone else nothing. The card
+   * carries the answer rather than making someone guess at it or ask.
+   */
+  description?: string;
   children: ReactNode;
 }
 
@@ -58,6 +66,7 @@ export function Card({
   ageMs,
   stale,
   tone,
+  description,
   children,
 }: CardProps) {
   const rail =
@@ -89,7 +98,13 @@ export function Card({
         )}
       </div>
 
-      <div className="mt-5 flex-1">{children}</div>
+      {description && (
+        <p className="mt-1.5 max-w-prose text-xs leading-relaxed text-muted">
+          {description}
+        </p>
+      )}
+
+      <div className={`${description ? "mt-4" : "mt-5"} flex-1`}>{children}</div>
 
       {ageMs !== undefined && (
         <p className="mt-4 border-t border-line pt-3 text-xs text-muted">

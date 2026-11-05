@@ -79,6 +79,12 @@ export async function StockRiskPanel() {
         </Link>
       </div>
 
+      <p className="mt-1.5 max-w-prose text-xs leading-relaxed text-muted">
+        Shopify inventory for every tracked variant. &ldquo;Out&rdquo; is zero on
+        hand and still purchasable; &ldquo;low&rdquo; is at or under the reorder
+        threshold. Untracked variants cannot run out, so they are not counted.
+      </p>
+
       <div className="mt-4 flex flex-wrap items-baseline gap-x-5 gap-y-1">
         <span className="flex items-baseline gap-1.5">
           <span

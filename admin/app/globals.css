@@ -1,20 +1,35 @@
 @import "tailwindcss";
 
 /*
- * INature admin design system. Mirrors the storefront theme tokens:
- * cream background, ink text, sage primary, terracotta accent,
- * Fraunces (headings) + Inter (body).
+ * INature admin design system.
+ *
+ * The storefront's cream stays; everything drawn on it was re-stepped, because
+ * the shop's palette was built for product photography on a wide page and this
+ * screen is a dense column of small figures. The old sage (#7b9f7e) reached
+ * only 2.6:1 on cream, so it could never carry a word, and the panel kept
+ * reaching for a second, darker green to say anything at all.
+ *
+ * The replacements are Pantone TCX steps picked for contrast first:
+ *
+ *   ink        Deep Forest  #37413a   9.68:1 on cream (AAA)
+ *   sage       Pine Green   #3a795e   4.70:1 (AA) - now legible as text
+ *   sage-dark  7734 C       #286140   7.0:1  - focus ring, active tab
+ *   terracotta Dusted Clay  #cc7357   rails and fills
+ *   terra-dark Baked Clay   #9c5642   5.01:1 (AA) - the warning voice
+ *
+ * The ink is a green-black rather than a neutral one, which is what keeps a
+ * column of figures from going cold against the warm paper.
  */
 @theme inline {
   --color-cream: #f8f4ed;
   --color-card: #ffffff;
-  --color-ink: #2a2d2a;
-  --color-muted: #6b6f6a;
+  --color-ink: #37413a;
+  --color-muted: #697066;
   --color-line: #e7e0d4;
-  --color-sage: #7b9f7e;
-  --color-sage-dark: #5e7e61;
-  --color-terracotta: #c97b5c;
-  --color-terracotta-dark: #b26849;
+  --color-sage: #3a795e;
+  --color-sage-dark: #286140;
+  --color-terracotta: #cc7357;
+  --color-terracotta-dark: #9c5642;
   --color-sand: #efe8db;
 
   /*
@@ -23,15 +38,15 @@
    * and the eye had nothing to rank. Each step keeps the same warm ink so a
    * shadow never turns grey against the cream.
    */
-  --shadow-raise: 0 1px 2px rgba(42, 45, 42, 0.05);
-  --shadow-card: 0 1px 2px rgba(42, 45, 42, 0.04),
-    0 8px 24px -12px rgba(42, 45, 42, 0.16);
-  --shadow-lift: 0 2px 4px rgba(42, 45, 42, 0.05),
-    0 16px 36px -14px rgba(42, 45, 42, 0.22);
+  --shadow-raise: 0 1px 2px rgba(55, 65, 58, 0.05);
+  --shadow-card: 0 1px 2px rgba(55, 65, 58, 0.04),
+    0 8px 24px -12px rgba(55, 65, 58, 0.16);
+  --shadow-lift: 0 2px 4px rgba(55, 65, 58, 0.05),
+    0 16px 36px -14px rgba(55, 65, 58, 0.22);
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-fraunces), ui-serif, Georgia, serif;
-  --font-display: var(--font-instrument), ui-serif, Georgia, serif;
+  --font-serif: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
 }
 
 html {
@@ -49,12 +64,12 @@ body {
   background-color: var(--color-cream);
   background-image: radial-gradient(
       70rem 40rem at 12% -10%,
-      rgba(123, 159, 126, 0.07),
+      rgba(58, 121, 94, 0.06),
       transparent 60%
     ),
     radial-gradient(
       55rem 35rem at 95% 0%,
-      rgba(201, 123, 92, 0.05),
+      rgba(204, 115, 87, 0.05),
       transparent 55%
     );
   background-attachment: fixed;
@@ -93,12 +108,12 @@ body {
 
 /* Reusable component classes so pages stay readable and consistent. */
 @layer components {
-  /* The brand mark only. Instrument Serif carries no bold cut, so weight is
-     left alone and the tightened tracking does the work a semibold used to. */
+  /* The brand mark. Same face as the headings, separated from them by the
+     bold cut and tighter tracking rather than by a second typeface. */
   .u-display {
     font-family: var(--font-display);
-    font-weight: 400;
-    letter-spacing: -0.015em;
+    font-weight: 700;
+    letter-spacing: -0.03em;
   }
 
   .u-serif {

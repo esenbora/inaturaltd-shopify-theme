@@ -56,6 +56,7 @@ export async function IndexCard() {
   return (
     <Card
       title="Google index"
+      description="How many of the sitemap's pages Google has actually indexed. A page that is not indexed cannot appear in search however well it is written, so this is checked separately from rankings."
       href="/analytics"
       linkLabel="Full sweep"
       ageMs={read.ageMs}

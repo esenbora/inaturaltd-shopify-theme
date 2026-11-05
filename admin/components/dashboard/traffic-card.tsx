@@ -51,6 +51,7 @@ export async function TrafficCard() {
   return (
     <Card
       title="Traffic & search"
+      description="Sessions from Google Analytics and search impressions from Search Console. Google reports these on a delay of about two days, so the most recent days are always lighter than they will end up."
       href="/analytics"
       ageMs={read.ageMs}
       stale={read.stale}

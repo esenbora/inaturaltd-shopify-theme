@@ -210,8 +210,13 @@ export async function ChannelPanel({ rangeDays }: { rangeDays: number }) {
       <h2 className="u-serif text-[1.0625rem] font-semibold tracking-tight text-ink">
         Where it came from
       </h2>
+      <p className="mt-1.5 max-w-prose text-xs leading-relaxed text-muted">
+        Shopify&rsquo;s own attribution for each paid order, and the products
+        those orders contained. Top five of each; the Sales page carries the
+        rest.
+      </p>
 
-      <div className="mt-5 grid gap-6 sm:grid-cols-2">
+      <div className="mt-4 grid gap-6 sm:grid-cols-2">
         <div>
           <p className="card-subhead">Channel</p>
           {channels.length === 0 ? (

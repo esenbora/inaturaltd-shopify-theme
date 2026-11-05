@@ -25,6 +25,7 @@ export async function BlogCard() {
   return (
     <Card
       title="Blog"
+      description="Articles on the Shopify blog, and the drafts the weekly automation has written and left for a human to approve. A draft is invisible on the storefront until someone publishes it."
       href="/articles"
       ageMs={read.ageMs}
       stale={read.stale}
@@ -80,6 +81,7 @@ export async function ChecksCard() {
   return (
     <Card
       title="Checks"
+      description="Automated storefront checks: structured data, redirects, and the pages Google is told about. A failing check is a finding to look at, not an outage."
       href="/checks"
       ageMs={read.ageMs}
       stale={read.stale}
