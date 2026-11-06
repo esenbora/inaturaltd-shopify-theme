@@ -313,12 +313,33 @@
 
   {%- if gift_charged -%}
     {%- comment -%}
-      Shopify charged for the gift. Two different things cause that: a discount
-      code cancelled the automatic gift discount, or the basket dropped back
-      under the threshold. Naming the wrong one sends the shopper hunting for a
-      code they never entered, so each case says what actually happened.
+      Shopify charged for the gift. Three different things cause that, and
+      naming the wrong one sends the shopper hunting for a code they never
+      entered, so each case says what actually happened.
+
+      THE THIRD CASE, found live on 6 November 2026. A basket of three paid lip
+      balms and one free one, the free one correctly at £0.00, was being told
+      "Your gift is being charged. Remove it and pick it again" - advice that
+      fixes nothing, about a gift that was not being charged. What was being
+      charged was a SECOND gift line further up the list, off the top of the
+      phone screen.
+
+      It got there through the quantity stepper the gift line used to have. The
+      automatic discount covers exactly one unit - total_allocated_amount 595,
+      read off the live cart - so pressing + asked for two and Shopify split
+      the line into one at £0.00 and one at £5.95, both still carrying
+      _free_gift. The stepper is gone from gift lines now, so no new basket can
+      reach this state; the baskets already in it still have to be told the
+      truth, and the truth is that the extra copy is the problem, not the gift.
+
+      The client asked for the warning to be silent whenever a £0 gift is in
+      the bag. It is not silenced, because a shopper is being charged £5.95
+      they did not agree to and silence would hide that. It says what is
+      actually wrong instead.
     {%- endcomment -%}
-    {%- if code_applied -%}
+    {%- if gift_in_cart -%}
+      <p class="gift-alert">One free gift per order, and you already have yours free. The extra copy in your bag is being charged {{ charged_gift_total | money }} - remove that line to drop it.</p>
+    {%- elsif code_applied -%}
       <p class="gift-alert">Your gift is being charged because {% if code_title != blank %}<strong>{{ code_title }}</strong> is{% else %}a discount code is{% endif %} applied. Remove the code at checkout to get the gift free, or remove the gift from your bag.</p>
     {%- elsif gift_shortfall > 0 -%}
       <p class="gift-alert">Your gift is being charged because your basket is now under {{ gift_threshold | money_without_trailing_zeros }}. Add {{ gift_shortfall | money }} more to get it free, or remove the gift from your bag.</p>
@@ -333,10 +354,15 @@
     {%- endif -%}
 
   {%- elsif code_applied -%}
-    <p class="gift-progress__note">{% if code_title != blank %}<strong>{{ code_title }}</strong> is applied.{% else %}A discount code is applied.{% endif %} A free gift cannot be combined with a discount code, so no gift is offered on this order. Remove the code at checkout if you would rather claim a free gift.</p>
+    {%- comment -%}
+      Shortened 6 November 2026. Same two facts - the code is on, and that is
+      why there is no gift - in half the lines, because on a phone this block
+      and the one below it were pushing the product list down to two rows.
+    {%- endcomment -%}
+    <p class="gift-progress__note">{% if code_title != blank %}<strong>{{ code_title }}</strong> is applied{% else %}A discount code is applied{% endif %} - one offer per order, so no gift. Remove it at checkout to claim a gift instead.</p>
 
   {%- elsif gift_in_cart -%}
-    <p class="gift-progress__note">One offer per order. If you have a discount code you would rather use, remove the gift from your bag.</p>
+    <p class="gift-progress__note">One offer per order: your gift, or a discount code. Remove the gift to use a code.</p>
 
   {%- else -%}
     {%- comment -%}
@@ -529,7 +555,7 @@
         {%- endif -%}
       {%- endfor -%}
 
-      <p class="gift-progress__note">One offer per order - the free gift cannot be used together with a discount code.</p>
+      <p class="gift-progress__note">One offer per order: a free gift, or a discount code.</p>
 
       <div class="gift-name" data-gift-name hidden>
         <label class="gift-name__label">

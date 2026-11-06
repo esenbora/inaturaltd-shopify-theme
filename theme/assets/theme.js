@@ -17,6 +17,7 @@
     // that forgot.
     drawer.setAttribute('aria-hidden', open ? 'false' : 'true');
     document.body.style.overflow = open ? 'hidden' : '';
+    if (open) bindScrollHints(drawer);
   }
   openBtns.forEach((b) => b.addEventListener('click', (e) => { e.preventDefault(); setDrawer(true); }));
   closeEls.forEach((b) => b.addEventListener('click', (e) => { e.preventDefault(); setDrawer(false); }));
@@ -30,9 +31,48 @@
     mobileMenu.classList.toggle('is-open', open);
     mobileMenu.setAttribute('aria-hidden', open ? 'false' : 'true');
     document.body.style.overflow = open ? 'hidden' : '';
+    if (open) bindScrollHints(mobileMenu);
   }
   mobileMenuOpenBtns.forEach((b) => b.addEventListener('click', (e) => { e.preventDefault(); setMobileMenu(true); }));
   mobileMenuCloseEls.forEach((b) => b.addEventListener('click', (e) => { e.preventDefault(); setMobileMenu(false); }));
+
+  // OVERFLOW CUE.
+  //
+  // iOS hides the scrollbar until a finger is already moving, so a list that
+  // continues below the fold looks like a list that ends there. Reported live on
+  // 6 November 2026: a bag of five products read as a bag of two. Both places it
+  // happens - the cart lines and the mobile menu - scroll inside a panel of
+  // fixed height, which is precisely the case the browser gives no hint for.
+  //
+  // has-overflow says there is more than fits; at-end says the reader has
+  // reached the bottom, so the fade lifts instead of implying content that is
+  // not there. CSS owns the appearance.
+  function updateScrollHint(el) {
+    const slack = el.scrollHeight - el.clientHeight;
+    el.classList.toggle('has-overflow', slack > 4);
+    el.classList.toggle('at-end', el.scrollTop >= slack - 4);
+  }
+
+  // Catches the panel going from zero height to its real height when it opens,
+  // which is when the first measurement would otherwise be wrong.
+  const scrollHintObserver = 'ResizeObserver' in window
+    ? new ResizeObserver((entries) => entries.forEach((entry) => updateScrollHint(entry.target)))
+    : null;
+
+  // Re-measures every time, binds once. The drawer is rebuilt wholesale by
+  // refreshDrawer, so its container is a different element after each change
+  // and has to be picked up again.
+  function bindScrollHints(root) {
+    (root || document).querySelectorAll('[data-scroll-hint]').forEach((el) => {
+      updateScrollHint(el);
+      if (el.dataset.hintBound === '1') return;
+      el.dataset.hintBound = '1';
+      el.addEventListener('scroll', () => updateScrollHint(el), { passive: true });
+      if (scrollHintObserver) scrollHintObserver.observe(el);
+    });
+  }
+  bindScrollHints();
+  window.addEventListener('resize', () => bindScrollHints(), { passive: true });
 
   // Search overlay → submits to Shopify's /search results page
   const search = document.querySelector('[data-search]');
@@ -304,11 +344,18 @@
     tmp.innerHTML = html;
     const newDrawer = tmp.querySelector('[data-cart-drawer]');
     if (newDrawer && drawer) {
+      // The old scroll containers are about to be discarded. A ResizeObserver
+      // keeps a strong reference to everything it observes, so they have to be
+      // released here or one leaks per cart change.
+      if (scrollHintObserver) {
+        drawer.querySelectorAll('[data-scroll-hint]').forEach((el) => scrollHintObserver.unobserve(el));
+      }
       drawer.innerHTML = newDrawer.innerHTML;
       // Rebind controls inside new content
       drawer.querySelectorAll('[data-cart-close]').forEach((b) => b.addEventListener('click', (e) => { e.preventDefault(); setDrawer(false); }));
       drawer.querySelectorAll('[data-cart-remove]').forEach((a) => a.addEventListener('click', removeFromCart));
       bindDrawerQty();
+      bindScrollHints(drawer);
     }
   }
 
@@ -412,13 +459,61 @@
   }
 
   // Cart DRAWER quantity steppers — AJAX update then re-render the drawer
-  async function changeDrawerLine(key, quantity) {
-    const r = await fetch('/cart/change.js', {
+  // A merged row carries the keys of the lines it swallowed. Shopify splits a
+  // line whenever a discount reaches only some of its units, so one variant can
+  // sit in the cart as 4 + 1; the cart renders that as one row, and the row has
+  // to be able to collapse the split for real the moment it is touched.
+  function mergedKeysOf(el) {
+    const raw = el && el.dataset ? el.dataset.mergeKeys || '' : '';
+    return raw.split(',').filter(Boolean);
+  }
+
+  // Writes the merged row's whole quantity in ONE request, and the single
+  // request is the whole point.
+  //
+  // This was two sequential /cart/change.js calls first - empty the swallowed
+  // line, then set the survivor - and it quietly did not work. Measured against
+  // the live cart on 6 November 2026: a 3 + 2 split asked to become 5 came back
+  // as 5 + 2 = 7, both calls answering 200. The reason is that a line key is
+  // derived from the variant and its properties, so it is deterministic: the
+  // moment the 2-unit fragment is emptied Shopify re-splits whatever is left
+  // and hands the fragments the SAME keys back. The second call then addresses
+  // a line that has changed size underneath it.
+  //
+  // /cart/update.js takes a map of line key -> quantity and applies the whole
+  // map at once, so there is no intermediate cart for Shopify to re-split, and
+  // no stale key to address. Lines absent from the map are left exactly as they
+  // are, which is what keeps the gift line and every other product in place -
+  // the positional updates[] form would have to restate the entire cart, and
+  // would be wrong the instant the drawer's copy of it was a moment old.
+  function writeMergedLine(key, quantity, mergeKeys) {
+    const updates = {};
+    (mergeKeys || []).forEach((k) => { updates[k] = 0; });
+    // After the zeroes, so a key that somehow appears in both wins as itself.
+    updates[key] = quantity;
+    return fetch('/cart/update.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      body: JSON.stringify({ updates: updates }),
+    });
+  }
+
+  // One line, merged or not, through whichever endpoint fits it. A row with
+  // nothing swallowed keeps using change.js: it is the narrower call and it
+  // cannot touch anything else in the cart.
+  function writeLine(key, quantity, mergeKeys) {
+    if (mergeKeys && mergeKeys.length) return writeMergedLine(key, quantity, mergeKeys);
+    return fetch('/cart/change.js', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'same-origin',
       body: JSON.stringify({ id: key, quantity: quantity }),
     });
+  }
+
+  async function changeDrawerLine(key, quantity, mergeKeys) {
+    const r = await writeLine(key, quantity, mergeKeys);
     const body = await r.json().catch(() => null);
     // A refused change still moves the cart, so the re-render happens either
     // way; only the count comes off a successful body.
@@ -434,8 +529,9 @@
     if (!drawer) return;
     drawer.querySelectorAll('[data-drawer-qty]').forEach((wrap) => {
       const key = wrap.dataset.lineKey;
+      const merged = mergedKeysOf(wrap);
       const input = wrap.querySelector('[data-drawer-qty-input]');
-      wrap.querySelector('[data-drawer-qty-dec]')?.addEventListener('click', () => changeDrawerLine(key, Math.max(0, parseInt(input.value || '1', 10) - 1)));
+      wrap.querySelector('[data-drawer-qty-dec]')?.addEventListener('click', () => changeDrawerLine(key, Math.max(0, parseInt(input.value || '1', 10) - 1), merged));
       // Cap increases at the product's per-order limit, same number the product
       // page enforces. Without this the basket is a way round the cap. The
       // other lines holding the same product count towards it - see
@@ -444,7 +540,7 @@
       wrap.querySelector('[data-drawer-qty-inc]')?.addEventListener('click', () => {
         const next = parseInt(input.value || '1', 10) + 1;
         if (productQtyTotal(wrap, true) + next > dMax) { showLineNote(key, `Max ${dMax} per order`); return; }
-        changeDrawerLine(key, next);
+        changeDrawerLine(key, next, merged);
       });
       // Typing past the cap used to go straight through: this handler had no
       // clamp at all, so the stepper's limit was one keystroke wide.
@@ -464,10 +560,10 @@
         if (typed > allowed) {
           input.value = allowed;
           if (allowed === parseInt(input.defaultValue || '0', 10)) { showLineNote(key, `Max ${dMax} per order`); return; }
-          changeDrawerLine(key, allowed).then((ok) => { if (ok) showLineNote(key, `Max ${dMax} per order`); });
+          changeDrawerLine(key, allowed, merged).then((ok) => { if (ok) showLineNote(key, `Max ${dMax} per order`); });
           return;
         }
-        changeDrawerLine(key, typed);
+        changeDrawerLine(key, typed, merged);
       });
     });
   }
@@ -479,12 +575,9 @@
   async function removeFromCart(e) {
     e.preventDefault();
     const key = e.currentTarget.dataset.lineKey;
-    const r = await fetch('/cart/change.js', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'same-origin',
-      body: JSON.stringify({ id: key, quantity: 0 }),
-    });
+    // Remove means remove the product, not one of the fragments Shopify split
+    // it into - the row the shopper is looking at shows the whole quantity.
+    const r = await writeLine(key, 0, mergedKeysOf(e.currentTarget));
     if (r.ok) {
       const cart = await r.json();
       updateCount(cart.item_count);
@@ -681,27 +774,23 @@
     // Same two ceilings as the drawer, same reasons given. The reason is
     // parked rather than written, because the reload that follows would wipe
     // anything written to this document.
-    const changeLine = async (key, quantity) => {
+    const changeLine = async (key, quantity, mergeKeys) => {
       try {
-        const r = await fetch('/cart/change.js', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'same-origin',
-          body: JSON.stringify({ id: key, quantity: quantity }),
-        });
+        const r = await writeLine(key, quantity, mergeKeys);
         if (!r.ok) parkLineNote(key, stockNoteFrom(await r.json().catch(() => null)));
       } catch (err) { /* fall through to reload so the UI never desyncs */ }
       window.location.reload();
     };
     cartPage.querySelectorAll('[data-cart-qty]').forEach((wrap) => {
       const key = wrap.dataset.lineKey;
+      const merged = mergedKeysOf(wrap);
       const input = wrap.querySelector('[data-cart-qty-input]');
-      wrap.querySelector('[data-cart-qty-dec]')?.addEventListener('click', () => changeLine(key, Math.max(0, parseInt(input.value || '1', 10) - 1)));
+      wrap.querySelector('[data-cart-qty-dec]')?.addEventListener('click', () => changeLine(key, Math.max(0, parseInt(input.value || '1', 10) - 1), merged));
       const cMax = parseInt(wrap.dataset.max || '0', 10) || Infinity;
       wrap.querySelector('[data-cart-qty-inc]')?.addEventListener('click', () => {
         const next = parseInt(input.value || '1', 10) + 1;
         if (productQtyTotal(wrap, true) + next > cMax) { showLineNote(key, `Max ${cMax} per order`); return; }
-        changeLine(key, next);
+        changeLine(key, next, merged);
       });
       input?.addEventListener('change', () => {
         const typed = Math.max(0, parseInt(input.value || '0', 10));
@@ -710,13 +799,13 @@
           input.value = allowed;
           if (allowed === parseInt(input.defaultValue || '0', 10)) { showLineNote(key, `Max ${cMax} per order`); return; }
           parkLineNote(key, `Max ${cMax} per order`);
-          changeLine(key, allowed);
+          changeLine(key, allowed, merged);
           return;
         }
-        changeLine(key, typed);
+        changeLine(key, typed, merged);
       });
     });
-    cartPage.querySelectorAll('[data-cart-line-remove]').forEach((btn) => btn.addEventListener('click', (e) => { e.preventDefault(); changeLine(btn.dataset.lineKey, 0); }));
+    cartPage.querySelectorAll('[data-cart-line-remove]').forEach((btn) => btn.addEventListener('click', (e) => { e.preventDefault(); changeLine(btn.dataset.lineKey, 0, mergedKeysOf(btn)); }));
   }
   // Picks up a reason parked by the change that caused this load. Matched by
   // line key, so a parked note left behind by a shopper who navigated away

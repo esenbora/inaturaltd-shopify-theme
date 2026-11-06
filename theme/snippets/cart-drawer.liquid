@@ -6,10 +6,80 @@
       <button class="icon-btn" data-cart-close aria-label="Close">{% render 'icon', name: 'close' %}</button>
     </div>
 
-    <div class="cart-drawer__items" data-cart-items>
+    {%- comment -%}
+      data-scroll-hint: theme.js fades the bottom edge and shows a thin bar
+      while there is more below. Reported live on 6 November 2026 - a bag of
+      five products looked like a bag of two on an iPhone, because iOS hides
+      the scrollbar until a finger is already moving and nothing else said the
+      list continued.
+    {%- endcomment -%}
+    <div class="cart-drawer__items" data-cart-items data-scroll-hint>
       {% if cart.item_count > 0 %}
+        {%- comment -%}
+          ONE PRODUCT, ONE ROW.
+
+          Shopify splits a cart line whenever a discount reaches only some of
+          its units, and the split is permanent: the free-gift discount covers
+          exactly one unit (total_allocated_amount 595, read off the live cart
+          on 6 November 2026), so five deodorants arrive as a line of 4 and a
+          line of 1, both at full price, both correct and both confusing. The
+          client reported it as a bug twice.
+
+          The split cannot be prevented - it is Shopify's own arithmetic - so
+          it is merged on the way out instead. The FIRST line of a variant
+          renders the row, carrying the whole variant's quantity and price;
+          the later ones are skipped. data-merge-keys passes the skipped keys
+          to the stepper, which empties them before setting this one, so the
+          cart really does collapse to a single line the moment the shopper
+          touches it.
+
+          GIFT LINES ARE NEVER MERGED. A gift is identified by the _free_gift
+          property, not by its price or its collection, and it stays its own
+          row with its own Remove.
+
+          rendered_variants is a string because Liquid has no set. The pipes
+          are the delimiter, so "|123|" cannot match inside "|4123|".
+
+          The cart page runs the same block - sections/main-cart.liquid. Change
+          one and change both, or the drawer and the page disagree about what
+          the bag holds.
+        {%- endcomment -%}
+        {%- assign rendered_variants = '' -%}
         {% for item in cart.items %}
-          <div class="cart-line" data-cart-line data-line-key="{{ item.key }}">
+          {%- assign is_gift = false -%}
+          {%- if item.properties['_free_gift'] -%}{%- assign is_gift = true -%}{%- endif -%}
+
+          {%- assign skip_line = false -%}
+          {%- unless is_gift -%}
+            {%- assign vkey = '|' | append: item.variant_id | append: '|' -%}
+            {%- if rendered_variants contains vkey -%}
+              {%- assign skip_line = true -%}
+            {%- else -%}
+              {%- assign rendered_variants = rendered_variants | append: vkey -%}
+            {%- endif -%}
+          {%- endunless -%}
+
+          {%- unless skip_line -%}
+            {%- assign row_qty = item.quantity -%}
+            {%- assign row_price = item.final_line_price -%}
+            {%- assign merge_keys = '' -%}
+            {%- unless is_gift -%}
+              {%- assign row_qty = 0 -%}
+              {%- assign row_price = 0 -%}
+              {%- for other in cart.items -%}
+                {%- unless other.properties['_free_gift'] -%}
+                  {%- if other.variant_id == item.variant_id -%}
+                    {%- assign row_qty = row_qty | plus: other.quantity -%}
+                    {%- assign row_price = row_price | plus: other.final_line_price -%}
+                    {%- unless other.key == item.key -%}
+                      {%- assign merge_keys = merge_keys | append: other.key | append: ',' -%}
+                    {%- endunless -%}
+                  {%- endif -%}
+                {%- endunless -%}
+              {%- endfor -%}
+            {%- endunless -%}
+
+          <div class="cart-line{% if is_gift %} cart-line--gift{% endif %}" data-cart-line data-line-key="{{ item.key }}">
             <div class="cart-line__img"><img src="{{ item.image | image_url: width: 200 }}" alt="{{ item.product.title }}" width="200" height="200"></div>
             <div>
               <div class="cart-line__title">{{ item.product.title }}</div>
@@ -20,43 +90,64 @@
                   <div class="cart-line__prop">{{ prop.first }}: <strong>{{ prop.last }}</strong></div>
                 {%- endunless -%}
               {%- endfor -%}
-              {%- assign line_max = item.product.metafields.custom.max_per_order.value | default: 5 -%}
-              {%- comment -%}
-                An automatic discount that reaches only some of a line's
-                units makes Shopify split it, so one product can hold two
-                lines here. The cap is the PRODUCT's, so the quantity it
-                is measured against is the product's across the cart, not
-                this line's. theme.js reads the same sum off the steppers.
-              {%- endcomment -%}
-              {%- assign product_total = 0 -%}
-              {%- for other in cart.items -%}
-                {%- if other.product_id == item.product_id -%}
-                  {%- assign product_total = product_total | plus: other.quantity -%}
-                {%- endif -%}
-              {%- endfor -%}
-              <div class="qty cart-drawer__qty" data-drawer-qty data-line-key="{{ item.key }}" data-product-id="{{ item.product_id }}" data-max="{{ line_max }}">
-                <button type="button" data-drawer-qty-dec aria-label="Decrease quantity">&minus;</button>
-                <input type="number" value="{{ item.quantity }}" min="0" max="{{ line_max }}" inputmode="numeric" data-drawer-qty-input aria-label="Quantity for {{ item.product.title | escape }}">
-                <button type="button" data-drawer-qty-inc aria-label="Increase quantity">+</button>
-              </div>
-              {%- comment -%}
-                One element, two jobs. It states the standing per-order limit
-                when the line already sits at it, and the stepper writes into
-                it when a press of + cannot be honoured - a stock ceiling or
-                the cap - because this is the only place the shopper is
-                looking at that moment. Rendered even when it has nothing to
-                say so the stepper always has somewhere to write.
-              {%- endcomment -%}
-              <p class="cart-line__limit" data-line-note data-line-key="{{ item.key }}" role="status"{% unless product_total >= line_max %} hidden{% endunless %}>
-                {%- if product_total >= line_max -%}
-                  {%- if line_max <= 3 -%}Shipping weight limits this to {{ line_max }} per order.
-                  {%- else -%}Limited to {{ line_max }} per order.{%- endif -%}
-                {%- endif -%}
-              </p>
-              <a href="#" data-cart-remove data-line-key="{{ item.key }}" class="cart-drawer__remove">Remove</a>
+
+              {%- if is_gift -%}
+                {%- comment -%}
+                  NO STEPPER ON A GIFT. The free-gift discount covers one unit,
+                  so pressing + on this line put a second copy in the bag at
+                  full price - which is exactly how a shopper ends up being
+                  told their gift is being charged. One is the only quantity a
+                  gift has, so the control that could change it is gone and
+                  Remove is the only thing left to press.
+                {%- endcomment -%}
+                <p class="cart-line__gift">Free gift &middot; 1</p>
+              {%- else -%}
+                {%- assign line_max = item.product.metafields.custom.max_per_order.value | default: 5 -%}
+                {%- comment -%}
+                  The cap is the PRODUCT's, so it is measured against the
+                  product's quantity across the cart rather than this row's -
+                  a product can still hold two rows here when two variants of
+                  it are in the bag.
+
+                  Gift lines are excluded on purpose. A gift is not something
+                  the shopper chose to buy and its quantity cannot be changed,
+                  so counting it against a per-order cap only takes a paid
+                  unit away from them. theme.js counts the same way: it sums
+                  the steppers, and a gift line no longer has one.
+                {%- endcomment -%}
+                {%- assign product_total = 0 -%}
+                {%- for other in cart.items -%}
+                  {%- unless other.properties['_free_gift'] -%}
+                    {%- if other.product_id == item.product_id -%}
+                      {%- assign product_total = product_total | plus: other.quantity -%}
+                    {%- endif -%}
+                  {%- endunless -%}
+                {%- endfor -%}
+                <div class="qty cart-drawer__qty" data-drawer-qty data-line-key="{{ item.key }}" data-merge-keys="{{ merge_keys }}" data-product-id="{{ item.product_id }}" data-max="{{ line_max }}">
+                  <button type="button" data-drawer-qty-dec aria-label="Decrease quantity">&minus;</button>
+                  <input type="number" value="{{ row_qty }}" min="0" max="{{ line_max }}" inputmode="numeric" data-drawer-qty-input aria-label="Quantity for {{ item.product.title | escape }}">
+                  <button type="button" data-drawer-qty-inc aria-label="Increase quantity">+</button>
+                </div>
+                {%- comment -%}
+                  One element, two jobs. It states the standing per-order limit
+                  when the line already sits at it, and the stepper writes into
+                  it when a press of + cannot be honoured - a stock ceiling or
+                  the cap - because this is the only place the shopper is
+                  looking at that moment. Rendered even when it has nothing to
+                  say so the stepper always has somewhere to write.
+                {%- endcomment -%}
+                <p class="cart-line__limit" data-line-note data-line-key="{{ item.key }}" role="status"{% unless product_total >= line_max %} hidden{% endunless %}>
+                  {%- if product_total >= line_max -%}
+                    {%- if line_max <= 3 -%}Shipping weight limits this to {{ line_max }} per order.
+                    {%- else -%}Limited to {{ line_max }} per order.{%- endif -%}
+                  {%- endif -%}
+                </p>
+              {%- endif -%}
+              <a href="#" data-cart-remove data-line-key="{{ item.key }}" data-merge-keys="{{ merge_keys }}" class="cart-drawer__remove">Remove</a>
             </div>
-            <div class="cart-line__price">{{ item.final_line_price | money }}</div>
+            <div class="cart-line__price">{{ row_price | money }}</div>
           </div>
+          {%- endunless -%}
         {% endfor %}
       {% else %}
         <div class="cart-empty" style="text-align: center; padding: var(--space-7) var(--space-4);">
@@ -74,8 +165,14 @@
           bars. They are one bar with two milestones now - see cart-gift.
         {%- endcomment -%}
         {% render 'cart-gift' %}
-        <a href="/checkout" class="btn btn-primary btn-block btn-lg">Checkout · {{ cart.total_price | money }}</a>
-        <a href="{{ routes.cart_url }}" class="btn btn-ghost btn-block">View bag</a>
+        <a href="/checkout" class="btn btn-primary btn-block btn-lg">Checkout &middot; {{ cart.total_price | money }}</a>
+        {%- comment -%}
+          A text link rather than a second full-width button. On a phone this
+          block was taking half the screen and leaving two rows for the
+          products - reported 6 November 2026 - and a ghost button the same
+          size as Checkout was the largest single piece of that.
+        {%- endcomment -%}
+        <a href="{{ routes.cart_url }}" class="cart-drawer__viewbag">View bag</a>
       </div>
     {% endif %}
   </div>

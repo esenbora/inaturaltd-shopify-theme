@@ -1000,6 +1000,45 @@ body {
 .ship-progress__bar { height: 5px; border-radius: var(--radius-pill); background: var(--border); overflow: hidden; }
 .ship-progress__bar > span { display: block; height: 100%; background: var(--primary-dark); border-radius: var(--radius-pill); transition: width .4s ease; }
 
+/* Gift line. No stepper on it, so the label stands where the stepper stood and
+   the row keeps its rhythm against the paid lines beside it. */
+.cart-line__gift {
+  margin: 8px 0 0; font-size: var(--fs-xs); font-weight: 600;
+  color: var(--primary-dark); letter-spacing: .01em;
+}
+
+/* "View bag" as a text link rather than a second full-width button. On a phone
+   the footer was taking half the screen and leaving two rows for the products;
+   a ghost button the same size as Checkout was the largest single piece of it,
+   and it also made the two read as equal choices, which they are not. */
+.cart-drawer__viewbag {
+  justify-self: center; padding: 2px 4px;
+  font-size: var(--fs-xs); color: var(--muted);
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.cart-drawer__viewbag:hover { color: var(--accent); }
+
+/* OVERFLOW CUE - the cart lines and the mobile menu.
+   A mask rather than a band painted over the content: it dims whatever is at
+   the bottom edge whatever the panel's surface happens to be, and it cannot
+   cover a tap target the way an overlay can. theme.js adds has-overflow when
+   there is more below and at-end when the reader has reached it, so the fade
+   lifts at the bottom instead of implying content that is not there. Neither
+   class exists until the script runs, so without JavaScript the list looks
+   exactly as it did before. */
+[data-scroll-hint].has-overflow:not(.at-end) {
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 32px), rgba(0,0,0,.15));
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 32px), rgba(0,0,0,.15));
+}
+/* Thin enough to live inside the panel, on the platforms that draw one at all.
+   iOS draws nothing until a finger is already moving, which is why the fade
+   above is what actually carries the message on a phone. */
+[data-scroll-hint] { scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+[data-scroll-hint]::-webkit-scrollbar { width: 6px; }
+[data-scroll-hint]::-webkit-scrollbar-track { background: transparent; }
+[data-scroll-hint]::-webkit-scrollbar-thumb { background: var(--border); border-radius: var(--radius-pill); }
+[data-scroll-hint]::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
 /* ============================================================
    Responsive
    ============================================================ */
@@ -1354,3 +1393,24 @@ a.cart-line__title:hover { color: var(--primary-dark); }
 .collection-intro a { color: var(--primary-dark); text-decoration: underline; }
 /* Urunlerin altindaki bolum: govde olcusunde, baslik altindaki ozetten ayrilsin. */
 .collection-intro--foot { font-size: var(--fs-base); padding-top: var(--space-6); border-top: 1px solid var(--border); }
+
+/* ============================================================
+   Cart drawer on a phone - 6 November 2026
+   ============================================================
+   Subtotal, the reward bar, the one-offer note, Checkout and View bag were
+   filling half the screen between them, leaving two or three rows for the
+   products the shopper came to look at. Nothing is removed: the air between
+   the pieces is, and the list above gets it back. Checkout keeps its full
+   size, because it is the one thing in here that should be easy to hit.
+   ============================================================ */
+@media (max-width: 480px) {
+  .cart-drawer__foot {
+    padding: var(--space-4) var(--space-4) calc(var(--space-4) + env(safe-area-inset-bottom, 0px));
+    gap: 10px;
+  }
+  .cart-drawer__items { padding: var(--space-4); gap: var(--space-4); }
+  .cart-drawer__foot .gift-progress { gap: 6px; }
+  .cart-drawer__foot .reward-scale { font-size: .58rem; }
+  .cart-drawer__foot .gift-progress__note { font-size: .68rem; }
+  .cart-drawer__foot .gift-progress__options { gap: 5px; }
+}
