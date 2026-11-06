@@ -484,7 +484,7 @@
           <input type="number" value="1" min="1" max="{{ max_per_order }}" data-max="{{ max_per_order }}" aria-label="Quantity">
           <button type="button" data-qty-inc aria-label="Increase">+</button>
         </div>
-        <button class="btn btn-primary btn-lg btn-block" data-add-to-cart data-variant-id="{{ variant.id }}" data-max="{{ max_per_order }}" data-label="Add to bag · {{ variant.price | money }}"{% if variant.available == false %} disabled{% endif %}>
+        <button class="btn btn-primary btn-lg btn-block" data-add-to-cart data-variant-id="{{ variant.id }}" data-product-id="{{ product.id }}" data-max="{{ max_per_order }}" data-label="Add to bag · {{ variant.price | money }}"{% if variant.available == false %} disabled{% endif %}>
           {% if variant.available %}Add to bag · {{ variant.price | money }}{% else %}Sold out{% endif %}
         </button>
       </div>

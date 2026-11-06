@@ -311,35 +311,20 @@
     </div>
   </div>
 
-  {%- if gift_charged -%}
+  {%- comment -%}
+    The warning needs a gift that is charged AND no gift at £0 in the bag. Shopify
+    moves its one free unit to the newest eligible line, so adding a coconut balm
+    to a basket with a free strawberry one leaves the strawberry at £5.95 and the
+    coconut at £0: the shopper still has exactly one free, and the warning used to
+    call that an extra copy. The client asked for silence whenever a £0 gift is in
+    the bag. The charged line says "Full price" on the line itself instead.
+  {%- endcomment -%}
+  {%- if gift_charged and gift_in_cart == false -%}
     {%- comment -%}
-      Shopify charged for the gift. Three different things cause that, and
-      naming the wrong one sends the shopper hunting for a code they never
-      entered, so each case says what actually happened.
-
-      THE THIRD CASE, found live on 6 November 2026. A basket of three paid lip
-      balms and one free one, the free one correctly at £0.00, was being told
-      "Your gift is being charged. Remove it and pick it again" - advice that
-      fixes nothing, about a gift that was not being charged. What was being
-      charged was a SECOND gift line further up the list, off the top of the
-      phone screen.
-
-      It got there through the quantity stepper the gift line used to have. The
-      automatic discount covers exactly one unit - total_allocated_amount 595,
-      read off the live cart - so pressing + asked for two and Shopify split
-      the line into one at £0.00 and one at £5.95, both still carrying
-      _free_gift. The stepper is gone from gift lines now, so no new basket can
-      reach this state; the baskets already in it still have to be told the
-      truth, and the truth is that the extra copy is the problem, not the gift.
-
-      The client asked for the warning to be silent whenever a £0 gift is in
-      the bag. It is not silenced, because a shopper is being charged £5.95
-      they did not agree to and silence would hide that. It says what is
-      actually wrong instead.
+      Shopify charged for the gift with none at £0. Each cause is named, so the
+      shopper is not sent hunting for a code they never entered.
     {%- endcomment -%}
-    {%- if gift_in_cart -%}
-      <p class="gift-alert">One free gift per order, and you already have yours free. The extra copy in your bag is being charged {{ charged_gift_total | money }} - remove that line to drop it.</p>
-    {%- elsif code_applied -%}
+    {%- if code_applied -%}
       <p class="gift-alert">Your gift is being charged because {% if code_title != blank %}<strong>{{ code_title }}</strong> is{% else %}a discount code is{% endif %} applied. Remove the code at checkout to get the gift free, or remove the gift from your bag.</p>
     {%- elsif gift_shortfall > 0 -%}
       <p class="gift-alert">Your gift is being charged because your basket is now under {{ gift_threshold | money_without_trailing_zeros }}. Add {{ gift_shortfall | money }} more to get it free, or remove the gift from your bag.</p>

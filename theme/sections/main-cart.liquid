@@ -25,7 +25,15 @@
 
             {%- assign skip_line = false -%}
             {%- unless is_gift -%}
-              {%- assign vkey = '|' | append: item.variant_id | append: '|' -%}
+              {%- comment -%}
+            The key is the variant AND its properties. A personalised towel for
+            Ada and one for Ela are the same variant and two different orders:
+            merging them hid one name, and the stepper then wrote the hidden
+            line to zero. Fragments of one split line share their properties,
+            so they still merge. url_encode keeps the pipes a true delimiter
+            whatever a shopper types as a name.
+          {%- endcomment -%}
+          {%- capture vkey -%}|{{ item.variant_id }}{%- for prop in item.properties -%};{{ prop.first | url_encode }}={{ prop.last | url_encode }}{%- endfor -%}|{%- endcapture -%}
               {%- if rendered_variants contains vkey -%}
                 {%- assign skip_line = true -%}
               {%- else -%}
@@ -44,7 +52,8 @@
                 {%- assign row_price = 0 -%}
                 {%- for other in cart.items -%}
                   {%- unless other.properties['_free_gift'] -%}
-                    {%- if other.variant_id == item.variant_id -%}
+                    {%- capture other_vkey -%}|{{ other.variant_id }}{%- for prop in other.properties -%};{{ prop.first | url_encode }}={{ prop.last | url_encode }}{%- endfor -%}|{%- endcapture -%}
+                    {%- if other_vkey == vkey -%}
                       {%- assign row_qty = row_qty | plus: other.quantity -%}
                       {%- assign row_price = row_price | plus: other.final_line_price -%}
                       {%- unless other.key == item.key -%}
@@ -73,7 +82,7 @@
                     still has to reach the form, so it goes in hidden and keeps
                     its place in the updates[] sequence.
                   {%- endcomment -%}
-                  <p class="cart-line__gift">Free gift &middot; 1</p>
+                  <p class="cart-line__gift">{% if item.final_line_price > 0 %}Full price{% else %}Free gift{% endif %} &middot; 1</p>
                   <input type="hidden" name="updates[]" value="{{ item.quantity }}">
                 {%- else -%}
                   {%- assign line_max = item.product.metafields.custom.max_per_order.value | default: 5 -%}
@@ -91,7 +100,21 @@
                       {%- endif -%}
                     {%- endunless -%}
                   {%- endfor -%}
-                  <div class="qty cart-line__qty" data-cart-qty data-line-key="{{ item.key }}" data-merge-keys="{{ merge_keys }}" data-product-id="{{ item.product_id }}" data-max="{{ line_max }}">
+                  {%- comment -%}
+  /cart/update.js takes any quantity with a 200 - four of a variant stocked at
+  two, tested live on 6 November 2026 - and a merged row has to write through it.
+  So a merged row carries what is left for it, after the variant's other lines
+  including a gift, and theme.js holds the write to that. Blank means no limit.
+{%- endcomment -%}
+{%- assign row_stock = '' -%}
+{%- if merge_keys != blank and item.variant.inventory_management == 'shopify' and item.variant.inventory_policy == 'deny' -%}
+  {%- assign row_stock = item.variant.inventory_quantity | plus: row_qty -%}
+  {%- for other in cart.items -%}
+    {%- if other.variant_id == item.variant_id -%}{%- assign row_stock = row_stock | minus: other.quantity -%}{%- endif -%}
+  {%- endfor -%}
+  {%- assign row_stock = row_stock | at_least: 0 -%}
+{%- endif -%}
+<div class="qty cart-line__qty" data-cart-qty data-line-key="{{ item.key }}" data-merge-keys="{{ merge_keys }}" data-stock="{{ row_stock }}" data-product-id="{{ item.product_id }}" data-max="{{ line_max }}">
                     <button type="button" data-cart-qty-dec aria-label="Decrease quantity">&minus;</button>
                     <input type="number" name="updates[]" value="{{ row_qty }}" min="0" max="{{ line_max }}" inputmode="numeric" data-cart-qty-input aria-label="Quantity for {{ item.product.title | escape }}">
                     <button type="button" data-cart-qty-inc aria-label="Increase quantity">+</button>

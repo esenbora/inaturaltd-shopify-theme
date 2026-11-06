@@ -395,8 +395,12 @@
   // back when the transient reason has had its few seconds.
   const noteTimers = new WeakMap();
   function showLineNote(key, text) {
-    document.querySelectorAll('[data-line-note]').forEach((el) => {
-      if (el.dataset.lineKey !== key) return;
+    // A merged write can hand the row a new key, so a note that lost its exact
+    // key falls back to the rows of the same variant.
+    const notes = [...document.querySelectorAll('[data-line-note]')];
+    const exact = notes.filter((el) => el.dataset.lineKey === key);
+    const variantPrefix = `${String(key).split(':')[0]}:`;
+    (exact.length ? exact : notes.filter((el) => (el.dataset.lineKey || '').startsWith(variantPrefix))).forEach((el) => {
       if (el.dataset.standing === undefined) el.dataset.standing = el.hidden ? '' : el.textContent.trim();
       clearTimeout(noteTimers.get(el));
       el.textContent = text;
@@ -512,13 +516,45 @@
     });
   }
 
-  async function changeDrawerLine(key, quantity, mergeKeys) {
+  // update.js does not refuse a quantity above stock the way change.js does, so
+  // a merged row is held to the figure the Liquid rendered for it. `unchanged`
+  // means the row already sits there and there is nothing to write.
+  function capToStock(key, quantity, mergeKeys) {
+    if (!mergeKeys || !mergeKeys.length) return { quantity };
+    const wrap = document.querySelector(`[data-stock][data-line-key="${key}"]`);
+    if (!wrap || wrap.dataset.stock === '') return { quantity };
+    const stock = parseInt(wrap.dataset.stock, 10);
+    if (quantity <= stock) return { quantity };
+    const field = wrap.querySelector('input');
+    return {
+      quantity: stock,
+      note: `Only ${stock} left in stock`,
+      unchanged: !!field && parseInt(field.defaultValue, 10) === stock,
+    };
+  }
+
+  async function changeDrawerLine(key, requested, mergeKeys) {
+    const { quantity, note, unchanged } = capToStock(key, requested, mergeKeys);
+    if (unchanged) {
+      const field = document.querySelector(`[data-drawer-qty][data-line-key="${key}"] input`);
+      if (field) field.value = field.defaultValue;
+      showLineNote(key, note);
+      return false;
+    }
     const r = await writeLine(key, quantity, mergeKeys);
     const body = await r.json().catch(() => null);
     // A refused change still moves the cart, so the re-render happens either
     // way; only the count comes off a successful body.
     if (r.ok && body && typeof body.item_count === 'number') updateCount(body.item_count);
+    // On /cart the page behind the drawer shows the same lines, and its keys and
+    // quantities just went stale. Only a reload refreshes both.
+    if (document.querySelector('[data-cart-page]')) {
+      if (!r.ok || note) parkLineNote(key, note || stockNoteFrom(body));
+      window.location.reload();
+      return r.ok && !note;
+    }
     await refreshDrawer();
+    if (note) { showLineNote(key, note); return false; }
     if (!r.ok) showLineNote(key, stockNoteFrom(body));
     // Reported back so a caller that wants to add its OWN reason can wait for
     // the re-render first, and can stay quiet when Shopify already gave a more
@@ -581,6 +617,7 @@
     if (r.ok) {
       const cart = await r.json();
       updateCount(cart.item_count);
+      if (document.querySelector('[data-cart-page]')) { window.location.reload(); return; }
       await refreshDrawer();
     }
   }
@@ -611,7 +648,9 @@
       let quantity = Number.isFinite(parsedQty) && parsedQty > 0 ? parsedQty : 1;
 
       // Per-order cap. The stepper already clamps, but the basket may already
-      // hold some of this variant, so the real check is existing + requested.
+      // hold some of this product, so the real check is existing + requested.
+      // Counted the way the cart counts it: across the product's variants, and
+      // without the gift, or this page and the drawer disagree about the 5th.
       // Without this a shopper could add three, then three again.
       const maxPerOrder = parseInt(btn.dataset.max || '0', 10) || Infinity;
       if (maxPerOrder !== Infinity) {
@@ -619,7 +658,7 @@
         try {
           const cart = await (await fetch('/cart.js', { credentials: 'same-origin' })).json();
           alreadyInCart = (cart.items || [])
-            .filter((i) => String(i.id) === String(variantId))
+            .filter((i) => String(i.product_id) === btn.dataset.productId && !(i.properties && i.properties._free_gift))
             .reduce((sum, i) => sum + i.quantity, 0);
         } catch (_) {
           // Cart unreadable: fall through on the stepper's clamp alone rather
@@ -774,10 +813,14 @@
     // Same two ceilings as the drawer, same reasons given. The reason is
     // parked rather than written, because the reload that follows would wipe
     // anything written to this document.
-    const changeLine = async (key, quantity, mergeKeys) => {
+    const changeLine = async (key, requested, mergeKeys) => {
+      const { quantity, note, unchanged } = capToStock(key, requested, mergeKeys);
+      if (note) parkLineNote(key, note);
       try {
-        const r = await writeLine(key, quantity, mergeKeys);
-        if (!r.ok) parkLineNote(key, stockNoteFrom(await r.json().catch(() => null)));
+        if (!unchanged) {
+          const r = await writeLine(key, quantity, mergeKeys);
+          if (!r.ok && !note) parkLineNote(key, stockNoteFrom(await r.json().catch(() => null)));
+        }
       } catch (err) { /* fall through to reload so the UI never desyncs */ }
       window.location.reload();
     };
