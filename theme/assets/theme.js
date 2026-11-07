@@ -949,7 +949,17 @@
     try { seen = localStorage.getItem(KEY) === '1'; } catch (e) {}
     if (seen) return;
     let shown = false;
-    const trigger = () => { if (shown) return; shown = true; open(); };
+    // Never over something the shopper is in the middle of: it covered Checkout in
+    // the open drawer. It waits for the panel to close; the cart page has no panel
+    // to close, so there it simply never fires.
+    const busy = () => !!document.querySelector('[data-cart-drawer].is-open, [data-mobile-menu].is-open, [data-search].is-open, [data-cart-page]');
+    let retry = null;
+    const trigger = () => {
+      if (shown || retry) return;
+      if (busy()) { retry = setTimeout(() => { retry = null; trigger(); }, 3000); return; }
+      shown = true;
+      open();
+    };
     const timer = setTimeout(trigger, 7000);
     document.addEventListener('mouseout', (e) => { if (e.clientY <= 0) { clearTimeout(timer); trigger(); } });
   })();

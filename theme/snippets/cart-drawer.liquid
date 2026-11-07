@@ -71,6 +71,7 @@
             {%- assign row_qty = item.quantity -%}
             {%- assign row_price = item.final_line_price -%}
             {%- assign merge_keys = '' -%}
+{%- assign row_free = false -%}
             {%- unless is_gift -%}
               {%- assign row_qty = 0 -%}
               {%- assign row_price = 0 -%}
@@ -80,6 +81,7 @@
                     {%- if other_vkey == vkey -%}
                     {%- assign row_qty = row_qty | plus: other.quantity -%}
                     {%- assign row_price = row_price | plus: other.final_line_price -%}
+{%- if other.final_line_price == 0 and other.original_line_price > 0 -%}{%- assign row_free = true -%}{%- endif -%}
                     {%- unless other.key == item.key -%}
                       {%- assign merge_keys = merge_keys | append: other.key | append: ',' -%}
                     {%- endunless -%}
@@ -111,7 +113,14 @@
                 {%- endcomment -%}
                 <p class="cart-line__gift">{% if item.final_line_price > 0 %}Full price{% else %}Free gift{% endif %} &middot; 1</p>
               {%- else -%}
-                {%- assign line_max = item.product.metafields.custom.max_per_order.value | default: 5 -%}
+                {%- comment -%}
+  The automatic discount makes one unit free whichever line it lands on, so a
+  lip balm the shopper added themselves can drop to £0 with no gift picked.
+  It stays a normal line with a stepper, because a second unit really is paid
+  for; this only says why the price moved.
+{%- endcomment -%}
+{%- if row_free -%}<p class="cart-line__gift">{% if row_qty > 1 %}Includes your free gift{% else %}Free gift{% endif %}</p>{%- endif -%}
+{%- assign line_max = item.product.metafields.custom.max_per_order.value | default: 5 -%}
                 {%- comment -%}
                   The cap is the PRODUCT's, so it is measured against the
                   product's quantity across the cart rather than this row's -

@@ -47,6 +47,7 @@
               {%- assign row_qty = item.quantity -%}
               {%- assign row_price = item.final_line_price -%}
               {%- assign merge_keys = '' -%}
+{%- assign row_free = false -%}
               {%- unless is_gift -%}
                 {%- assign row_qty = 0 -%}
                 {%- assign row_price = 0 -%}
@@ -56,6 +57,7 @@
                     {%- if other_vkey == vkey -%}
                       {%- assign row_qty = row_qty | plus: other.quantity -%}
                       {%- assign row_price = row_price | plus: other.final_line_price -%}
+{%- if other.final_line_price == 0 and other.original_line_price > 0 -%}{%- assign row_free = true -%}{%- endif -%}
                       {%- unless other.key == item.key -%}
                         {%- assign merge_keys = merge_keys | append: other.key | append: ',' -%}
                       {%- endunless -%}
@@ -85,7 +87,14 @@
                   <p class="cart-line__gift">{% if item.final_line_price > 0 %}Full price{% else %}Free gift{% endif %} &middot; 1</p>
                   <input type="hidden" name="updates[]" value="{{ item.quantity }}">
                 {%- else -%}
-                  {%- assign line_max = item.product.metafields.custom.max_per_order.value | default: 5 -%}
+                  {%- comment -%}
+  The automatic discount makes one unit free whichever line it lands on, so a
+  lip balm the shopper added themselves can drop to £0 with no gift picked.
+  It stays a normal line with a stepper, because a second unit really is paid
+  for; this only says why the price moved.
+{%- endcomment -%}
+{%- if row_free -%}<p class="cart-line__gift">{% if row_qty > 1 %}Includes your free gift{% else %}Free gift{% endif %}</p>{%- endif -%}
+{%- assign line_max = item.product.metafields.custom.max_per_order.value | default: 5 -%}
                   {%- comment -%}
                     Product-wide, and gift lines excluded, exactly as the
                     drawer counts it. theme.js sums the steppers and a gift
@@ -145,7 +154,7 @@
           <h3 class="h3 mb-4">Summary</h3>
           <div class="flow" style="--flow: var(--space-3);">
             <div class="cluster" style="justify-content: space-between;"><span class="muted">Subtotal</span><strong>{{ cart.total_price | money }}</strong></div>
-            <div class="cluster" style="justify-content: space-between;"><span class="muted">Shipping</span><strong>{% assign free_ship_pence = settings.free_shipping_threshold | default: 25 | times: 100 %}{% if cart.total_price >= free_ship_pence %}Free{% else %}Calculated at checkout{% endif %}</strong></div>
+            <div class="cluster" style="--gap: var(--space-3); justify-content: space-between; flex-wrap: nowrap;"><span class="muted">Shipping</span><strong style="text-align: right;">{% assign free_ship_pence = settings.free_shipping_threshold | default: 25 | times: 100 %}{% if cart.total_price >= free_ship_pence %}Free{% else %}Calculated at checkout{% endif %}</strong></div>
 
             {%- comment -%}
               Same block the drawer uses. This page used to carry its own
