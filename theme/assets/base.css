@@ -965,7 +965,7 @@ body {
   padding: var(--space-5);
   border-bottom: 1px solid var(--border);
 }
-.cart-drawer__items { flex: 1; overflow-y: auto; padding: var(--space-5); display: grid; gap: var(--space-4); }
+.cart-drawer__items { flex: 1; overflow-y: auto; padding: var(--space-5); display: grid; align-content: start; gap: var(--space-4); }
 .cart-line { display: grid; grid-template-columns: 70px 1fr auto; gap: var(--space-3); }
 .cart-line__img {
   aspect-ratio: 4/5; border-radius: var(--radius-sm);
@@ -991,6 +991,8 @@ body {
   font-size: var(--fs-xs); color: var(--muted); text-decoration: underline; text-underline-offset: 2px;
 }
 .cart-line__remove:hover, .cart-drawer__remove:hover { color: var(--accent); }
+/* With no note between them, Remove flows inline beside the stepper. */
+.cart-line .qty + [data-line-note][hidden] + :is(a, button) { margin-left: var(--space-3); }
 
 /* Free-shipping progress (cart page + drawer) */
 .ship-progress { display: grid; gap: 6px; }
@@ -1027,9 +1029,14 @@ body {
    class exists until the script runs, so without JavaScript the list looks
    exactly as it did before. */
 [data-scroll-hint].has-overflow:not(.at-end) {
-  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 32px), rgba(0,0,0,.15));
-  mask-image: linear-gradient(to bottom, #000 calc(100% - 32px), rgba(0,0,0,.15));
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - var(--scroll-fade, 32px)), rgba(0,0,0,.15));
+  mask-image: linear-gradient(to bottom, #000 calc(100% - var(--scroll-fade, 32px)), rgba(0,0,0,.15));
 }
+/* Menu rows are 56px apart with air around the text, so a 32px band can land
+   entirely in the gap between two rows and fade nothing: on a 390x699 iPhone
+   the list looked finished with six links still below it. Taller than one row,
+   the band always has text inside it. */
+.mobile-menu__nav { --scroll-fade: 64px; }
 /* Thin enough to live inside the panel, on the platforms that draw one at all.
    iOS draws nothing until a finger is already moving, which is why the fade
    above is what actually carries the message on a phone. */
