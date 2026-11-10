@@ -1,4 +1,13 @@
 {%- comment -%} Welcome popup, first-visit discount + eBay social proof. JS-controlled (theme.js), once per visitor. {%- endcomment -%}
+{%- comment -%}
+  Green Friday early access (Theme settings > Green Friday) swaps the welcome
+  offer for the early access invitation and tags the sign-up green-friday, so
+  the early access email can go to exactly these people. No code here: the
+  code goes out by email. From the public sale start it is the normal popup.
+{%- endcomment -%}
+{%- capture gf_state -%}{%- render 'gf-state' -%}{%- endcapture -%}
+{%- assign gf_teaser = false -%}
+{%- if gf_state contains 'teaser' -%}{%- assign gf_teaser = true -%}{%- endif -%}
 <div class="promo-popup" data-promo-popup hidden>
   <div class="promo-popup__backdrop" data-promo-close></div>
   <div class="promo-popup__panel" role="dialog" aria-modal="true" aria-label="Welcome offer">
@@ -14,20 +23,30 @@
         <div class="promo-popup__success" data-promo-success>
           {% render 'icon', name: 'check' %}
           <h3 class="promo-popup__title">You're on the list! 🌿</h3>
+          {%- if gf_teaser -%}
+          <p class="promo-popup__sub">{{ settings.gf_popup_success | escape }}</p>
+          {%- else -%}
           <p class="promo-popup__sub">Thanks for joining INature. Your <strong>15% off</strong> code is on its way to your inbox.</p>
+          {%- endif -%}
           <p class="promo-popup__hint">Can't see it? Check your <strong>spam / junk folder</strong> and add us to your contacts so you never miss a drop.</p>
           <button type="button" class="btn btn-primary" data-promo-close>Start shopping</button>
         </div>
       {% else %}
         <p class="promo-popup__eyebrow">Welcome, 100% natural, dispatched from the UK</p>
+        {%- if gf_teaser -%}
+        <h3 class="promo-popup__title">{{ settings.gf_popup_title | escape }}</h3>
+        <p class="promo-popup__sub">{{ settings.gf_popup_text | escape }}</p>
+        <input type="hidden" name="contact[tags]" value="newsletter,popup,green-friday">
+        {%- else -%}
         <h3 class="promo-popup__title">Get <strong>15% off</strong> your first order</h3>
         <p class="promo-popup__sub">Join our list and we'll send your discount code, plus early access to new drops and offers.</p>
         <input type="hidden" name="contact[tags]" value="newsletter,popup">
+        {%- endif -%}
         <input type="hidden" name="contact[accepts_marketing]" value="true">
         <label class="visually-hidden" for="promo-popup-email">Email address</label>
         <div class="promo-popup__row">
           <input id="promo-popup-email" type="email" name="contact[email]" placeholder="Your email address" required>
-          <button type="submit" class="btn btn-primary">Get my code</button>
+          <button type="submit" class="btn btn-primary">{% if gf_teaser %}{{ settings.gf_popup_button | escape }}{% else %}Get my code{% endif %}</button>
         </div>
         <div class="promo-popup__trust">
           <img class="promo-popup__ebay" src="{{ 'ebay-logo.svg' | asset_url }}" width="62" height="25" alt="eBay" loading="lazy">

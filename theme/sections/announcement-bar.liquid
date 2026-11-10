@@ -26,6 +26,33 @@
 {%- capture ship_amount -%}£{{ ship_t }}{%- endcapture -%}
 {%- capture gift_old -%}gift of your choice over £{{ ship_t }}{%- endcapture -%}
 {%- capture gift_new -%}gift of your choice over £{{ gift_t }}{%- endcapture -%}
+{%- comment -%}
+  GREEN FRIDAY. While a period from Theme settings > Green Friday is running,
+  a single static line replaces the marquee: one offer, nothing scrolling past
+  it. Same 34px height, so the sticky header below does not move. The phone
+  text is a separate setting because the desktop sentence cannot fit one line
+  at 390px, and the line clips with an ellipsis rather than widening the page.
+  Off by itself on the end date; the marquee below comes back unchanged.
+{%- endcomment -%}
+{%- capture gf_state -%}{%- render 'gf-state' -%}{%- endcapture -%}
+{%- assign gf_state = gf_state | strip -%}
+{%- if gf_state == 'teaser' or gf_state == 'sale' -%}
+  {%- if gf_state == 'teaser' -%}
+    {%- assign gf_full = settings.gf_teaser_text -%}
+    {%- assign gf_short = settings.gf_teaser_text_mobile | default: settings.gf_teaser_text -%}
+  {%- else -%}
+    {%- assign gf_full = settings.gf_sale_text -%}
+    {%- assign gf_short = settings.gf_sale_text_mobile | default: settings.gf_sale_text -%}
+  {%- endif -%}
+<section class="announce announce--gf" aria-label="Green Friday" style="--gf-bg: {{ settings.gf_bg | default: '#5A7C5D' }}; --gf-fg: {{ settings.gf_fg | default: '#F8F4ED' }};">
+  {%- capture gf_inner -%}<span class="announce-gf__full">{{ gf_full | escape }}</span><span class="announce-gf__short">{{ gf_short | escape }}</span>{%- endcapture -%}
+  {%- if gf_state == 'teaser' -%}
+  <button type="button" class="announce-gf" data-promo-open aria-haspopup="dialog">{{ gf_inner }}</button>
+  {%- else -%}
+  <a class="announce-gf" href="{{ routes.all_products_collection_url }}">{{ gf_inner }}</a>
+  {%- endif -%}
+</section>
+{%- else -%}
 <section class="announce" aria-label="Announcements">
   <div class="announce__marquee" aria-hidden="true">
     <div class="announce__track">
@@ -51,6 +78,7 @@
     {% for block in section.blocks %}{{ block.settings.text | replace: '£5.95', '15%' }}. {% else %}Free UK shipping over £{{ ship_t }}. Free gift of your choice over £{{ gift_t }}, one offer per order. Official UK distributor for INCIA Naturals. 15% off your first order for new customers.{% endfor %}
   </p>
 </section>
+{%- endif -%}
 
 {% schema %}
 {

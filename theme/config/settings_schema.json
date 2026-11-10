@@ -198,5 +198,111 @@
         "info": "Whole pounds. Must match the minimum on the automatic free-gift discount."
       }
     ]
+  },
+  {
+    "name": "Green Friday",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "A green strip replaces the announcement bar while a period is running and switches itself off on the end date; the normal bar comes back by itself. Dates are YYYY-MM-DD in the shop's time zone. The discount codes themselves live in Shopify Discounts: this only changes what the storefront says."
+      },
+      {
+        "type": "checkbox",
+        "id": "gf_enabled",
+        "label": "Enable Green Friday",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "gf_teaser_start",
+        "label": "Early access period starts",
+        "default": "2026-11-11",
+        "info": "Strip shows the early access text and the welcome popup invites sign-ups."
+      },
+      {
+        "type": "text",
+        "id": "gf_sale_start",
+        "label": "Public sale starts",
+        "default": "2026-11-20",
+        "info": "Strip switches to the sale text; the popup goes back to the normal welcome offer."
+      },
+      {
+        "type": "text",
+        "id": "gf_end",
+        "label": "Strip removed on",
+        "default": "2026-12-01",
+        "info": "First day WITHOUT the strip. 2026-12-01 = last day shown is 30 November."
+      },
+      {
+        "type": "color",
+        "id": "gf_bg",
+        "label": "Strip background",
+        "default": "#5A7C5D"
+      },
+      {
+        "type": "color",
+        "id": "gf_fg",
+        "label": "Strip text",
+        "default": "#F8F4ED"
+      },
+      {
+        "type": "header",
+        "content": "Early access period"
+      },
+      {
+        "type": "text",
+        "id": "gf_teaser_text",
+        "label": "Strip text (desktop)",
+        "default": "🌿 Green Friday is coming: join our newsletter for early access to 35% off"
+      },
+      {
+        "type": "text",
+        "id": "gf_teaser_text_mobile",
+        "label": "Strip text (phone)",
+        "default": "🌿 Green Friday: join our newsletter for early 35% off",
+        "info": "Must fit one line on a phone. Tapping the strip opens the newsletter popup."
+      },
+      {
+        "type": "text",
+        "id": "gf_popup_title",
+        "label": "Popup title",
+        "default": "Green Friday early access"
+      },
+      {
+        "type": "textarea",
+        "id": "gf_popup_text",
+        "label": "Popup text",
+        "default": "Join our newsletter for Green Friday early access: 35% off on 18–19 November."
+      },
+      {
+        "type": "text",
+        "id": "gf_popup_button",
+        "label": "Popup button",
+        "default": "Get early access"
+      },
+      {
+        "type": "textarea",
+        "id": "gf_popup_success",
+        "label": "Popup thank-you text",
+        "default": "You're in. Your Green Friday early access code will arrive by email for 18–19 November."
+      },
+      {
+        "type": "header",
+        "content": "Public sale period"
+      },
+      {
+        "type": "text",
+        "id": "gf_sale_text",
+        "label": "Strip text (desktop)",
+        "default": "🌿 Green Friday: 35% off with code GREENFRIDAY35 · Free UK shipping over £25"
+      },
+      {
+        "type": "text",
+        "id": "gf_sale_text_mobile",
+        "label": "Strip text (phone)",
+        "default": "🌿 Green Friday: 35% off with code GREENFRIDAY35",
+        "info": "Must fit one line on a phone. Tapping the strip opens the shop."
+      }
+    ]
   }
 ]

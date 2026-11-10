@@ -19,6 +19,7 @@
             than doubling the quantity.
           {%- endcomment -%}
           {%- assign rendered_variants = '' -%}
+{%- assign gift_charged_variants = '' -%}
           {% for item in cart.items %}
             {%- assign is_gift = false -%}
             {%- if item.properties['_free_gift'] -%}{%- assign is_gift = true -%}{%- endif -%}
@@ -48,6 +49,30 @@
               {%- assign row_price = item.final_line_price -%}
               {%- assign merge_keys = '' -%}
 {%- assign row_free = false -%}
+{%- comment -%}
+  GIFT TWIN. The automatic discount zeroes one eligible unit, and when the
+  shopper already pays for the same variant it lands on the paid line instead
+  of the gift: the gift row read "Full price" and the paid row "Free gift"
+  (reported 10 November 2026, Strawberry kids lip balm). The money is right,
+  the labels are swapped. Same variant means same price, so the row prices
+  are swapped back on the way out: the gift row shows 0.00 and the paid row
+  carries the charge. When the discount lands on a DIFFERENT product (paid
+  towel + balm gift), nothing can be swapped, so the gift row names the item
+  that is free. free_title only matches a line discounted by exactly one
+  unit, so a percentage code never names an item.
+{%- endcomment -%}
+{%- assign gift_twin = false -%}
+{%- assign free_title = '' -%}
+{%- if is_gift -%}
+  {%- for other in cart.items -%}
+    {%- unless other.properties['_free_gift'] -%}
+      {%- if other.variant_id == item.variant_id -%}{%- assign gift_twin = true -%}{%- endif -%}
+      {%- assign other_off = other.original_line_price | minus: other.final_line_price -%}
+      {%- if free_title == blank and other_off > 0 and other_off == other.original_price -%}{%- assign free_title = other.product.title -%}{%- endif -%}
+    {%- endunless -%}
+  {%- endfor -%}
+  {%- if gift_twin -%}{%- assign row_price = 0 -%}{%- endif -%}
+{%- endif -%}
               {%- unless is_gift -%}
                 {%- assign row_qty = 0 -%}
                 {%- assign row_price = 0 -%}
@@ -66,6 +91,18 @@
                 {%- endfor -%}
               {%- endunless -%}
 
+{%- unless is_gift -%}
+  {%- capture vid_key -%}|{{ item.variant_id }}|{%- endcapture -%}
+  {%- for other in cart.items -%}
+    {%- if other.properties['_free_gift'] and other.variant_id == item.variant_id -%}
+      {%- assign row_free = false -%}
+      {%- unless gift_charged_variants contains vid_key -%}
+        {%- assign row_price = row_price | plus: other.final_line_price -%}
+        {%- assign gift_charged_variants = gift_charged_variants | append: vid_key -%}
+      {%- endunless -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endunless -%}
             <div class="cart-line{% if is_gift %} cart-line--gift{% endif %}" data-cart-line data-line-key="{{ item.key }}" style="padding: var(--space-4) 0; border-bottom: 1px solid var(--border);">
               <a href="{{ item.url }}" class="cart-line__img"><img src="{{ item.image | image_url: width: 200 }}" alt="{{ item.product.title | escape }}" width="200" height="250"></a>
               <div>
@@ -84,7 +121,7 @@
                     still has to reach the form, so it goes in hidden and keeps
                     its place in the updates[] sequence.
                   {%- endcomment -%}
-                  <p class="cart-line__gift">{% if item.final_line_price > 0 %}Full price{% else %}Free gift{% endif %} &middot; 1</p>
+                  <p class="cart-line__gift">{% if row_price > 0 %}Full price{% else %}Free gift{% endif %} &middot; 1</p>{% if row_price > 0 and free_title != blank %}<p class="cart-line__gift-note">The free item in this order is your {{ free_title }}.</p>{% endif %}
                   <input type="hidden" name="updates[]" value="{{ item.quantity }}">
                 {%- else -%}
                   {%- comment -%}

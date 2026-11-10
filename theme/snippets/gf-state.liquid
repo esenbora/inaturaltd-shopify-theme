@@ -1,0 +1,21 @@
+{%- comment -%}
+  Green Friday period, printed as one word: "teaser", "sale" or nothing.
+  Capture it, then strip:
+    {%- capture gf_state -%}{%- render 'gf-state' -%}{%- endcapture -%}
+  Dates come from Theme settings > Green Friday as YYYY-MM-DD and are compared
+  as whole days in the shop's time zone. The end date is the first day WITHOUT
+  the strip, so 2026-12-01 means the sale runs to the end of 30 November.
+  A blank or malformed date reads as 0 and switches that period off rather
+  than guessing.
+{%- endcomment -%}
+{%- if settings.gf_enabled -%}
+  {%- assign gf_today = 'now' | date: '%Y%m%d' | plus: 0 -%}
+  {%- assign gf_t = settings.gf_teaser_start | remove: '-' | strip | plus: 0 -%}
+  {%- assign gf_s = settings.gf_sale_start | remove: '-' | strip | plus: 0 -%}
+  {%- assign gf_e = settings.gf_end | remove: '-' | strip | plus: 0 -%}
+  {%- if gf_e > 0 and gf_today < gf_e -%}
+    {%- if gf_s > 0 and gf_today >= gf_s -%}sale
+    {%- elsif gf_t > 0 and gf_today >= gf_t -%}teaser
+    {%- endif -%}
+  {%- endif -%}
+{%- endif -%}

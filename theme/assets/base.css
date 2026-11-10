@@ -188,6 +188,26 @@ body {
   margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
 }
 
+/* Green Friday strip: one static line in place of the marquee, same 34px */
+.announce--gf {
+  background: var(--gf-bg, #5A7C5D); color: var(--gf-fg, #F8F4ED);
+  text-transform: none; letter-spacing: .01em;
+}
+.announce-gf {
+  display: block; width: 100%; box-sizing: border-box;
+  padding: 9px var(--space-4); margin: 0; border: 0; background: none;
+  font: inherit; font-size: 13px; font-weight: 600; line-height: 16px;
+  color: inherit; text-align: center; cursor: pointer;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.announce-gf:hover, .announce-gf:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
+.announce-gf__short { display: none; }
+@media (max-width: 720px) {
+  .announce-gf { font-size: 12px; }
+  .announce-gf__full { display: none; }
+  .announce-gf__short { display: inline; }
+}
+
 /* ---------- Header ---------- */
 .site-header {
   position: sticky; top: 34px; z-index: 50;
@@ -925,7 +945,8 @@ body {
 .filter-pills .pill:hover { background: var(--surface); }
 .filter-pills .pill.pill-soft { background: var(--ink); color: var(--bg); }
 @media (max-width: 720px) {
-  .collection-toolbar { flex-direction: column; align-items: stretch; gap: var(--space-3); }
+  /* nowrap: a wrapping column sizes its line to the pills' max-content (868px) and widens the page */
+  .collection-toolbar { flex-direction: column; align-items: stretch; gap: var(--space-3); flex-wrap: nowrap; }
   .filter-pills {
     flex-wrap: nowrap; overflow-x: auto;
     margin-inline: calc(var(--space-4) * -1); padding-inline: var(--space-4);
@@ -1008,6 +1029,7 @@ body {
   margin: 8px 0 0; font-size: var(--fs-xs); font-weight: 600;
   color: var(--primary-dark); letter-spacing: .01em;
 }
+.cart-line__gift-note { margin: 4px 0 0; font-size: var(--fs-xs); color: var(--muted, #6b6f6b); line-height: 1.4; }
 
 /* "View bag" as a text link rather than a second full-width button. On a phone
    the footer was taking half the screen and leaving two rows for the products;
@@ -1065,10 +1087,11 @@ body {
   .site-header__nav { display: none; }
   .site-header__inner {
     grid-template-columns: auto 1fr auto;
-    gap: var(--space-3);
+    gap: 6px;
     padding-block: 12px;
   }
-  .site-header__actions { gap: var(--space-2); }
+  /* Header row was 413px wide and pushed every page sideways on phones */
+  .site-header__actions { gap: 0; }
   .brand-mark { font-size: 1.35rem; }
   .brand-leaf { width: 2.05em; height: auto; }
   /* Compact mobile header has no room for the floating verb above the leaf — hide it (clean "I Nature"). */
@@ -1425,4 +1448,13 @@ a.cart-line__title:hover { color: var(--primary-dark); }
   .cart-drawer__foot .reward-scale { font-size: .58rem; }
   .cart-drawer__foot .gift-progress__note { font-size: .68rem; }
   .cart-drawer__foot .gift-progress__options { gap: 5px; }
+}
+
+/* Small phones (iPhone SE / mini): header must fit 360px without horizontal scroll */
+@media (max-width: 400px) {
+  .site-header .icon-btn { width: 36px; height: 36px; }
+  .brand-mark { font-size: 1.2rem; }
+  /* "Add to bag · £42.00" with btn-lg padding was wider than the column at 360px */
+  .pdp { grid-template-columns: minmax(0, 1fr); }
+  .qty-row .btn-lg { min-width: 0; padding-inline: var(--space-4); }
 }

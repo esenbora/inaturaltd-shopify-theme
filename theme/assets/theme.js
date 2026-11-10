@@ -938,6 +938,8 @@
       setTimeout(() => { popup.hidden = true; }, 320);
     };
     popup.querySelectorAll('[data-promo-close]').forEach((b) => b.addEventListener('click', close));
+    // The Green Friday strip opens it on demand, even for a visitor who closed it before.
+    document.querySelectorAll('[data-promo-open]').forEach((b) => b.addEventListener('click', open));
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !popup.hidden) close(); });
     // form just submitted → mark as subscribed so it never nags again, show the thank-you state once
     if (popup.querySelector('[data-promo-success]')) {
