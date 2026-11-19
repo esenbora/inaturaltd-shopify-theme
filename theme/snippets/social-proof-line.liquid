@@ -10,17 +10,27 @@
   Under the DMCC Act 2024 that distinction matters, so the two numbers are kept
   apart here and every page pulls the wording from this one snippet.
 
+  19 Nov 2026: score raised to 164 at the account owner's request (Ferhat, who
+  reads it off the seller profile). Not re-read by us: eBay answers automated
+  requests with 403, and we do not work around that. The written-review count
+  (46) was not part of the request and stays until someone re-reads the filter.
+  The welcome popup used to carry its own copy of the score ("141 buyers"), which
+  is how the two drifted apart; it now asks this snippet for the bare number.
+
   Usage:
-    {% render 'social-proof-line' %}            100% positive eBay feedback across 157 orders
+    {% render 'social-proof-line' %}            100% positive eBay feedback across 164 orders
     {% render 'social-proof-line', style: 'reviews' %}   46 verified buyer reviews on eBay
+    {% render 'social-proof-line', style: 'score' %}     164   (bare number, for copy built around it)
 {%- endcomment -%}
 
-{%- assign ebay_feedback_score = 157 -%}
+{%- assign ebay_feedback_score = 164 -%}
 {%- assign ebay_written_reviews = 46 -%}
 
 {%- case style -%}
   {%- when 'reviews' -%}
     {{ ebay_written_reviews }} verified buyer reviews on eBay
+  {%- when 'score' -%}
+    {{ ebay_feedback_score }}
   {%- else -%}
     100% positive eBay feedback across {{ ebay_feedback_score }} orders
 {%- endcase -%}

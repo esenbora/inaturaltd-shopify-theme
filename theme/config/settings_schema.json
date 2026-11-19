@@ -272,7 +272,7 @@
         "type": "textarea",
         "id": "gf_popup_text",
         "label": "Popup text",
-        "default": "Join our newsletter for Green Friday early access: 35% off on 18–19 November."
+        "default": "Join our newsletter for Green Friday early access: 35% off, live since the evening of 17 November."
       },
       {
         "type": "text",
@@ -284,7 +284,7 @@
         "type": "textarea",
         "id": "gf_popup_success",
         "label": "Popup thank-you text",
-        "default": "You're in. Your Green Friday early access code will arrive by email for 18–19 November."
+        "default": "You're in. Your Green Friday early access code is on its way by email."
       },
       {
         "type": "header",

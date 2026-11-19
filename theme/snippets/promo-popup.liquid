@@ -50,7 +50,7 @@
         </div>
         <div class="promo-popup__trust">
           <img class="promo-popup__ebay" src="{{ 'ebay-logo.svg' | asset_url }}" width="62" height="25" alt="eBay" loading="lazy">
-          <span><strong>100% Positive Feedback</strong> · trusted by 141 buyers on eBay</span>
+          <span><strong>100% Positive Feedback</strong> · across {% render 'social-proof-line', style: 'score' %} eBay orders</span>
         </div>
       {% endif %}
     {% endform %}
