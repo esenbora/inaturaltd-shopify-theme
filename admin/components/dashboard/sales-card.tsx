@@ -141,7 +141,7 @@ export async function TradeStrip({ rangeDays }: { rangeDays: number }) {
           // No chart. A daily average over single-figure daily orders
           // swings between one basket and the next, so the line would show
           // basket size varying, not a trend worth reading.
-          note="Free shipping over £20"
+          note="Free shipping over £25"
         />
         <Figure
           label="Checkout completed"

@@ -166,7 +166,7 @@ export default async function SalesPage({ searchParams }: PageProps) {
           <Figure
             label="Average order"
             value={money(aov)}
-            explain="Revenue divided by orders. Free shipping starts at £20, so this is the figure to watch."
+            explain="Revenue divided by orders. Free shipping starts at £25, so this is the figure to watch."
             delta={
               <Delta
                 current={aov}
