@@ -224,7 +224,7 @@
         "id": "gf_sale_start",
         "label": "Public sale starts",
         "default": "2026-11-20",
-        "info": "Strip switches to the sale text; the popup goes back to the normal welcome offer."
+        "info": "Strip switches to the sale text and links to the Green Friday page; the popup shows the code. On the end date the popup goes back to the 15% welcome offer."
       },
       {
         "type": "text",
@@ -294,14 +294,38 @@
         "type": "text",
         "id": "gf_sale_text",
         "label": "Strip text (desktop)",
-        "default": "🌿 Green Friday: 35% off with code GREENFRIDAY35 · Free UK shipping over £25"
+        "default": "🌿 Green Friday: 35% OFF with GREENFRIDAY35 + a tree with every order"
       },
       {
         "type": "text",
         "id": "gf_sale_text_mobile",
         "label": "Strip text (phone)",
-        "default": "🌿 Green Friday: 35% off with code GREENFRIDAY35",
-        "info": "Must fit one line on a phone. Tapping the strip opens the shop."
+        "default": "🌿 Green Friday: 35% OFF with code GREENFRIDAY35 | 1 Tree/Order",
+        "info": "Must fit one line on a phone. Tapping the strip opens the Green Friday page."
+      },
+      {
+        "type": "text",
+        "id": "gf_code",
+        "label": "Discount code shown in the popup",
+        "default": "GREENFRIDAY35"
+      },
+      {
+        "type": "text",
+        "id": "gf_sale_popup_title",
+        "label": "Popup title",
+        "default": "Green Friday: 35% off + a tree planted with every order"
+      },
+      {
+        "type": "text",
+        "id": "gf_sale_popup_note",
+        "label": "Popup small print",
+        "default": "Until 30 November. One offer per order: this code or the free gift over £30."
+      },
+      {
+        "type": "text",
+        "id": "gf_sale_popup_list",
+        "label": "Popup newsletter line",
+        "default": "Join our list for future offers"
       }
     ]
   }

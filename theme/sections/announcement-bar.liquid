@@ -33,7 +33,19 @@
   text is a separate setting because the desktop sentence cannot fit one line
   at 390px, and the line clips with an ellipsis rather than widening the page.
   Off by itself on the end date; the marquee below comes back unchanged.
+
+  STICKY. Shopify wraps every section in its own div, so position: sticky on
+  .announce alone had nothing to stick within and the bar scrolled away. The
+  wrapper is what sticks. Only the bar stays on screen, the header scrolls
+  away beneath it (z-index 60 over the header's 50), so on a phone the page
+  loses 28px, not the whole header. Drawers, menu, search and popup sit at
+  90-200 and still cover it.
 {%- endcomment -%}
+{%- style -%}
+  #shopify-section-{{ section.id }} { position: sticky; top: 0; z-index: 60; }
+  html { scroll-padding-top: 34px; }
+  @media (max-width: 720px) { html { scroll-padding-top: 28px; } }
+{%- endstyle -%}
 {%- capture gf_state -%}{%- render 'gf-state' -%}{%- endcapture -%}
 {%- assign gf_state = gf_state | strip -%}
 {%- if gf_state == 'teaser' or gf_state == 'sale' -%}
@@ -49,7 +61,8 @@
   {%- if gf_state == 'teaser' -%}
   <button type="button" class="announce-gf" data-promo-open aria-haspopup="dialog">{{ gf_inner }}</button>
   {%- else -%}
-  <a class="announce-gf" href="{{ routes.all_products_collection_url }}">{{ gf_inner }}</a>
+  {%- assign gf_page = pages['green-friday'] -%}
+  <a class="announce-gf" href="{% if gf_page.url != blank %}{{ gf_page.url }}{% else %}{{ routes.all_products_collection_url }}{% endif %}">{{ gf_inner }}</a>
   {%- endif -%}
 </section>
 {%- else -%}

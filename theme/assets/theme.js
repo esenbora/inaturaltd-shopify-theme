@@ -925,7 +925,17 @@
   (function () {
     const popup = document.querySelector('[data-promo-popup]');
     if (!popup) return;
-    const KEY = 'inature_promo_seen';
+    // A campaign can ask for its own key, so a visitor who closed the welcome
+    // offer still sees the campaign popup once.
+    const KEY = popup.dataset.promoKey || 'inature_promo_seen';
+    popup.querySelectorAll('[data-copy-code]').forEach((b) => b.addEventListener('click', () => {
+      const code = b.dataset.copyCode;
+      const done = () => { b.textContent = 'Copied'; setTimeout(() => { b.textContent = 'Copy'; }, 2000); };
+      // Where the clipboard is refused, select the code so a long-press copies it.
+      const select = () => { const v = popup.querySelector('.promo-popup__code-value'); if (!v) return; const r = document.createRange(); r.selectNodeContents(v); const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(code).then(done, select);
+      else select();
+    }));
     const open = () => {
       popup.hidden = false;
       requestAnimationFrame(() => popup.classList.add('is-open'));

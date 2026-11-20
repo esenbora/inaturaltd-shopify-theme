@@ -3,14 +3,24 @@
   Green Friday early access (Theme settings > Green Friday) swaps the welcome
   offer for the early access invitation and tags the sign-up green-friday, so
   the early access email can go to exactly these people. No code here: the
-  code goes out by email. From the public sale start it is the normal popup.
+  code goes out by email.
+
+  Public sale (20-30 November): the code itself is the message, shown in full
+  with a copy button, and the sign-up drops to a secondary "future offers"
+  line. It has its own seen-key, so a visitor who closed the welcome or the
+  early access popup still gets it once. On the end date it is the normal
+  15% welcome popup again.
 {%- endcomment -%}
 {%- capture gf_state -%}{%- render 'gf-state' -%}{%- endcapture -%}
+{%- assign gf_state = gf_state | strip -%}
 {%- assign gf_teaser = false -%}
-{%- if gf_state contains 'teaser' -%}{%- assign gf_teaser = true -%}{%- endif -%}
-<div class="promo-popup" data-promo-popup hidden>
+{%- assign gf_sale = false -%}
+{%- if gf_state == 'teaser' -%}{%- assign gf_teaser = true -%}{%- endif -%}
+{%- if gf_state == 'sale' and settings.gf_code != blank -%}{%- assign gf_sale = true -%}{%- endif -%}
+{%- assign gf_page = pages['green-friday'] -%}
+<div class="promo-popup" data-promo-popup{% if gf_sale %} data-promo-key="inature_promo_seen_gf_sale"{% endif %} hidden>
   <div class="promo-popup__backdrop" data-promo-close></div>
-  <div class="promo-popup__panel" role="dialog" aria-modal="true" aria-label="Welcome offer">
+  <div class="promo-popup__panel" role="dialog" aria-modal="true" aria-label="{% if gf_sale %}Green Friday offer{% else %}Welcome offer{% endif %}">
     <button class="promo-popup__close" data-promo-close type="button" aria-label="Close">{% render 'icon', name: 'close' %}</button>
 
     <span class="promo-popup__brand">
@@ -25,6 +35,8 @@
           <h3 class="promo-popup__title">You're on the list! 🌿</h3>
           {%- if gf_teaser -%}
           <p class="promo-popup__sub">{{ settings.gf_popup_success | escape }}</p>
+          {%- elsif gf_sale -%}
+          <p class="promo-popup__sub">Thanks for joining INature. Don't forget, <strong>{{ settings.gf_code | escape }}</strong> gives 35% off until 30 November.</p>
           {%- else -%}
           <p class="promo-popup__sub">Thanks for joining INature. Your <strong>15% off</strong> code is on its way to your inbox.</p>
           {%- endif -%}
@@ -37,6 +49,20 @@
         <h3 class="promo-popup__title">{{ settings.gf_popup_title | escape }}</h3>
         <p class="promo-popup__sub">{{ settings.gf_popup_text | escape }}</p>
         <input type="hidden" name="contact[tags]" value="newsletter,popup,green-friday">
+        {%- elsif gf_sale -%}
+        <h3 class="promo-popup__title">{{ settings.gf_sale_popup_title | escape }}</h3>
+        <div class="promo-popup__code">
+          <span class="promo-popup__code-label">Use code</span>
+          <strong class="promo-popup__code-value">{{ settings.gf_code | escape }}</strong>
+          <button type="button" class="promo-popup__copy" data-copy-code="{{ settings.gf_code | escape }}">Copy</button>
+        </div>
+        <p class="promo-popup__note">{{ settings.gf_sale_popup_note | escape }}</p>
+        <a class="btn btn-primary btn-block" href="{{ routes.all_products_collection_url }}">Shop Green Friday</a>
+        {%- if gf_page.url != blank -%}
+        <a class="promo-popup__more" href="{{ gf_page.url }}">How Green Friday works</a>
+        {%- endif -%}
+        <p class="promo-popup__list">{{ settings.gf_sale_popup_list | escape }}</p>
+        <input type="hidden" name="contact[tags]" value="newsletter,popup,green-friday-sale">
         {%- else -%}
         <h3 class="promo-popup__title">Get <strong>15% off</strong> your first order</h3>
         <p class="promo-popup__sub">Join our list and we'll send your discount code, plus early access to new drops and offers.</p>
@@ -44,9 +70,9 @@
         {%- endif -%}
         <input type="hidden" name="contact[accepts_marketing]" value="true">
         <label class="visually-hidden" for="promo-popup-email">Email address</label>
-        <div class="promo-popup__row">
+        <div class="promo-popup__row{% if gf_sale %} promo-popup__row--inline{% endif %}">
           <input id="promo-popup-email" type="email" name="contact[email]" placeholder="Your email address" required>
-          <button type="submit" class="btn btn-primary">{% if gf_teaser %}{{ settings.gf_popup_button | escape }}{% else %}Get my code{% endif %}</button>
+          <button type="submit" class="btn {% if gf_sale %}btn-outline{% else %}btn-primary{% endif %}">{% if gf_teaser %}{{ settings.gf_popup_button | escape }}{% elsif gf_sale %}Join{% else %}Get my code{% endif %}</button>
         </div>
         <div class="promo-popup__trust">
           <img class="promo-popup__ebay" src="{{ 'ebay-logo.svg' | asset_url }}" width="62" height="25" alt="eBay" loading="lazy">

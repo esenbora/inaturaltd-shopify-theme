@@ -203,7 +203,10 @@ body {
 .announce-gf:hover, .announce-gf:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
 .announce-gf__short { display: none; }
 @media (max-width: 720px) {
-  .announce-gf { font-size: 12px; }
+  /* 28px tall like the marquee. The phone line is scaled to the screen so the
+     whole sentence fits down to 360px instead of ending in an ellipsis:
+     at 12px it measures about 393px wide. */
+  .announce-gf { font-size: min(12px, calc((100vw - 16px) / 33.5)); letter-spacing: 0; padding: 6px 8px; }
   .announce-gf__full { display: none; }
   .announce-gf__short { display: inline; }
 }
@@ -1265,6 +1268,9 @@ a.quality-mark:hover .quality-mark__logo { border-color: var(--primary); }
   transition: transform .32s cubic-bezier(.2, .8, .2, 1), opacity .32s ease;
 }
 .promo-popup.is-open .promo-popup__panel { transform: none; opacity: 1; }
+/* A short phone (iPhone SE, or Safari with its bars showing) is shorter than
+   the panel; without this the close button sits off screen. */
+.promo-popup__panel { max-height: calc(100vh - 2 * var(--space-4)); max-height: calc(100dvh - 2 * var(--space-4)); overflow-y: auto; overscroll-behavior: contain; }
 .promo-popup__close { position: absolute; top: 12px; right: 12px; background: none; border: 0; cursor: pointer; color: var(--muted); padding: 6px; line-height: 0; }
 .promo-popup__close svg { width: 20px; height: 20px; }
 .promo-popup__brand { display: inline-flex; align-items: center; font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: var(--space-3); }
@@ -1285,6 +1291,15 @@ a.quality-mark:hover .quality-mark__logo { border-color: var(--primary); }
 .promo-popup__trust { display: flex; align-items: center; justify-content: center; gap: var(--space-2); margin-top: var(--space-5); padding-top: var(--space-4); border-top: 1px solid var(--border); font-size: var(--fs-xs); color: var(--muted); }
 .promo-popup__trust span { text-wrap: balance; }
 .promo-popup__ebay { height: 22px; width: auto; }
+/* Green Friday sale: the code is the message, the sign-up is secondary */
+.promo-popup__code { display: flex; align-items: center; gap: var(--space-3); padding: 10px 10px 10px 18px; border: 1.5px dashed var(--primary-dark); border-radius: var(--radius-pill); background: var(--surface); margin-bottom: var(--space-2); }
+.promo-popup__code-label { font-size: var(--fs-xs); color: var(--muted); white-space: nowrap; }
+.promo-popup__code-value { flex: 1; font-size: 1.15rem; letter-spacing: .06em; color: var(--ink); text-align: left; }
+.promo-popup__copy { border: 0; border-radius: var(--radius-pill); background: var(--ink); color: var(--bg); font: inherit; font-size: var(--fs-xs); font-weight: 600; padding: 8px 14px; cursor: pointer; }
+.promo-popup__copy:hover { background: var(--primary-dark); }
+.promo-popup__note { font-size: var(--fs-xs); color: var(--muted); margin-bottom: var(--space-4); }
+.promo-popup__more { display: inline-block; margin-top: var(--space-2); font-size: var(--fs-sm); text-decoration: underline; text-underline-offset: 3px; color: var(--primary-dark); }
+.promo-popup__list { margin: var(--space-5) 0 var(--space-2); padding-top: var(--space-4); border-top: 1px solid var(--border); font-size: var(--fs-sm); font-weight: 500; }
 
 /* ---------- Header search overlay ---------- */
 .site-search { position: fixed; inset: 0; z-index: 200; }
@@ -1338,9 +1353,16 @@ a.cart-line__title:hover { color: var(--primary-dark); }
 .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
 @media (max-width: 480px) {
   .promo-popup__row { flex-direction: column; }
+  .promo-popup__row--inline { flex-direction: row; }
+  .promo-popup__row--inline .btn { padding-inline: 20px; }
   .promo-popup__panel { padding: var(--space-6) var(--space-4) var(--space-5); }
   .promo-popup__title { font-size: var(--fs-xl); }
   .promo-popup__trust { flex-direction: column; gap: var(--space-1); }
+  .promo-popup__code { gap: var(--space-2); padding-left: 14px; }
+  .promo-popup__code-value { font-size: 1rem; }
+}
+@media (max-width: 374px) {
+  .promo-popup__code-label { display: none; }
 }
 
 /* Complete the set — bundle-aware PDP cross-sell */
