@@ -206,7 +206,7 @@ body {
   /* 28px tall like the marquee. The phone line is scaled to the screen so the
      whole sentence fits down to 360px instead of ending in an ellipsis:
      at 12px it measures about 393px wide. */
-  .announce-gf { font-size: min(12px, calc((100vw - 16px) / 33.5)); letter-spacing: 0; padding: 6px 8px; }
+  .announce-gf { font-size: min(12px, calc((100vw - 16px) / 28.5)); letter-spacing: 0; padding: 6px 8px; }
   .announce-gf__full { display: none; }
   .announce-gf__short { display: inline; }
 }

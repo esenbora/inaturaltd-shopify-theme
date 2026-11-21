@@ -300,7 +300,7 @@
         "type": "text",
         "id": "gf_sale_text_mobile",
         "label": "Strip text (phone)",
-        "default": "🌿 Green Friday: 35% OFF with code GREENFRIDAY35 | 1 Tree/Order",
+        "default": "🌿 Green Friday: 35% OFF with code GREENFRIDAY35",
         "info": "Must fit one line on a phone. Tapping the strip opens the Green Friday page."
       },
       {
