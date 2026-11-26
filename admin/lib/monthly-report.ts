@@ -4,7 +4,7 @@ import type { BlogHealth } from "./blog-health";
 import type { SeoMeasurement } from "./seo-measure";
 import {
   addDays,
-  relativeChange,
+  countMove,
   WINDOW_DAYS,
   LOW_VOLUME_IMPRESSIONS,
   type ChangeMeasurement,
@@ -175,12 +175,17 @@ function trDay(iso: string): string {
 
 /** "%12 artış", "%8 düşüş", "değişmedi", or "sıfırdan" with no base. */
 function trChange(before: number, after: number): string {
-  if (before === 0 && after === 0) return "iki dönemde de yok";
-  const change = relativeChange(before, after);
-  if (change === null) return "sıfırdan";
-  const rounded = Math.round(change * 100);
-  if (rounded === 0) return "değişmedi";
-  return `%${Math.abs(rounded)} ${rounded > 0 ? "artış" : "düşüş"}`;
+  const move = countMove(before, after);
+  switch (move.kind) {
+    case "none":
+      return "iki dönemde de yok";
+    case "level":
+      return "değişmedi";
+    case "difference":
+      return `${move.by > 0 ? "+" : "-"}${Math.abs(move.by)}`;
+    case "percent":
+      return `%${Math.abs(move.by)} ${move.by > 0 ? "artış" : "düşüş"}`;
+  }
 }
 
 function trPosition(before: number | null, after: number | null): string {
@@ -205,12 +210,18 @@ function seoResultLines(entry: ChangeMeasurement): string[] {
       `tıklama ${int(page.before.clicks)} → ${int(after.clicks)} (${trChange(page.before.clicks, after.clicks)}), ` +
       `tıklama oranı %${(page.before.ctr * 100).toFixed(1)} → %${(after.ctr * 100).toFixed(1)}, ` +
       `ortalama sıra ${trPosition(page.before.position, after.position)}.`,
-    `  Değiştirilmeyen ürün sayfaları aynı dönemde: gösterim ${trChange(control.before.impressions, controlAfter.impressions)}, ` +
-      `tıklama ${trChange(control.before.clicks, controlAfter.clicks)}.`,
+    `  Değiştirilmeyen ürün sayfaları aynı dönemde: gösterim ${int(control.before.impressions)} → ${int(controlAfter.impressions)} (${trChange(control.before.impressions, controlAfter.impressions)}), ` +
+      `tıklama ${int(control.before.clicks)} → ${int(controlAfter.clicks)} (${trChange(control.before.clicks, controlAfter.clicks)}).`,
   ];
+  const overlap = long ? entry.overlaps.long : entry.overlaps.short;
+  if (overlap) {
+    lines.push(
+      `  Önceki ${days} gün ${trDay(overlap)} tarihindeki değişikliği de kapsıyor, yani "önce" kısmen o metin.`,
+    );
+  }
   if (figures.lowVolume) {
     lines.push(
-      `  Dönemlerden birinde gösterim ${LOW_VOLUME_IMPRESSIONS}'ün altında; bu fark tesadüf olabilir, sonuç değil yön olarak okunmalı.`,
+      `  Bu sayfada ya da değiştirilmeyen sayfalarda dönemlerden birinde gösterim ${LOW_VOLUME_IMPRESSIONS}'ün altında; bu fark tesadüf olabilir, sonuç değil yön olarak okunmalı.`,
     );
   }
   return lines;
@@ -279,7 +290,7 @@ function seoSection(seo: SeoReportInput): string[] {
 
   lines.push("", "**Sonraki adım**", "");
   if (seo.state === null) {
-    lines.push("- Ürünlerin canlı SEO metni Shopify'dan okunamadı, sonraki değişiklik tarihleri panelde.");
+    lines.push("- Ürünlerin canlı SEO metni Shopify'dan okunamadı. Kayıt dışı değişiklik kontrolü ve sonraki değişiklik tarihleri bu raporda yok, Shopify okunduğunda panelde görünür.");
     return lines;
   }
   const byDate = new Map<string, string[]>();

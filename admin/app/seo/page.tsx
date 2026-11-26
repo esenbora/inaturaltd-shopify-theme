@@ -37,8 +37,9 @@ export const metadata = {
   title: "SEO changes · INature Admin",
 };
 
-// The log is read per request so a deploy with a new entry shows at once; the
-// Search Console figures behind it are cached in `lib/metrics.ts`.
+// The log is bundled at build time, so a new entry needs a deploy and shows
+// as soon as that deploy is live. Rendering per request keeps the live-store
+// check current; the Search Console figures are cached in `lib/metrics.ts`.
 export const dynamic = "force-dynamic";
 
 function settled<T>(result: PromiseSettledResult<T>): T | null {
@@ -110,6 +111,12 @@ function Summary({
         <p className="mt-5 text-sm text-terracotta-dark">
           Search Console is not connected to this panel, so no change can be
           measured. The record below is complete without it.
+        </p>
+      )}
+      {connected && measurement.dataThrough === null && (
+        <p className="mt-5 text-sm text-terracotta-dark">
+          Search Console returned no dates for the last two weeks, so no window
+          can be placed yet and every change shows as just started.
         </p>
       )}
       {measurement?.capped && (

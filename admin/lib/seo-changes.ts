@@ -38,6 +38,9 @@ export const LONG_WINDOW_DAYS = 84;
  */
 export const LOW_VOLUME_IMPRESSIONS = 100;
 
+/** Below this, a count's move is given as a difference, not a percentage. */
+export const SMALL_COUNT = 10;
+
 const MS_PER_DAY = 86_400_000;
 
 /* ------------------------------------------------------------------ *
@@ -371,21 +374,40 @@ export function compare(
 ): Comparison {
   const pageBefore = toMetrics(before.get(handle));
   const pageAfter = after ? toMetrics(after.get(handle)) : null;
+  const controlBefore = toMetrics(controlTotals(before, logged));
+  const controlAfter = after ? toMetrics(controlTotals(after, logged)) : null;
+  const windows = [pageBefore, pageAfter, controlBefore, controlAfter];
   return {
     page: { before: pageBefore, after: pageAfter },
-    control: {
-      before: toMetrics(controlTotals(before, logged)),
-      after: after ? toMetrics(controlTotals(after, logged)) : null,
-    },
-    lowVolume:
-      pageBefore.impressions < LOW_VOLUME_IMPRESSIONS ||
-      (pageAfter !== null && pageAfter.impressions < LOW_VOLUME_IMPRESSIONS),
+    control: { before: controlBefore, after: controlAfter },
+    lowVolume: windows.some(
+      (w) => w !== null && w.impressions < LOW_VOLUME_IMPRESSIONS,
+    ),
   };
 }
 
-/** Relative change, or null when there is nothing to divide by. */
-export function relativeChange(before: number, after: number): number | null {
-  return before === 0 ? null : (after - before) / before;
+/**
+ * How a count moved between two windows.
+ *
+ * Below `SMALL_COUNT` on either side the move is a plain difference, never a
+ * percentage: two clicks becoming three is "+1", where "+50%" would read as a
+ * result. The unchanged pages get about two clicks a month between them, so
+ * this is the common case, not an edge.
+ */
+export type CountMove =
+  | { kind: "none" }
+  | { kind: "level" }
+  | { kind: "difference"; by: number }
+  | { kind: "percent"; by: number };
+
+export function countMove(before: number, after: number): CountMove {
+  if (before === 0 && after === 0) return { kind: "none" };
+  if (Math.min(before, after) < SMALL_COUNT) {
+    const by = after - before;
+    return by === 0 ? { kind: "level" } : { kind: "difference", by };
+  }
+  const by = Math.round(((after - before) / before) * 100);
+  return by === 0 ? { kind: "level" } : { kind: "percent", by };
 }
 
 /* ------------------------------------------------------------------ *

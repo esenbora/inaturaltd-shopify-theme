@@ -1,6 +1,7 @@
 import { count, percent } from "@/components/dashboard/shell";
 import {
   LOW_VOLUME_IMPRESSIONS,
+  SMALL_COUNT,
   type Comparison,
   type PageMetrics,
 } from "@/lib/seo-changes";
@@ -53,6 +54,14 @@ function rows(
       control: positionChange(control.before.position, control.after.position),
     },
   ];
+}
+
+function hasSmallCount({ page, control }: Comparison): boolean {
+  return [page.before, page.after, control.before, control.after].some(
+    (w) =>
+      w !== null &&
+      [w.impressions, w.clicks].some((n) => n > 0 && n < SMALL_COUNT),
+  );
 }
 
 /**
@@ -123,9 +132,16 @@ export function ComparisonTable({
       </div>
       {figures.lowVolume && (
         <p className="mt-2 text-xs text-terracotta-dark">
-          Fewer than {LOW_VOLUME_IMPRESSIONS} impressions in one of the windows.
+          Fewer than {LOW_VOLUME_IMPRESSIONS} impressions in one of the windows, on
+          this page or across the unchanged pages.
           A movement this size can be chance; read it as a direction, not a
           result.
+        </p>
+      )}
+      {hasSmallCount(figures) && (
+        <p className="mt-2 text-xs text-muted">
+          A count under {SMALL_COUNT} is compared as a difference, not a
+          percentage: 2 clicks becoming 3 is +1, not +50%.
         </p>
       )}
     </div>

@@ -1,4 +1,4 @@
-import { relativeChange } from "@/lib/seo-changes";
+import { countMove } from "@/lib/seo-changes";
 
 /** "2026-11-26" -> "26 Nov 2026". */
 export function seoDate(iso: string): string {
@@ -13,14 +13,26 @@ export function seoDate(iso: string): string {
       });
 }
 
-/** Change in a count, as a signed percentage, or a word when there is none. */
+function signed(value: number): string {
+  return `${value > 0 ? "+" : "−"}${Math.abs(value)}`;
+}
+
+/**
+ * Change in a count: a signed percentage, a signed difference when the counts
+ * are too small for a percentage to mean anything, or a word.
+ */
 export function countChange(before: number, after: number): string {
-  if (before === 0 && after === 0) return "none either side";
-  const change = relativeChange(before, after);
-  if (change === null) return "from zero";
-  const rounded = Math.round(change * 100);
-  if (rounded === 0) return "level";
-  return `${rounded > 0 ? "+" : "−"}${Math.abs(rounded)}%`;
+  const move = countMove(before, after);
+  switch (move.kind) {
+    case "none":
+      return "none either side";
+    case "level":
+      return "level";
+    case "difference":
+      return signed(move.by);
+    case "percent":
+      return `${signed(move.by)}%`;
+  }
 }
 
 /** Change in click rate, in percentage points, which is what moved. */

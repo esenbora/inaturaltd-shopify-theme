@@ -105,6 +105,13 @@ function Measurement({ entry }: { entry: ChangeMeasurement }) {
       {stage.kind === "twelve-week" && entry.long.figures && (
         <ComparisonTable figures={entry.long.figures} days={LONG_WINDOW_DAYS} />
       )}
+      {stage.kind === "twelve-week" && entry.overlaps.long && (
+        <p className="text-xs text-muted">
+          The {LONG_WINDOW_DAYS} days before include the change of{" "}
+          {seoDate(entry.overlaps.long)}, so the 12-week &ldquo;before&rdquo;
+          is partly that version.
+        </p>
+      )}
     </div>
   );
 }

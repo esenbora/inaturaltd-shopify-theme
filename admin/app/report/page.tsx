@@ -220,7 +220,13 @@ async function ReportBody({ range }: { range: number }) {
                 label: "Not connected",
                 note: "Search Console is not connected, so no change is measured. The report states that.",
               }
-            : seoDrift > 0
+            : seo.state === null
+              ? {
+                  status: "partial" as const,
+                  label: "Store check missing",
+                  note: "Shopify could not be read, so live SEO text was not checked against the log and the next-change dates are not listed. The report says so under Sonraki adım.",
+                }
+              : seoDrift > 0
               ? {
                   status: "partial" as const,
                   label: "Check warnings",
