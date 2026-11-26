@@ -976,4 +976,42 @@
     document.addEventListener('mouseout', (e) => { if (e.clientY <= 0) { clearTimeout(timer); trigger(); } });
   })();
 
+  // Green Friday countdown (strip + popup). Each [data-gf-countdown] carries the
+  // end as ISO with offset in data-end. While time remains it gets .is-counting,
+  // which is what makes the timed parts visible, so no JS or a past end leaves
+  // the plain strip. It runs on the visitor's clock; the code itself expires on
+  // Shopify's, whatever this shows.
+  (function () {
+    const boxes = document.querySelectorAll('[data-gf-countdown]');
+    if (!boxes.length) return;
+    const end = Date.parse(boxes[0].dataset.end);
+    if (isNaN(end)) return;
+    const pad = (n) => (n < 10 ? '0' : '') + n;
+    let iv = null;
+    const tick = () => {
+      const left = Math.max(0, Math.floor((end - Date.now()) / 1000));
+      const v = { d: Math.floor(left / 86400), h: Math.floor((left % 86400) / 3600), m: Math.floor((left % 3600) / 60), s: left % 60 };
+      boxes.forEach((box) => {
+        box.classList.toggle('is-counting', left > 0);
+        if (!left) return;
+        box.querySelectorAll('[data-gf]').forEach((el) => {
+          const k = el.dataset.gf;
+          let t;
+          if (k === 'long') t = (v.d ? v.d + 'd ' : '') + pad(v.h) + 'h ' + pad(v.m) + 'm ' + pad(v.s) + 's';
+          // the phone strip has room for three units: minutes until the last day, then seconds
+          else if (k === 'compact') t = v.d ? v.d + 'd ' + pad(v.h) + 'h ' + pad(v.m) + 'm' : v.h + 'h ' + pad(v.m) + 'm ' + pad(v.s) + 's';
+          else t = k === 'd' ? String(v.d) : pad(v[k]);
+          if (el.textContent !== t) el.textContent = t;
+        });
+        box.querySelectorAll('[data-gf-unit]').forEach((el) => {
+          const t = el.dataset.gfUnit + (v[el.dataset.gfOf] === 1 ? '' : 's');
+          if (el.textContent !== t) el.textContent = t;
+        });
+      });
+      if (!left && iv) { clearInterval(iv); iv = null; }
+    };
+    tick();
+    if (end > Date.now()) iv = setInterval(tick, 1000);
+  })();
+
 })();

@@ -304,6 +304,20 @@
         "info": "Must fit one line on a phone. Tapping the strip opens the Green Friday page."
       },
       {
+        "type": "checkbox",
+        "id": "gf_countdown",
+        "label": "Show countdown to the end of the sale",
+        "default": true,
+        "info": "Counts down to midnight at the start of the 'Strip removed on' date, shop time, in the strip and the popup. Disappears by itself at zero."
+      },
+      {
+        "type": "text",
+        "id": "gf_sale_text_mobile_countdown",
+        "label": "Strip text with countdown (phone)",
+        "default": "🌿 35% OFF · GREENFRIDAY35",
+        "info": "Used on phones while the countdown runs, followed by ' · Ends in 4d 03h 12m'. Keep it this short: the whole line has to fit a 320px screen."
+      },
+      {
         "type": "text",
         "id": "gf_code",
         "label": "Discount code shown in the popup",

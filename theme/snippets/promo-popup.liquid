@@ -51,6 +51,23 @@
         <input type="hidden" name="contact[tags]" value="newsletter,popup,green-friday">
         {%- elsif gf_sale -%}
         <h3 class="promo-popup__title">{{ settings.gf_sale_popup_title | escape }}</h3>
+        {%- if settings.gf_countdown -%}
+        {%- comment -%}
+          Same end as the strip countdown (see announcement-bar.liquid). Hidden
+          from screen readers: the small print below already says until when,
+          and a number changing every second is noise read aloud.
+        {%- endcomment -%}
+        {%- assign gf_tz = 'now' | date: '%z' -%}
+        <div class="promo-popup__countdown" data-gf-countdown data-end="{{ settings.gf_end | strip }}T00:00:00{{ gf_tz | slice: 0, 3 }}:{{ gf_tz | slice: 3, 2 }}" aria-hidden="true">
+          <span class="promo-popup__countdown-label">Ends in</span>
+          <span class="promo-popup__countdown-cells">
+            <span class="promo-popup__countdown-cell"><b data-gf="d">0</b><small data-gf-unit="day" data-gf-of="d">days</small></span>
+            <span class="promo-popup__countdown-cell"><b data-gf="h">00</b><small data-gf-unit="hr" data-gf-of="h">hrs</small></span>
+            <span class="promo-popup__countdown-cell"><b data-gf="m">00</b><small data-gf-unit="min" data-gf-of="m">mins</small></span>
+            <span class="promo-popup__countdown-cell"><b data-gf="s">00</b><small data-gf-unit="sec" data-gf-of="s">secs</small></span>
+          </span>
+        </div>
+        {%- endif -%}
         <div class="promo-popup__code">
           <span class="promo-popup__code-label">Use code</span>
           <strong class="promo-popup__code-value">{{ settings.gf_code | escape }}</strong>

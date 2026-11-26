@@ -23,13 +23,14 @@
     "font_body": "inter_n4",
     "page_width": 1320,
     "section_spacing": 96,
-    "free_shipping_threshold": 25,
-    "shipping_flat_rate": 3,
-    "gift_threshold": 30,
     "social_instagram": "https://instagram.com/inatureuk",
     "social_tiktok": "",
     "social_facebook": "",
     "social_youtube": "",
+    "free_shipping_threshold": 25,
+    "shipping_flat_rate": 3,
+    "gift_threshold": 30,
+    "content_for_index": [],
     "blocks": {
       "14060646107696862457": {
         "type": "shopify://apps/judge-me-reviews/blocks/judgeme_core/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
@@ -42,11 +43,6 @@
         "settings": {
           "widget_type": "review-widget"
         }
-      },
-      "2200952712151285029": {
-        "type": "shopify://apps/microsoft-clarity/blocks/brandAgents_js/31c3d126-8116-4b4a-8ba1-baeda7c4aeea",
-        "disabled": true,
-        "settings": {}
       },
       "2567389343055140935": {
         "type": "shopify://apps/microsoft-clarity/blocks/clarity_js/31c3d126-8116-4b4a-8ba1-baeda7c4aeea",
@@ -67,6 +63,11 @@
       "855628211100114053": {
         "type": "shopify://apps/klaviyo-email-marketing-sms/blocks/klaviyo-onsite-embed/2632fe16-c075-4321-a88b-50b567f42507",
         "disabled": true,
+        "settings": {}
+      },
+      "2200952712151285029": {
+        "type": "shopify://apps/microsoft-clarity/blocks/brandAgents_js/31c3d126-8116-4b4a-8ba1-baeda7c4aeea",
+        "disabled": false,
         "settings": {}
       }
     }

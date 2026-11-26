@@ -56,8 +56,29 @@
     {%- assign gf_full = settings.gf_sale_text -%}
     {%- assign gf_short = settings.gf_sale_text_mobile | default: settings.gf_sale_text -%}
   {%- endif -%}
-<section class="announce announce--gf" aria-label="Green Friday" style="--gf-bg: {{ settings.gf_bg | default: '#5A7C5D' }}; --gf-fg: {{ settings.gf_fg | default: '#F8F4ED' }};">
+  {%- comment -%}
+    COUNTDOWN (sale only). The end is midnight at the start of gf_end in the
+    shop's time zone, the moment GREENFRIDAY35 stops working. theme.js adds
+    .is-counting while time remains and only then are the .gf-on parts shown,
+    so without JS, or once it hits zero, the strip is exactly the line above.
+    The phone line swaps to a shorter text while counting: the normal phone
+    sentence plus a timer does not fit 390px, this one fits 320px.
+    The offset is today's, which is right for a 1 December end (no clock
+    change between now and then).
+  {%- endcomment -%}
+  {%- assign gf_count = false -%}
+  {%- if gf_state == 'sale' and settings.gf_countdown -%}
+    {%- assign gf_count = true -%}
+    {%- assign gf_tz = 'now' | date: '%z' -%}
+    {%- capture gf_end_iso -%}{{ settings.gf_end | strip }}T00:00:00{{ gf_tz | slice: 0, 3 }}:{{ gf_tz | slice: 3, 2 }}{%- endcapture -%}
+    {%- assign gf_short_count = settings.gf_sale_text_mobile_countdown | default: gf_short -%}
+  {%- endif -%}
+<section class="announce announce--gf" aria-label="Green Friday" style="--gf-bg: {{ settings.gf_bg | default: '#5A7C5D' }}; --gf-fg: {{ settings.gf_fg | default: '#F8F4ED' }};"{% if gf_count %} data-gf-countdown data-end="{{ gf_end_iso }}"{% endif %}>
+  {%- if gf_count -%}
+  {%- capture gf_inner -%}<span class="announce-gf__full">{{ gf_full | escape }}<span class="gf-on" aria-hidden="true"> · Ends in <span class="gf-left" data-gf="long"></span></span></span><span class="announce-gf__short"><span class="gf-off">{{ gf_short | escape }}</span><span class="gf-on">{{ gf_short_count | escape }}<span aria-hidden="true"> · Ends in <span class="gf-left" data-gf="compact"></span></span></span></span>{%- endcapture -%}
+  {%- else -%}
   {%- capture gf_inner -%}<span class="announce-gf__full">{{ gf_full | escape }}</span><span class="announce-gf__short">{{ gf_short | escape }}</span>{%- endcapture -%}
+  {%- endif -%}
   {%- if gf_state == 'teaser' -%}
   <button type="button" class="announce-gf" data-promo-open aria-haspopup="dialog">{{ gf_inner }}</button>
   {%- else -%}

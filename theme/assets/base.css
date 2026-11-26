@@ -210,6 +210,11 @@ body {
   .announce-gf__full { display: none; }
   .announce-gf__short { display: inline; }
 }
+/* Green Friday countdown: theme.js sets .is-counting while time remains */
+.gf-on { display: none; }
+.is-counting .gf-on { display: inline; }
+.is-counting .gf-off { display: none; }
+.gf-left { font-variant-numeric: tabular-nums; }
 
 /* ---------- Header ---------- */
 .site-header {
@@ -1300,6 +1305,13 @@ a.quality-mark:hover .quality-mark__logo { border-color: var(--primary); }
 .promo-popup__note { font-size: var(--fs-xs); color: var(--muted); margin-bottom: var(--space-4); }
 .promo-popup__more { display: inline-block; margin-top: var(--space-2); font-size: var(--fs-sm); text-decoration: underline; text-underline-offset: 3px; color: var(--primary-dark); }
 .promo-popup__list { margin: var(--space-5) 0 var(--space-2); padding-top: var(--space-4); border-top: 1px solid var(--border); font-size: var(--fs-sm); font-weight: 500; }
+.promo-popup__countdown { display: none; margin: var(--space-3) 0 var(--space-4); }
+.promo-popup__countdown.is-counting { display: block; }
+.promo-popup__countdown-label { display: block; font-size: var(--fs-xs); letter-spacing: .08em; text-transform: uppercase; color: var(--primary-dark); margin-bottom: var(--space-2); }
+.promo-popup__countdown-cells { display: flex; justify-content: center; gap: var(--space-2); }
+.promo-popup__countdown-cell { display: flex; flex-direction: column; align-items: center; min-width: 60px; padding: 8px 6px 6px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); }
+.promo-popup__countdown-cell b { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 600; line-height: 1; color: var(--ink); font-variant-numeric: tabular-nums; }
+.promo-popup__countdown-cell small { margin-top: 4px; font-size: 11px; color: var(--muted); }
 
 /* ---------- Header search overlay ---------- */
 .site-search { position: fixed; inset: 0; z-index: 200; }
@@ -1360,6 +1372,9 @@ a.cart-line__title:hover { color: var(--primary-dark); }
   .promo-popup__trust { flex-direction: column; gap: var(--space-1); }
   .promo-popup__code { gap: var(--space-2); padding-left: 14px; }
   .promo-popup__code-value { font-size: 1rem; }
+  .promo-popup__countdown { margin: var(--space-2) 0 var(--space-3); }
+  .promo-popup__countdown-cell { min-width: 52px; padding: 6px 4px 5px; }
+  .promo-popup__countdown-cell b { font-size: 1.25rem; }
 }
 @media (max-width: 374px) {
   .promo-popup__code-label { display: none; }
