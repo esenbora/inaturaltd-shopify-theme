@@ -85,7 +85,15 @@ export async function IndexCard() {
             // The path alone: the origin repeats on every row and pushes the
             // part that differs off the edge of the card.
             left: row.url.replace(/^https?:\/\/[^/]+/, "") || "/",
-            right: row.coverageState || row.verdict || "unknown",
+            // No coverage state with VERDICT_UNSPECIFIED means the inspection
+            // itself did not complete (quota, timeout, an API error), not that
+            // Google rejected the page. The client asked for these to read as
+            // "Kontrol edilemedi" instead of the raw API code.
+            right:
+              row.coverageState ||
+              (row.verdict === "VERDICT_UNSPECIFIED"
+                ? "Kontrol edilemedi"
+                : row.verdict),
           }))}
           empty="Every URL in the sample is indexed."
         />
