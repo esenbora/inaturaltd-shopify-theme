@@ -159,7 +159,7 @@ const MS_PER_DAY = 86_400_000;
 // Raw response shapes
 // ---------------------------------------------------------------------------
 
-interface RawGscRow {
+export interface RawGscRow {
   readonly keys?: unknown;
   readonly clicks?: unknown;
   readonly impressions?: unknown;
@@ -182,14 +182,14 @@ function toGscMetrics(row: RawGscRow): GscMetrics {
 }
 
 /** Read the first dimension key from a raw GSC row, or "" when absent. */
-function firstKey(row: RawGscRow): string {
+export function firstKey(row: RawGscRow): string {
   if (Array.isArray(row.keys) && typeof row.keys[0] === "string") {
     return row.keys[0];
   }
   return "";
 }
 
-function gscRows(data: unknown): RawGscRow[] {
+export function gscRows(data: unknown): RawGscRow[] {
   const rows = (data as RawGscResponse | null)?.rows;
   return Array.isArray(rows) ? (rows as RawGscRow[]) : [];
 }

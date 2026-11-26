@@ -19,6 +19,12 @@ import {
   summarise,
   type ChecksSummary,
 } from "@/lib/store-checks";
+import { measureSeoChanges, type SeoMeasurement } from "@/lib/seo-measure";
+import {
+  checkAgainstStore,
+  readSeoLog,
+  type ProductLogState,
+} from "@/lib/seo-changes";
 import type { AuditProduct } from "@/lib/types";
 
 /**
@@ -53,6 +59,8 @@ export const TTL = {
   catalogue: 10 * MINUTE,
   articles: 10 * MINUTE,
   discounts: 30 * MINUTE,
+  // Search Console publishes once a day and the windows move by whole days.
+  seoMeasurement: 6 * 60 * MINUTE,
 } as const;
 
 /** Cache keys, in one place so an invalidation cannot misspell one. */
@@ -64,6 +72,7 @@ export const KEY = {
   auditProducts: "audit-products",
   articles: "articles",
   discounts: "discounts",
+  seoMeasurement: "seo-measurement",
 } as const;
 
 /**
@@ -256,4 +265,30 @@ export async function checksMetrics(): Promise<{
     stale: products.stale || discounts.stale,
     summary,
   };
+}
+
+/**
+ * The SEO change log measured against Search Console.
+ *
+ * Held for six hours: the windows advance one day at a time and each read
+ * spends several Search Console requests from the property's daily quota.
+ */
+export function seoMeasurementMetrics(): Promise<CacheRead<SeoMeasurement>> {
+  return cached(KEY.seoMeasurement, TTL.seoMeasurement, () =>
+    measureSeoChanges(),
+  );
+}
+
+/**
+ * Each logged product's live SEO text against the log.
+ *
+ * Read from the shared product listing, so a snippet edited in Shopify shows
+ * up within that listing's ten minutes rather than the measurement's six
+ * hours.
+ */
+export async function seoLogStateMetrics(): Promise<
+  CacheRead<ProductLogState[]>
+> {
+  const read = await auditProducts();
+  return { ...read, value: checkAgainstStore(readSeoLog(), read.value) };
 }

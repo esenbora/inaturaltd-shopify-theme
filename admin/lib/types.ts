@@ -154,6 +154,8 @@ export interface AuditProduct {
   title: string;
   handle: string;
   status: string;
+  /** The SEO title (`seo.title`), "" when Shopify falls back to the product title. */
+  metaTitle: string;
   metaDescription: string;
   variants: AuditVariant[];
 }

@@ -1,0 +1,185 @@
+{
+  "changes": [
+    {
+      "id": "2026-11-22-incia-nipple-cream",
+      "handle": "incia-nipple-cream",
+      "product": "INCIA Nipple Cream 30ml",
+      "date": "2026-11-22",
+      "by": "Client",
+      "reason": "Client edit. Reviewed on 26 Nov: the title answers the \"breastfeeding\" searches and the description matches the ingredient list, so it was left as it is.",
+      "title": { "before": null, "after": "Natural Nipple Cream for Breastfeeding Mums" },
+      "description": {
+        "before": null,
+        "after": "100% natural, lanolin-free nipple cream that soothes and softens dry, sore skin while breastfeeding. Fragrance-free. Free UK delivery over £25."
+      },
+      "note": "The text before 22 Nov was not recorded."
+    },
+    {
+      "id": "2026-11-22-incia-natural-deodorant-for-dark-armpits",
+      "handle": "incia-natural-deodorant-for-dark-armpits",
+      "product": "INCIA Natural Whitening Roll-On Deodorant for Dark Underarms 50ml",
+      "date": "2026-11-22",
+      "by": "Client",
+      "reason": "Client edit. Reviewed on 26 Nov: the brand appears twice in the full page title, but it is 59 characters and not cut off, so it was not worth restarting the measurement.",
+      "title": {
+        "before": "Whitening Roll-On Deodorant for Dark Underarms",
+        "after": "Whitening Deodorant for Dark Underarms | INCIA UK"
+      },
+      "description": {
+        "before": "A 100% natural whitening roll-on deodorant that cares for the look of darker underarm skin while keeping you fresh all day. Vegan, dispatched from the UK.",
+        "after": "100% natural whitening roll-on deodorant for dark underarms, free from synthetic aluminium chlorohydrate. Fresh all day. Free UK delivery over £25."
+      },
+      "note": "Before text as recorded in the 19 Nov SEO plan and the 22 Nov report, not read from Shopify on the day."
+    },
+    {
+      "id": "2026-11-22-incia-natural-sunscreen-for-baby-and-child-spf50",
+      "handle": "incia-natural-sunscreen-for-baby-and-child-spf50",
+      "product": "INCIA Natural Sunscreen for Baby and Child SPF50 50ml",
+      "date": "2026-11-22",
+      "by": "Client",
+      "reason": "Client edit. \"natural baby sunscreen\" sat at position 8.7 with \"natural\" missing from the title. \"Broad-spectrum\" is waiting on INCIA's UVA test; if it is removed, that is a new change with its own date.",
+      "title": {
+        "before": "Baby & Kids Mineral Sunscreen SPF50",
+        "after": "Natural Baby Sunscreen SPF50, Mineral | INCIA"
+      },
+      "description": {
+        "before": null,
+        "after": "Natural mineral SPF50 sunscreen for babies and children, broad-spectrum and made with delicate skin in mind. 100% natural. Free UK delivery over £25."
+      },
+      "note": "Before title as recorded in the 19 Nov SEO plan, not read from Shopify on the day. The description before 22 Nov was not recorded."
+    },
+    {
+      "id": "2026-11-22-incia-natural-liquid-laundry-liquid-soap",
+      "handle": "incia-natural-liquid-laundry-liquid-soap",
+      "product": "INCIA Natural Baby Laundry Liquid Soap 750ml",
+      "date": "2026-11-22",
+      "by": "Client",
+      "reason": "Client edit. UK shoppers search \"baby washing liquid\" (146 impressions, position 8.2), not \"laundry liquid soap\" (8 impressions).",
+      "title": {
+        "before": "Natural Baby Laundry Liquid Soap",
+        "after": "Natural Baby Washing Liquid for Sensitive Skin"
+      },
+      "description": {
+        "before": null,
+        "after": "Plant-based baby washing liquid for little ones' clothes, kind to delicate and sensitive skin. 100% natural. Free UK delivery over £25."
+      },
+      "note": "Before title as recorded in the 19 Nov SEO plan, not read from Shopify on the day. The description before 22 Nov was not recorded."
+    },
+    {
+      "id": "2026-11-22-incia-preventive-and-natural-diaper-rash-gel",
+      "handle": "incia-preventive-and-natural-diaper-rash-gel",
+      "product": "INCIA Preventive and Natural Diaper Rash Gel 60ml",
+      "date": "2026-11-22",
+      "by": "Client",
+      "reason": "Client edit. The SEO title was empty, and UK shoppers search \"nappy\", not \"diaper\".",
+      "title": { "before": "", "after": "Natural Nappy Rash Gel with Calendula | INCIA" },
+      "description": {
+        "before": null,
+        "after": "Gentle 100% natural nappy rash gel with calendula, shea butter and centella. Hypoallergenic, alcohol-free and dermatologically tested. Free UK delivery over £25."
+      },
+      "note": "The empty title is as recorded in the 19 Nov SEO plan. The description before 22 Nov was not recorded."
+    },
+    {
+      "id": "2026-11-22-sun-summer-family-set",
+      "handle": "sun-summer-family-set",
+      "product": "Sun & Summer Family Set",
+      "date": "2026-11-22",
+      "by": "Client",
+      "reason": "Client edit.",
+      "title": { "before": null, "after": "Sun & Summer Family Set | Natural SPF 50+ & Insect Care" },
+      "description": {
+        "before": null,
+        "after": "Four summer essentials: mineral SPF 50+ sunscreen, SPF 50+ stick, DEET-free insect repellent and SOS Stick. 100% natural, suitable for the whole family. Save £6."
+      },
+      "note": "The text before 22 Nov was not recorded."
+    },
+    {
+      "id": "2026-11-26-incia-preventive-and-natural-diaper-rash-gel",
+      "handle": "incia-preventive-and-natural-diaper-rash-gel",
+      "product": "INCIA Preventive and Natural Diaper Rash Gel 60ml",
+      "date": "2026-11-26",
+      "by": "Stimilon",
+      "reason": "At 161 characters Google cut off the closing \"Free UK delivery over £25.\" \"shea butter\" became \"shea\"; nothing else changed.",
+      "description": {
+        "before": "Gentle 100% natural nappy rash gel with calendula, shea butter and centella. Hypoallergenic, alcohol-free and dermatologically tested. Free UK delivery over £25.",
+        "after": "Gentle 100% natural nappy rash gel with calendula, shea and centella. Hypoallergenic, alcohol-free and dermatologically tested. Free UK delivery over £25."
+      }
+    },
+    {
+      "id": "2026-11-26-sun-summer-family-set",
+      "handle": "sun-summer-family-set",
+      "product": "Sun & Summer Family Set",
+      "date": "2026-11-26",
+      "by": "Stimilon",
+      "reason": "With the store name added the title reached 65 characters and was cut off. The set contains an insect repellent, a biocidal product, and GB BPR Article 72(3) bars advertising one as \"natural\", so \"Natural\" and \"100% natural\" were removed.",
+      "title": {
+        "before": "Sun & Summer Family Set | Natural SPF 50+ & Insect Care",
+        "after": "Sun & Summer Family Set, SPF 50+ & Insect Care"
+      },
+      "description": {
+        "before": "Four summer essentials: mineral SPF 50+ sunscreen, SPF 50+ stick, DEET-free insect repellent and SOS Stick. 100% natural, suitable for the whole family. Save £6.",
+        "after": "Four summer essentials: mineral SPF 50+ sunscreen, SPF 50+ stick, DEET-free insect repellent and SOS Stick. Suitable for the whole family. Save £6."
+      }
+    },
+    {
+      "id": "2026-11-26-incia-natural-baby-kids-shampoo-without-sulfates-and-parabens",
+      "handle": "incia-natural-baby-kids-shampoo-without-sulfates-and-parabens",
+      "product": "INCIA Natural Baby & Kids Shampoo without Sulfates and Parabens 350ml",
+      "date": "2026-11-26",
+      "by": "Stimilon",
+      "reason": "Top product by revenue. People search \"sulphate free\" and \"sulfate free\" (172 impressions, mostly positions 8 to 11), not \"SLS-free\" (9). \"Without stinging eyes\" was dropped because it needs an eye-irritation test.",
+      "title": {
+        "before": "Natural Baby & Kids Shampoo, SLS-Free",
+        "after": "Sulphate-Free Baby & Kids Shampoo, Natural"
+      },
+      "description": {
+        "before": "A gentle sulphate-free, paraben-free shampoo for babies and children that cleanses softly without stinging eyes. 100% natural, made for sensitive scalps.",
+        "after": "Gentle sulphate-free, paraben-free shampoo for babies and kids, made for sensitive scalps. Mild enough for daily use. 350ml. Free UK delivery over £25."
+      }
+    },
+    {
+      "id": "2026-11-26-incia-stretch-mark-gel-cream-75ml",
+      "handle": "incia-stretch-mark-gel-cream-75ml",
+      "product": "INCIA Stretch Mark Gel Cream 75ml",
+      "date": "2026-11-26",
+      "by": "Stimilon",
+      "reason": "772 impressions and 3 clicks, and \"stretch mark\" did not appear in the description. The new one opens with it and names where the cream is used. The title already starts with the searched phrase and was kept.",
+      "description": {
+        "before": "A rich 100% natural gel cream developed for pregnancy that deeply hydrates skin and helps it stay supple as it stretches. 75ml, kind to sensitive skin.",
+        "after": "Natural stretch mark gel cream with centella for bump, hips and thighs. Helps skin stay supple and hydrated as it stretches. Kind to sensitive skin."
+      }
+    },
+    {
+      "id": "2026-11-26-incia-natural-deodorant-for-sensitive-skin",
+      "handle": "incia-natural-deodorant-for-sensitive-skin",
+      "product": "INCIA Natural Deodorant for Sensitive Skin 50ml",
+      "date": "2026-11-26",
+      "by": "Stimilon",
+      "reason": "666 impressions at position 25. The 22 Nov proposal, applied without the antibacterial claim (waiting on INCIA) and without \"fresh all day\" (a duration claim that needs a test).",
+      "title": {
+        "before": "Sensitive Skin Deodorant, Natural Aloe Roll-On",
+        "after": "Natural Deodorant for Sensitive Skin, Aloe Roll-On"
+      },
+      "description": {
+        "before": "A 100% natural roll-on deodorant made with sensitive skin in mind, with soothing aloe to keep you fresh all day, gentle even straight after shaving.",
+        "after": "Gentle natural roll-on for sensitive underarms, with soothing aloe vera. Comfortable even straight after shaving. Vegan, 50ml. Free UK delivery over £25."
+      }
+    },
+    {
+      "id": "2026-11-26-incia-kids-lip-balm-lemon",
+      "handle": "incia-kids-lip-balm-lemon",
+      "product": "INCIA Kids Lip Balm Lemon 6g",
+      "date": "2026-11-26",
+      "by": "Stimilon",
+      "reason": "\"lip balm for kids\" has 136 impressions at position 8.4. The title now matches that phrase, a test of whether a page-one listing can earn more clicks.",
+      "title": {
+        "before": "Kids Natural Lip Balm, Lemon",
+        "after": "Natural Lip Balm for Kids, Lemon"
+      },
+      "description": {
+        "before": "A gentle lemon lip balm for children, made with natural oils and butters to soften and comfort little lips. 100% natural, ideal for pockets and bags.",
+        "after": "Lip balm for kids with natural oils and butters to soften and comfort little lips. Naturally derived lemon scent, pocket-sized. Free UK delivery over £25."
+      }
+    }
+  ]
+}

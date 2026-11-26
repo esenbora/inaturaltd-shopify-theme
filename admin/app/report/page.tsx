@@ -3,7 +3,9 @@ import { getSalesSummary } from "@/lib/sales";
 import { getAnalyticsSummary } from "@/lib/google";
 import { listArticles } from "@/lib/shopify";
 import { assessBlogHealth } from "@/lib/blog-health";
-import { buildMonthlyReport } from "@/lib/monthly-report";
+import { buildMonthlyReport, type SeoReportInput } from "@/lib/monthly-report";
+import { seoLogStateMetrics, seoMeasurementMetrics } from "@/lib/metrics";
+import { readSeoLog } from "@/lib/seo-changes";
 import { RangeTabs, rangeLabel, resolveRange } from "@/components/range-tabs";
 import { CopyButton } from "@/components/copy-button";
 import { Card, CardSkeleton } from "@/components/dashboard/shell";
@@ -52,7 +54,9 @@ function StatusBadge({ status, label }: { status: Status; label: string }) {
 }
 
 interface Section {
-  number: number;
+  /** "3a" for a subsection, printed under its parent. */
+  number: string;
+  sub?: boolean;
   title: string;
   source: string;
   status: Status;
@@ -66,12 +70,19 @@ interface PageProps {
 
 async function ReportBody({ range }: { range: number }) {
   // A missing source should thin the report, not fail the page.
-  const [salesResult, analyticsResult, articlesResult] =
-    await Promise.allSettled([
-      getSalesSummary(range),
-      getAnalyticsSummary(range),
-      listArticles(),
-    ]);
+  const [
+    salesResult,
+    analyticsResult,
+    articlesResult,
+    seoMeasurementResult,
+    seoStateResult,
+  ] = await Promise.allSettled([
+    getSalesSummary(range),
+    getAnalyticsSummary(range),
+    listArticles(),
+    seoMeasurementMetrics(),
+    seoLogStateMetrics(),
+  ]);
 
   const sales = salesResult.status === "fulfilled" ? salesResult.value : null;
   const analytics =
@@ -81,16 +92,41 @@ async function ReportBody({ range }: { range: number }) {
       ? assessBlogHealth(articlesResult.value)
       : null;
 
+  let logValid = true;
+  try {
+    readSeoLog();
+  } catch {
+    logValid = false;
+  }
+  const seo: SeoReportInput = {
+    logValid,
+    measurement:
+      seoMeasurementResult.status === "fulfilled"
+        ? seoMeasurementResult.value.value
+        : null,
+    state:
+      seoStateResult.status === "fulfilled" ? seoStateResult.value.value : null,
+  };
+  const seoReady =
+    seo.measurement?.configured === true
+      ? seo.measurement.entries.filter(
+          (e) => e.stage.kind === "four-week" || e.stage.kind === "twelve-week",
+        ).length
+      : 0;
+  const seoDrift =
+    seo.state?.filter((row) => !row.found || row.drift.length > 0).length ?? 0;
+
   const markdown = buildMonthlyReport({
     rangeDays: range,
     sales,
     analytics,
     blog,
+    seo,
   });
 
   const sections: Section[] = [
     {
-      number: 1,
+      number: "1",
       title: "Satış",
       source: "Shopify orders",
       status: sales ? "filled" : "missing",
@@ -100,7 +136,7 @@ async function ReportBody({ range }: { range: number }) {
         : "Shopify could not be read. The report says so in this section instead of showing a number.",
     },
     {
-      number: 2,
+      number: "2",
       title: "Trafik",
       source: "Google Analytics",
       ...(analytics === null
@@ -128,7 +164,7 @@ async function ReportBody({ range }: { range: number }) {
               }),
     },
     {
-      number: 3,
+      number: "3",
       title: "Arama görünürlüğü",
       source: "Search Console",
       ...(analytics === null
@@ -162,7 +198,45 @@ async function ReportBody({ range }: { range: number }) {
                 }),
     },
     {
-      number: 4,
+      number: "3a",
+      sub: true,
+      title: "SEO değişiklikleri",
+      source: "Change log + Search Console",
+      ...(!seo.logValid
+        ? {
+            status: "missing" as const,
+            label: "Log invalid",
+            note: "data/seo-changes.json does not validate, so the report says the subsection could not be prepared.",
+          }
+        : seo.measurement === null
+          ? {
+              status: "partial" as const,
+              label: "Figures missing",
+              note: "Search Console could not be read. The report says so under İlerleme; next-change dates still fill in.",
+            }
+          : !seo.measurement.configured
+            ? {
+                status: "partial" as const,
+                label: "Not connected",
+                note: "Search Console is not connected, so no change is measured. The report states that.",
+              }
+            : seoDrift > 0
+              ? {
+                  status: "partial" as const,
+                  label: "Check warnings",
+                  note: `${seoDrift} product${seoDrift === 1 ? "" : "s"} changed outside the log or no longer active. The report prints the warning under Sonraki adım; check it before sending.`,
+                }
+              : {
+                  status: "filled" as const,
+                  label: "Filled",
+                  note:
+                    seoReady > 0
+                      ? `${seoReady} change${seoReady === 1 ? "" : "s"} with a complete result beside the unchanged pages, the rest with their expected dates, and when each product can change next.`
+                      : "No change has completed its 28 days yet. The report says so, gives each one's expected date and when each product can change next.",
+                }),
+    },
+    {
+      number: "4",
       title: "Yapılan işler",
       source: "Written by you",
       status: "yours",
@@ -170,7 +244,7 @@ async function ReportBody({ range }: { range: number }) {
       note: "Work completed in the period. Left as a prompt, because the panel cannot know it.",
     },
     {
-      number: 5,
+      number: "5",
       title: "Bekleyen konular",
       source: "Shopify blog",
       status: blog ? "partial" : "missing",
@@ -180,7 +254,7 @@ async function ReportBody({ range }: { range: number }) {
         : "The blog could not be read, so only the prompt for client items appears.",
     },
     {
-      number: 6,
+      number: "6",
       title: "Sıradaki öncelikler",
       source: "Written by you",
       status: "yours",
@@ -189,7 +263,8 @@ async function ReportBody({ range }: { range: number }) {
     },
   ];
 
-  const ready = sections.filter((s) => s.status === "filled").length;
+  const main = sections.filter((s) => !s.sub);
+  const ready = main.filter((s) => s.status === "filled").length;
 
   return (
     <>
@@ -200,7 +275,7 @@ async function ReportBody({ range }: { range: number }) {
             ? "attention"
             : "calm"
         }
-        description={`${ready} of 6 sections filled from live figures. The report is in Turkish because that is the language it is delivered in; the section names below are the headings it prints.`}
+        description={`${ready} of ${main.length} sections filled from live figures. The report is in Turkish because that is the language it is delivered in; the section names below are the headings it prints.`}
       >
         <ol className="divide-y divide-line/70">
           {sections.map((s) => (
@@ -208,7 +283,9 @@ async function ReportBody({ range }: { range: number }) {
               key={s.number}
               className="grid gap-x-4 gap-y-1.5 py-3 first:pt-0 last:pb-0 sm:grid-cols-[minmax(0,15rem)_minmax(0,1fr)_auto] sm:items-baseline"
             >
-              <p className="text-sm font-medium text-ink">
+              <p
+                className={`text-sm font-medium text-ink ${s.sub ? "pl-5" : ""}`}
+              >
                 <span className="tabular-nums text-muted">{s.number}.</span>{" "}
                 {s.title}
                 <span className="block text-xs font-normal text-muted">

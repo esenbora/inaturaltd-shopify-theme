@@ -1176,7 +1176,7 @@ const AUDIT_PRODUCTS_QUERY = `
         title
         handle
         status
-        seo { description }
+        seo { title description }
         variants(first: 50) {
           nodes {
             id
@@ -1203,7 +1203,10 @@ interface RawAuditProductsResponse {
       readonly title?: string;
       readonly handle?: string;
       readonly status?: string;
-      readonly seo?: { readonly description?: string | null } | null;
+      readonly seo?: {
+        readonly title?: string | null;
+        readonly description?: string | null;
+      } | null;
       readonly variants: {
         readonly nodes: readonly {
           readonly id: string;
@@ -1256,6 +1259,7 @@ export async function listAuditProducts(): Promise<AuditProduct[]> {
         title: node.title ?? "",
         handle: node.handle ?? "",
         status: node.status ?? "",
+        metaTitle: node.seo?.title ?? "",
         metaDescription: node.seo?.description ?? "",
         variants: node.variants.nodes.map((variant) => {
           const weight = variant.inventoryItem?.measurement?.weight;
@@ -1428,6 +1432,7 @@ const MOCK_AUDIT_PRODUCTS: AuditProduct[] = [
     title: "INCIA Natural Baby Oil 110ml",
     handle: "incia-natural-baby-oil",
     status: "ACTIVE",
+    metaTitle: "Natural Baby Oil for Everyday Use",
     metaDescription: "A gentle baby oil for everyday use.",
     variants: [
       { id: "gid://shopify/ProductVariant/1", sku: "MINC-000033", barcode: "8680551230019", grams: 145, requiresShipping: true, inventoryQuantity: 24 },
@@ -1439,6 +1444,7 @@ const MOCK_AUDIT_PRODUCTS: AuditProduct[] = [
     title: "INCIA Nourishing Gel for Dry Skin 150ml",
     handle: "incia-cream-for-dry-skin-and-eczema",
     status: "ACTIVE",
+    metaTitle: "",
     metaDescription: "A rich hydrating gel for very dry skin.",
     variants: [
       { id: "gid://shopify/ProductVariant/2", sku: "MINC-000112", barcode: "", grams: 75, requiresShipping: true, inventoryQuantity: 0 },
@@ -1449,6 +1455,7 @@ const MOCK_AUDIT_PRODUCTS: AuditProduct[] = [
     title: "INCIA Natural Toothpaste 50ml",
     handle: "incia-natural-toothpaste",
     status: "ACTIVE",
+    metaTitle: "",
     metaDescription: "",
     variants: [
       { id: "gid://shopify/ProductVariant/3", sku: "MINC-000118", barcode: "", grams: 100, requiresShipping: true, inventoryQuantity: 3 },
